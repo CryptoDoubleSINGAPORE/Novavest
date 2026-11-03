@@ -77,7 +77,7 @@
       <section class="balance">
         <div class="balance-head"><span class="eyebrow" style="color:#d0dcfa">Balance total estimado</span><span class="pill">● Cuenta demo</span></div>
         <div class="amount" id="totalBalance">$0.00</div><div class="change">↗ Datos ilustrativos <span style="color:#d0dcfa">· No es dinero real</span></div>
-        <div class="balance-actions"><button class="action primary" onclick="goTo('deposit')">＋ Depositar</button><button class="action ghost" onclick="openModal('Retiro de prueba','Esta interfaz no procesa retiros ni transferencias reales.')">↗ Retirar</button></div>
+        <div class="balance-actions"><button class="action primary" onclick="goTo('deposit')">＋ Depositar</button><button class="action ghost" onclick="goTo('withdraw')">↗ Retirar</button></div>
       </section>
       <div class="section"><h2>Tu resumen</h2><button class="small-link" onclick="toast('Resumen de demostración actualizado')">Actualizar ↻</button></div>
       <div class="stats">
@@ -91,6 +91,7 @@
         <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB · Token demo</span></div><div class="coin-value"><b id="holdingSRB">0.00 SRB</b><span>Tu saldo demo</span></div></div>
         <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT · Stablecoin</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b><span>Tu saldo demo</span></div></div>
       </div>
+
       <div class="section" id="deposit"><h2>Depósito de prueba</h2><span class="pill">Demo</span></div>
       <div class="panel">
         <div class="eyebrow">Selecciona tu moneda</div>
@@ -103,6 +104,40 @@
         </div>
         <button class="wide" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito demo →</button>
       </div>
+
+      <!-- NUEVO APARTADO DE RETIROS -->
+      <div class="section" id="withdraw"><h2>Retiro de prueba</h2><span class="pill">Demo</span></div>
+      <div class="panel">
+        <div class="eyebrow">Selecciona tu moneda</div>
+        <div class="asset-select" style="margin-top:10px">
+          <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
+            <option value="TRX">TRON (TRX)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="SRB">SRB Token</option>
+            <option value="USDT">Tether (USDT)</option>
+          </select>
+        </div>
+        
+        <div class="hint" id="withdrawBalanceInfo" style="margin-top:10px; font-size:13px; color:var(--mint); font-weight:bold;">
+          Balance disponible: 0.00 TRX
+        </div>
+
+        <label class="field-label" for="withdrawAmount">Cantidad a retirar</label>
+        <div class="amount-wrap">
+          <input class="number" id="withdrawAmount" type="number" min="0" step="any" placeholder="0.00">
+          <span class="unit" id="withdrawUnit">TRX</span>
+        </div>
+
+        <label class="field-label" for="withdrawAddress">Dirección de criptomonedas</label>
+        <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de destino">
+
+        <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
+        <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual">
+
+        <button class="wide" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
+      </div>
+      <!-- FIN DEL APARTADO DE RETIROS -->
+
       <div class="section"><h2>Actividad reciente</h2><button class="small-link" onclick="openModal('Historial de prueba','Los movimientos mostrados son ejemplos visuales y no representan transacciones reales.')">Ver todo</button></div>
       <div class="panel activity" id="activityPanel">
         <div class="activity-item" style="justify-content: center; padding: 20px 0;">
@@ -114,7 +149,7 @@
       <button class="wide" style="background:#293651;color:#f5f7ff;box-shadow:none" onclick="signOut()">Cerrar sesión</button>
       <div class="disclaimer">NovaVest es una demostración visual. No ofrece inversiones reales, no procesa pagos y no está conectada a ninguna blockchain. Balances, precios, wallets y QR son ficticios.</div>
     </div>
-    <nav class="nav"><div class="nav-inner"><button class="active" onclick="navTo(this,'home')"><span>⌂</span>Inicio</button><button onclick="navTo(this,'deposit')"><span>⇧</span>Depositar</button><button onclick="navTo(this,'market')"><span>◈</span>Mercado</button><button onclick="navTo(this,'profile')"><span>◉</span>Perfil</button></div></nav>
+    <nav class="nav"><div class="nav-inner"><button class="active" onclick="navTo(this,'home')"><span>⌂</span>Inicio</button><button onclick="navTo(this,'deposit')"><span>⇧</span>Depositar</button><button onclick="navTo(this,'withdraw')"><span>↗</span>Retirar</button><button onclick="navTo(this,'profile')"><span>◉</span>Perfil</button></div></nav>
   </main>
   <div id="toast" class="toast" role="status"></div>
   <div class="modal-backdrop" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><h3 id="modalTitle">Confirmación</h3><p id="modalText"></p><button class="wide" onclick="closeModal()">Entendido</button></div></div>
@@ -146,7 +181,8 @@
       maximumFractionDigits: asset === 'BTC' ? 6 : 2
     }) + ' ' + asset;
   }
-async function loadUserBalances(user) {
+
+  async function loadUserBalances(user) {
     currentUserId = user.id;
     const { data: existing, error: readError } = await supabaseClient
       .from('novavest_balances')
@@ -155,7 +191,7 @@ async function loadUserBalances(user) {
 
     if (readError) {
       console.error('Error leyendo balances:', readError);
-      toast('No se pudieron cargar los saldos. Revisa la tabla y sus permisos en Supabase.');
+      toast('No se pudieron cargar los saldos.');
       return;
     }
 
@@ -171,7 +207,7 @@ async function loadUserBalances(user) {
 
       if (insertError) {
         console.error('Error creando balances:', insertError);
-        toast('No se pudieron crear los saldos. Ejecuta el SQL de configuración.');
+        toast('No se pudieron crear los saldos.');
         return;
       }
     }
@@ -183,7 +219,6 @@ async function loadUserBalances(user) {
 
     if (finalReadError) {
       console.error('Error cargando balances:', finalReadError);
-      toast('No se pudieron cargar los saldos de esta cuenta.');
       return;
     }
 
@@ -206,6 +241,7 @@ async function loadUserBalances(user) {
     $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
     $('holdingSRB').textContent = quantity(userBalances.SRB, 'SRB');
     $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
+    updateWithdrawInfo();
   }
 
   const $ = (id) => document.getElementById(id);
@@ -258,6 +294,7 @@ async function loadUserBalances(user) {
     const {error}=await supabaseClient.auth.updateUser({password:$('newPassword').value});
     if(error) showMessage(error.message,true); else {showMessage('Contraseña actualizada. Ya puedes entrar con tu nueva contraseña.');setTimeout(()=>setAuthView('login'),1800);}
   });
+
   function showDashboard(user){
     $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
     const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
@@ -289,6 +326,7 @@ async function loadUserBalances(user) {
     USDT:{symbol:'USDT',logo:'₮',cls:'usdt',wallet:'TDEMO7xNovaVestUSDT0000000000000001',price:1}
   };
   let current='TRX';
+  
   window.changeAsset=function(){
     current=$('asset').value;const a=assets[current];$('coinBadge').className='coin-logo '+a.cls;$('coinBadge').textContent=a.logo;$('unit').textContent=a.symbol;$('wallet').textContent=a.wallet;
     $('qr').src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(a.wallet);updateEstimate();toast('Activo cambiado a '+a.symbol);
@@ -296,9 +334,7 @@ async function loadUserBalances(user) {
   window.updateEstimate=function(){const value=Math.max(0,Number($('amount').value)||0);$('estimate').textContent='≈ $'+(value*assets[current].price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD · Valor ilustrativo';};
   window.copyWallet=async function(){try{await navigator.clipboard.writeText(assets[current].wallet);toast('Dirección copiada');}catch(e){toast('No se pudo copiar automáticamente. Selecciona la dirección.');}};
 
-  // Depósito demo: suma al balance del usuario en Supabase
   window.simulateDeposit = async function(){
-    console.log('Botón de depósito pulsado');
     try {
       if (!currentUserId) { toast('Inicia sesión primero'); return; }
       const value = Number($('amount').value);
@@ -310,8 +346,7 @@ async function loadUserBalances(user) {
       const btn = $('depositBtn');
       const originalText = btn.textContent;
       btn.disabled = true; btn.textContent = 'Procesando…';
-
-      const { error } = await supabaseClient
+            const { error } = await supabaseClient
         .from('novavest_balances')
         .upsert({
           user_id: currentUserId,
@@ -344,7 +379,80 @@ async function loadUserBalances(user) {
     }
   };
 
-  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').textContent=message;$('modal').classList.add('open');};
+  // Actualiza la info de la moneda seleccionada en Retiros
+  window.updateWithdrawInfo = function() {
+    const asset = $('withdrawAsset').value;
+    $('withdrawUnit').textContent = asset;
+    $('withdrawBalanceInfo').textContent = 'Balance disponible: ' + quantity(userBalances[asset] || 0, asset);
+  };
+
+  // Lógica para procesar el retiro
+  window.simulateWithdraw = async function() {
+    const asset = $('withdrawAsset').value;
+    const amount = Number($('withdrawAmount').value);
+    const address = $('withdrawAddress').value.trim();
+    const password = $('withdrawPassword').value;
+    const btn = $('withdrawBtn');
+
+    if (!amount || amount <= 0) { toast('Introduce una cantidad válida'); return; }
+    if (amount > (userBalances[asset] || 0)) { toast('Saldo insuficiente para retirar'); return; }
+    if (!address) { toast('Introduce una dirección de destino'); return; }
+    if (!password) { toast('Introduce tu contraseña'); return; }
+
+    btn.disabled = true; btn.textContent = 'Verificando…';
+
+    try {
+      // 1. Obtener el usuario actual para verificar su correo
+      const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+      if (userError || !userData.user) throw new Error('Sesión no válida');
+
+      // 2. Verificar la contraseña haciendo un login rápido
+      const { error: authError } = await supabaseClient.auth.signInWithPassword({
+        email: userData.user.email,
+        password: password
+      });
+
+      if (authError) {
+        toast('Contraseña incorrecta. Inténtalo de nuevo.');
+        btn.disabled = false; btn.textContent = 'Confirmar retiro →';
+        return;
+      }
+
+      // 3. Restar el saldo y guardarlo en Supabase
+      const newAmount = (userBalances[asset] || 0) - amount;
+      
+      const { error: updateError } = await supabaseClient
+        .from('novavest_balances')
+        .upsert({
+          user_id: currentUserId,
+          asset,
+          amount: newAmount,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,asset' });
+
+      if (updateError) throw updateError;
+
+      // 4. Actualizar la vista
+      userBalances[asset] = newAmount;
+      renderUserBalances();
+      
+      // Limpiar campos
+      $('withdrawAmount').value = '';
+      $('withdrawAddress').value = '';
+      $('withdrawPassword').value = '';
+
+      openModal('Retiro demo confirmado',
+        'Se han retirado ' + quantity(amount, asset) + ' a la dirección ' + address + '.<br><br>Esta es una simulación. No se ha enviado ninguna criptomoneda real.');
+
+    } catch (err) {
+      console.error('Error en retiro:', err);
+      toast('Error: ' + (err.message || 'No se pudo procesar el retiro'));
+    } finally {
+      btn.disabled = false; btn.textContent = 'Confirmar retiro →';
+    }
+  };
+
+  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').innerHTML=message;$('modal').classList.add('open');};
   window.closeModal=function(){$('modal').classList.remove('open');};
   window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
   window.goTo=function(id){$(id).scrollIntoView({behavior:'smooth',block:'start'});};
