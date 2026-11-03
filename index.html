@@ -73,7 +73,7 @@
     
     .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; }
-    .brandmark { width: 38px; height: 38px; border-radius: 14px; background: linear-gradient(135deg, var(--mint), var(--blue)); display: grid; place-items: center; color: #000; font-weight: 900; box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+    .brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
     .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; font-weight: 800; box-shadow: 0 0 15px rgba(157, 78, 221, 0.5); }
     
     .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
@@ -170,11 +170,19 @@
     .info-row:last-child { margin-bottom: 0; }
     .info-row b { color: var(--mint); }
 
+    /* ESTILOS DE LAS MONEDAS */
     .coins { display: grid; gap: 9px; }
     .coin { display: flex; align-items: center; padding: 12px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; transition: 0.2s; }
     .coin:active { transform: scale(0.97); background: rgba(255,255,255,0.05); }
-    .coin-logo { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; font-size: 18px; font-weight: 900; color: #000; }
-    .btc { background: #f7931a; } .trx { background: #ff0013; color: white; } .srb { background: #9d4edd; color: white; } .usdt { background: #26a17b; color: white; }
+    
+    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .coin-logo svg { width: 24px; height: 24px; fill: currentColor; }
+    
+    .btc { background: linear-gradient(135deg, #f7931a, #ffb347); }
+    .trx { background: linear-gradient(135deg, #ff0013, #ff4b2b); }
+    .usdt { background: linear-gradient(135deg, #26a17b, #2bd6a2); }
+    .sol { background: linear-gradient(135deg, #9945FF, #14F195); color: #000; }
+
     .coin-info { flex: 1; }
     .coin-info b { display: block; font-size: 14px; }
     .coin-info span { font-size: 11px; color: var(--muted); }
@@ -213,7 +221,6 @@
     .modal { width: 100%; max-width: 490px; background: #111522; border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 20px; box-shadow: 0 20px 80px rgba(0,0,0,0.9); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
     
-    /* ANIMACIÓN DE ERROR (VIBRACIÓN) */
     .modal.error-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--fire); }
     @keyframes shake {
       10%, 90% { transform: translate3d(-2px, 0, 0); }
@@ -273,7 +280,21 @@
 
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
-      <div class="auth-logo"><div class="brandmark">N</div>NovaVest</div>
+      <div class="auth-logo">
+        <div class="brandmark">
+          <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="14" fill="url(#paint0_linear)"/>
+            <path d="M12 28V12L28 28V12" stroke="#071525" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="paint0_linear" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00f2fe"/>
+                <stop offset="1" stop-color="#4facfe"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        NovaVest
+      </div>
       <h1 id="authTitle">Bienvenido de nuevo</h1>
       <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel personal.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
@@ -306,7 +327,21 @@
   <main id="dashboard" class="hidden">
     <div class="app">
       <header class="top">
-        <div class="brand"><div class="brandmark">N</div>NovaVest</div>
+        <div class="brand">
+          <div class="brandmark">
+            <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="14" fill="url(#paint0_linear2)"/>
+              <path d="M12 28V12L28 28V12" stroke="#071525" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="paint0_linear2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#00f2fe"/>
+                  <stop offset="1" stop-color="#4facfe"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          NovaVest
+        </div>
         <div class="avatar" id="avatar">NV</div>
       </header>
 
@@ -371,7 +406,15 @@
         <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Prueba</span></div>
         <div class="panel">
           <div class="eyebrow">Selecciona tu moneda</div>
-          <div class="asset-select" style="margin-top:10px"><div id="coinBadge" class="coin-logo trx">Ｔ</div><select class="select" id="asset" onchange="changeAsset()"><option value="TRX">TRON (TRX)</option><option value="BTC">Bitcoin (BTC)</option><option value="SRB">SRB Token</option><option value="USDT">Tether (USDT)</option></select></div>
+          <div class="asset-select" style="margin-top:10px">
+            <div id="coinBadge" class="coin-logo trx" style="width:42px;height:42px;display:grid;place-items:center;"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm8.57 8.42L12.93 12.84l-3.36 10.91 4.76-10.91 10.24-4.42zM11.5 11.92l8.91-3.41-4.74 10.91-4.17-7.5zm5.8 10.33l5.19-11.9 1.48 10.78-6.67 1.12zm-1.4-2.5l-2.84-5.13 6.33 4.06-3.49 1.07zm7.8 3.66l.6 4.39-4.3-3.5 3.7-.89z"/></svg></div>
+            <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
+              <option value="TRX">TRON (TRX)</option>
+              <option value="BTC">Bitcoin (BTC)</option>
+              <option value="SOL">Solana (SOL)</option>
+              <option value="USDT">Tether (USDT)</option>
+            </select>
+          </div>
           <label class="field-label" for="amount">Cantidad a depositar</label>
           <div class="amount-wrap"><input class="number" id="amount" type="number" min="0" step="any" value="100" oninput="updateEstimate()"><span class="unit" id="unit">TRX</span></div>
           <div class="hint" id="estimate">≈ $28.41 USD · Valor estimado</div>
@@ -397,7 +440,7 @@
             <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
               <option value="TRX">TRON (TRX)</option>
               <option value="BTC">Bitcoin (BTC)</option>
-              <option value="SRB">SRB Token</option>
+              <option value="SOL">Solana (SOL)</option>
               <option value="USDT">Tether (USDT)</option>
             </select>
           </div>
@@ -414,8 +457,9 @@
           
           <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
         </div>
-            </div> 
-            <!-- VISTA 4: PERFIL -->
+      </div>
+
+      <!-- VISTA 4: PERFIL -->
       <div id="view-profile" class="view">
         <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
         <div class="panel investor" style="margin-top:0;">
@@ -429,10 +473,26 @@
 
         <div class="section"><h2>Todos tus saldos</h2></div>
         <div class="coins">
-          <div class="coin"><div class="coin-logo btc">₿</div><div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div></div>
-          <div class="coin"><div class="coin-logo trx">Ｔ</div><div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div></div>
-          <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB</span></div><div class="coin-value"><b id="holdingSRB">0.00 SRB</b></div></div>
-          <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div></div>
+          <div class="coin">
+            <div class="coin-logo btc"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-.001-.006-1.82-.454-.35 1.406s.975.225.955.236c.535.136.63.486.615.766l-1.477 5.92c-.075.166-.24.406-.614.314.015.02-.96-.24-.96-.24l-.66 1.51 1.71.426c.32.08.64.165.95.245l-.545 2.19 1.32.33.54-2.17c.36.1.705.19 1.05.273l-.51 2.154 1.32.33.545-2.19c2.24.427 3.93.257 4.64-1.774.57-1.637-.03-2.58-1.217-3.196.854-.193 1.5-.76 1.673-1.93h.01zm-3.01 4.22c-.404 1.64-3.157.75-4.05.53l.72-2.9c.896.23 3.757.67 3.33 2.37zm.41-4.24c-.37 1.49-2.662.735-3.405.55l.654-2.64c.744.18 3.137.524 2.75 2.084v.006z"/></svg></div>
+            <div class="coin-info"><b>Bitcoin</b><span>BTC</span></div>
+            <div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo trx"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm8.57 8.42L12.93 12.84l-3.36 10.91 4.76-10.91 10.24-4.42zM11.5 11.92l8.91-3.41-4.74 10.91-4.17-7.5zm5.8 10.33l5.19-11.9 1.48 10.78-6.67 1.12zm-1.4-2.5l-2.84-5.13 6.33 4.06-3.49 1.07zm7.8 3.66l.6 4.39-4.3-3.5 3.7-.89z"/></svg></div>
+            <div class="coin-info"><b>TRON</b><span>TRX</span></div>
+            <div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo sol"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M11.9 22.2l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2l3.1-3.3c.2-.2.1-.5-.2-.5H12.4c-.2 0-.4.1-.5.2zm0-8.3l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2l3.1-3.3c.2-.2.1-.5-.2-.5H12.4c-.2 0-.4.1-.5.2zm11.6 4.2l3.1-3.3c.2-.2.1-.5-.2-.5H11.8c-.2 0-.4.1-.5.2l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2z"/></svg></div>
+            <div class="coin-info"><b>Solana</b><span>SOL</span></div>
+            <div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo usdt"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm1.72 22.2v-3.26c3.77-.19 6.55-.9 6.55-1.74s-2.78-1.55-6.55-1.74v-3.26c4.67.25 8.17 1.8 8.17 3.66 0 1.85-3.5 3.41-8.17 3.66v3.26h-1.72v-3.26c-3.77-.19-6.55-.9-6.55-1.74s2.78-1.55 6.55-1.74v-3.26c-4.67.25-8.17 1.8-8.17 3.66 0 1.85 3.5 3.41 8.17 3.66v3.26h1.72z"/></svg></div>
+            <div class="coin-info"><b>Tether</b><span>USDT</span></div>
+            <div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div>
+          </div>
         </div>
 
         <div class="section"><h2>Historial de Movimientos</h2></div>
@@ -479,15 +539,16 @@
   const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
+    // CONFIGURACIÓN ACTUALIZADA: SOL REEMPLAZA A SRB
   const ASSET_INFO = {
-    TRX: { price: 0.2841, name: 'TRON' },
-    BTC: { price: 67420.8, name: 'Bitcoin' },
-    SRB: { price: 0.0428, name: 'SRB Token' },
-    USDT: { price: 1, name: 'Tether' }
+    TRX: { price: 0.2841, name: 'TRON', color: '#ff0013', icon: '<svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm8.57 8.42L12.93 12.84l-3.36 10.91 4.76-10.91 10.24-4.42zM11.5 11.92l8.91-3.41-4.74 10.91-4.17-7.5zm5.8 10.33l5.19-11.9 1.48 10.78-6.67 1.12zm-1.4-2.5l-2.84-5.13 6.33 4.06-3.49 1.07zm7.8 3.66l.6 4.39-4.3-3.5 3.7-.89z"/></svg>' },
+    BTC: { price: 67420.8, name: 'Bitcoin', color: '#f7931a', icon: '<svg viewBox="0 0 32 32"><path fill="currentColor" d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.33-.54 2.165c-.285-.067-.565-.132-.84-.2l-.001-.006-1.82-.454-.35 1.406s.975.225.955.236c.535.136.63.486.615.766l-1.477 5.92c-.075.166-.24.406-.614.314.015.02-.96-.24-.96-.24l-.66 1.51 1.71.426c.32.08.64.165.95.245l-.545 2.19 1.32.33.54-2.17c.36.1.705.19 1.05.273l-.51 2.154 1.32.33.545-2.19c2.24.427 3.93.257 4.64-1.774.57-1.637-.03-2.58-1.217-3.196.854-.193 1.5-.76 1.673-1.93h.01zm-3.01 4.22c-.404 1.64-3.157.75-4.05.53l.72-2.9c.896.23 3.757.67 3.33 2.37zm.41-4.24c-.37 1.49-2.662.735-3.405.55l.654-2.64c.744.18 3.137.524 2.75 2.084v.006z"/></svg>' },
+    SOL: { price: 145.50, name: 'Solana', color: '#9945FF', icon: '<svg viewBox="0 0 32 32"><path fill="currentColor" d="M11.9 22.2l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2l3.1-3.3c.2-.2.1-.5-.2-.5H12.4c-.2 0-.4.1-.5.2zm0-8.3l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2l3.1-3.3c.2-.2.1-.5-.2-.5H12.4c-.2 0-.4.1-.5.2zm11.6 4.2l3.1-3.3c.2-.2.1-.5-.2-.5H11.8c-.2 0-.4.1-.5.2l-3.1 3.3c-.2.2-.1.5.2.5h14.6c.2 0 .4-.1.5-.2z"/></svg>' },
+    USDT: { price: 1, name: 'Tether', color: '#26a17b', icon: '<svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm1.72 22.2v-3.26c3.77-.19 6.55-.9 6.55-1.74s-2.78-1.55-6.55-1.74v-3.26c4.67.25 8.17 1.8 8.17 3.66 0 1.85-3.5 3.41-8.17 3.66v3.26h-1.72v-3.26c-3.77-.19-6.55-.9-6.55-1.74s2.78-1.55 6.55-1.74v-3.26c-4.67.25-8.17 1.8-8.17 3.66 0 1.85 3.5 3.41 8.17 3.66v3.26h1.72z"/></svg>' }
   };
+  
   let currentUserId = null;
-  let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
+  let userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
   let withdrawableBalance = 0;
   let dailyWithdrawn = 0;
   let pendingInvestment = null;
@@ -514,7 +575,7 @@
     }
     
     const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-    userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
+    userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
     (rows || []).forEach(row => {
       if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
         userBalances[row.asset] = Number(row.amount) || 0;
@@ -552,7 +613,7 @@
     $('demoPerformance').textContent = money(total * 0.047);
     $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
     $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
-    $('holdingSRB').textContent = quantity(userBalances.SRB, 'SRB');
+    $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
     $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
     $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
   }
@@ -607,6 +668,7 @@
       panel.appendChild(item);
     });
   }
+
   function saveActiveInvestment(inv) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
@@ -675,9 +737,7 @@
         if (el) el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       }
     });
-  }
-
-  window.claimReward = async function(invId) {
+                      } window.claimReward = async function(invId) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
     const invIndex = investments.findIndex(i => i.id === invId);
@@ -714,7 +774,8 @@
 
     let htmlContent = '';
     Object.keys(ASSET_INFO).forEach(asset => {
-      htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><b>${ASSET_INFO[asset].name} (${asset})</b></div><div class="invest-grid">`;
+      const coin = ASSET_INFO[asset];
+      htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo ${asset.toLowerCase()}" style="width:28px;height:28px;box-shadow:none;">${coin.icon}</div><b>${coin.name} (${asset})</b></div><div class="invest-grid">`;
       config.amounts.forEach(amt => {
         const profit = (amt * config.roi).toFixed(2);
         const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
@@ -796,7 +857,8 @@
       btn.disabled = false; btn.textContent = 'Confirmar';
     }
   };
-    window.simulateDeposit = async function(){
+
+  window.simulateDeposit = async function(){
     if (!currentUserId) { toast('Inicia sesión primero'); return; }
     const value = Number($('amount').value);
     if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
@@ -875,9 +937,7 @@
       $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
 
       openModal('Retiro Confirmado', `Se han retirado $${amountUsd.toFixed(2)} USD (${cryptoToWithdraw.toFixed(4)} ${asset}) a la dirección proporcionada.<br><br><i>(Simulación).</i>`);
-      toast('Retiro procesado con éxito');
-
-    } catch (err) {
+      toast('Retiro procesado con éxito');     } catch (err) {
       console.error('Error en retiro:', err); toast('Error: ' + (err.message || 'No se pudo procesar'));
     } finally {
       btn.disabled = false; btn.textContent = 'Confirmar retiro →';
@@ -965,9 +1025,12 @@
   });
 
   window.changeAsset = function() {
-    $('coinBadge').className='coin-logo ' + $('asset').value.toLowerCase();
-    $('coinBadge').textContent = $('asset').value === 'BTC' ? '₿' : ($('asset').value === 'TRX' ? 'Ｔ' : ($('asset').value === 'SRB' ? 'S' : '₮'));
-    $('unit').textContent = $('asset').value;
+    const asset = $('asset').value;
+    const coin = ASSET_INFO[asset];
+    $('coinBadge').className = 'coin-logo ' + asset.toLowerCase();
+    $('coinBadge').innerHTML = coin.icon;
+    $('coinBadge').style.color = asset === 'SOL' ? '#000' : '#fff'; 
+    $('unit').textContent = asset;
     updateEstimate();
   };
   
