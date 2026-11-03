@@ -352,7 +352,7 @@
             <div class="plan-yield">9% ROI</div>
             <div class="plan-freq">Retiros cada 24 horas</div>
             <div class="plan-desc">Ideal para empezar. Ganancias diarias.</div>
-            <button class="plan-btn">Ver montos de inversión</button>
+            <button class="plan-btn press-effect">Ver montos de inversión</button>
           </div>
           
           <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
@@ -361,7 +361,7 @@
             <div class="plan-yield">12% ROI</div>
             <div class="plan-freq">Retiros cada 72 horas</div>
             <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
-            <button class="plan-btn">Ver montos de inversión</button>
+            <button class="plan-btn press-effect">Ver montos de inversión</button>
           </div>
         </div>
       </div>
@@ -414,9 +414,8 @@
           
           <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
         </div>
-      </div>
-
-      <!-- VISTA 4: PERFIL -->
+            </div> 
+            <!-- VISTA 4: PERFIL -->
       <div id="view-profile" class="view">
         <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
         <div class="panel investor" style="margin-top:0;">
@@ -493,7 +492,8 @@
   let dailyWithdrawn = 0;
   let pendingInvestment = null;
   let timerInterval = null;
-const PLAN_CONFIG = {
+
+  const PLAN_CONFIG = {
     starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, hours: 24, amounts: [20, 50, 100, 200, 400] },
     pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:', roi: 0.12, hours: 72, amounts: [500, 1000, 2000, 5000] }
   };
@@ -607,7 +607,6 @@ const PLAN_CONFIG = {
       panel.appendChild(item);
     });
   }
-
   function saveActiveInvestment(inv) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
@@ -677,6 +676,7 @@ const PLAN_CONFIG = {
       }
     });
   }
+
   window.claimReward = async function(invId) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
@@ -744,7 +744,6 @@ const PLAN_CONFIG = {
       const shortfallUsd = amountUsd - userUsdBalance;
       closePlanModal();
       
-      // EFECTO DE VIBRACIÓN DE ERROR
       const modal = $('mainModal');
       modal.classList.add('error-shake');
       setTimeout(() => modal.classList.remove('error-shake'), 500);
@@ -797,8 +796,7 @@ const PLAN_CONFIG = {
       btn.disabled = false; btn.textContent = 'Confirmar';
     }
   };
-
-  window.simulateDeposit = async function(){
+    window.simulateDeposit = async function(){
     if (!currentUserId) { toast('Inicia sesión primero'); return; }
     const value = Number($('amount').value);
     if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
@@ -885,6 +883,7 @@ const PLAN_CONFIG = {
       btn.disabled = false; btn.textContent = 'Confirmar retiro →';
     }
   };
+
   function showMessage(message, isError=false) {
     const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
     if(isError) box.classList.add('auth-error');
