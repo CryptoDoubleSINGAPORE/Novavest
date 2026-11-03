@@ -76,20 +76,20 @@
       <div class="eyebrow">Panel personal</div><div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div><div class="sub">Tu resumen de activos en un solo lugar.</div>
       <section class="balance">
         <div class="balance-head"><span class="eyebrow" style="color:#d0dcfa">Balance total estimado</span><span class="pill">● Cuenta demo</span></div>
-        <div class="amount" id="totalBalance">$12,840.50</div><div class="change">↗ Datos ilustrativos <span style="color:#d0dcfa">· No es dinero real</span></div>
+        <div class="amount" id="totalBalance">$0.00</div><div class="change">↗ Datos ilustrativos <span style="color:#d0dcfa">· No es dinero real</span></div>
         <div class="balance-actions"><button class="action primary" onclick="goTo('deposit')">＋ Depositar</button><button class="action ghost" onclick="openModal('Retiro de prueba','Esta interfaz no procesa retiros ni transferencias reales.')">↗ Retirar</button></div>
       </section>
       <div class="section"><h2>Tu resumen</h2><button class="small-link" onclick="toast('Resumen de demostración actualizado')">Actualizar ↻</button></div>
       <div class="stats">
-        <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$—</strong><small>Valor de tus activos demo</small></div>
-        <div class="stat"><div class="stat-top">Rendimiento demo <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong id="demoPerformance">$—</strong><small>Estimación ilustrativa</small></div>
+        <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor de tus activos demo</small></div>
+        <div class="stat"><div class="stat-top">Rendimiento demo <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong id="demoPerformance">$0.00</strong><small>Estimación ilustrativa</small></div>
       </div>
       <div class="section" id="market"><h2>Mercado de activos</h2><button class="small-link" onclick="goTo('deposit')">Elegir activo</button></div>
       <div class="coins">
-        <div class="coin"><div class="coin-logo btc">₿</div><div class="coin-info"><b>Bitcoin</b><span>BTC · Criptoactivo</span></div><div class="coin-value"><b id="holdingBTC">— BTC</b><span>Tu saldo demo</span></div></div>
-        <div class="coin"><div class="coin-logo trx">Ｔ</div><div class="coin-info"><b>TRON</b><span>TRX · Red TRON</span></div><div class="coin-value"><b id="holdingTRX">— TRX</b><span>Tu saldo demo</span></div></div>
-        <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB · Token demo</span></div><div class="coin-value"><b id="holdingSRB">— SRB</b><span>Tu saldo demo</span></div></div>
-        <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT · Stablecoin</span></div><div class="coin-value"><b id="holdingUSDT">— USDT</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo btc">₿</div><div class="coin-info"><b>Bitcoin</b><span>BTC · Criptoactivo</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo trx">Ｔ</div><div class="coin-info"><b>TRON</b><span>TRX · Red TRON</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB · Token demo</span></div><div class="coin-value"><b id="holdingSRB">0.00 SRB</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT · Stablecoin</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b><span>Tu saldo demo</span></div></div>
       </div>
       <div class="section" id="deposit"><h2>Depósito de prueba</h2><span class="pill">Demo</span></div>
       <div class="panel">
@@ -127,198 +127,8 @@
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
   // Los saldos se guardan en Supabase por usuario y por activo.
-  // Cada cuenta recibe una asignación demo inicial distinta, que se conserva al volver a entrar.
+  // Cada cuenta nueva empieza en 0 y solo cambia cuando hace un depósito demo.
   const ASSET_INFO = {
-    TRX: { price: 0.2841, min: 1200, max: 6800 },
-    BTC: { price: 67420.8, min: 0.0015, max: 0.035 },
-    SRB: { price: 0.0428, min: 8000, max: 85000 },
-    USDT: { price: 1, min: 180, max: 2400 }
-  };
-  let currentUserId = null;
-  let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
-
-  function randomStartingBalance(asset) {
-    const cfg = ASSET_INFO[asset];
-    const value = cfg.min + Math.random() * (cfg.max - cfg.min);
-    return Number(value.toFixed(asset === 'BTC' ? 6 : 2));
-  }
-
-  function money(value) {
-    return '$' + Number(value || 0).toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
-  }
-
-  function quantity(value, asset) {
-    return Number(value || 0).toLocaleString('en-US', {
-      minimumFractionDigits: asset === 'BTC' ? 6 : 2,
-      maximumFractionDigits: asset === 'BTC' ? 6 : 2
-    }) + ' ' + asset;
-  }
-
-  async function loadUserBalances(user) {
-    currentUserId = user.id;
-    const { data: existing, error: readError } = await supabaseClient
-      .from('novavest_balances')
-      .select('asset, amount')
-      .eq('user_id', user.id);
-
-    if (readError) {
-      console.error('Error leyendo balances:', readError);
-      toast('No se pudieron cargar los saldos. Revisa la tabla y sus permisos en Supabase.');
-      return;
-    }
-
-    // Solo crea la asignación inicial cuando esta cuenta todavía no tiene saldos.
-    if (!existing || existing.length === 0) {
-      const initialRows = Object.keys(ASSET_INFO).map(asset => ({
-        user_id: user.id,
-        asset,
-        amount: randomStartingBalance(asset)
-      }));
-      const { error: insertError } = await supabaseClient
-        .from('novavest_balances')
-        .upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
-
-      if (insertError) {
-        console.error('Error creando balances:', insertError);
-        toast('No se pudieron crear los saldos. Ejecuta el SQL de configuración.');
-        return;
-      }
-    }
-
-    const { data: rows, error: finalReadError } = await supabaseClient
-      .from('novavest_balances')
-      .select('asset, amount')
-      .eq('user_id', user.id);
-
-    if (finalReadError) {
-      console.error('Error cargando balances:', finalReadError);
-      toast('No se pudieron cargar los saldos de esta cuenta.');
-      return;
-    }
-
-    userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
-    (rows || []).forEach(row => {
-      if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
-        userBalances[row.asset] = Number(row.amount) || 0;
-      }
-    });
-    renderUserBalances();
-  }
-
-  function renderUserBalances() {
-    const total = Object.keys(ASSET_INFO).reduce((sum, asset) =>
-      sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
-    const btcValue = userBalances.BTC * ASSET_INFO.BTC.price;
-    $('totalBalance').textContent = money(total);
-    $('activeInvestment').textContent = money(total);
-    $('demoPerformance').textContent = money(total * 0.047);
-    $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
-    $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
-    $('holdingSRB').textContent = quantity(userBalances.SRB, 'SRB');
-    $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
-  }
-
-
-  const $ = (id) => document.getElementById(id);
-  let currentAuthView = 'login';
-  function showMessage(message, isError=false) {
-    const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
-    if(isError) box.classList.add('auth-error');
-  }
-  function clearMessage(){ $('authMessage').classList.add('hidden'); $('authMessage').textContent=''; }
-  function setAuthView(view) {
-    currentAuthView=view; clearMessage();
-    ['loginForm','registerForm','resetForm','newPasswordForm'].forEach(id=>$(id).classList.add('hidden'));
-    $(view+'Form').classList.remove('hidden');
-    $('authTitle').textContent = view==='login'?'Bienvenido de nuevo':view==='register'?'Crea tu cuenta':view==='reset'?'Recuperar contraseña':'Nueva contraseña';
-    $('authSubtitle').textContent = view==='login'?'Inicia sesión para acceder a tu panel personal.':view==='register'?'Regístrate para crear tu cuenta NovaVest.':view==='reset'?'Te enviaremos un enlace a tu correo.':'Elige una contraseña nueva para tu cuenta.';
-    $('authSwitch').classList.toggle('hidden',view==='reset'||view==='newPassword');
-    $('showReset').parentElement.classList.toggle('hidden',view==='reset'||view==='newPassword');
-    $('authSwitch').innerHTML = view==='register'?'¿Ya tienes cuenta? <button class="link-btn" type="button" id="showLogin">Iniciar sesión</button>':'¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button>';
-    $('showRegister')?.addEventListener('click',()=>setAuthView('register'));
-    $('showLogin')?.addEventListener('click',()=>setAuthView('login'));
-  }
-  $('showRegister').addEventListener('click',()=>setAuthView('register'));
-  $('showReset').addEventListener('click',()=>setAuthView('reset'));
-
-  $('loginForm').addEventListener('submit', async e=>{
-    e.preventDefault(); clearMessage(); const btn=$('loginSubmit'); btn.disabled=true; btn.textContent='Entrando…';
-    const {error}=await supabaseClient.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
-    btn.disabled=false; btn.textContent='Iniciar sesión';
-    if(error) showMessage(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message,true);
-  });
-  $('registerForm').addEventListener('submit', async e=>{
-    e.preventDefault(); clearMessage(); const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
-    const fullName=$('fullName').value.trim();
-    const {data,error}=await supabaseClient.auth.signUp({
-      email:$('registerEmail').value.trim(),
-      password:$('registerPassword').value,
-      options:{data:{full_name:fullName},emailRedirectTo:window.location.origin+window.location.pathname}
-    });
-    btn.disabled=false; btn.textContent='Crear cuenta';
-    if(error){showMessage(error.message,true);return;}
-    if(data.session){showDashboard(data.user);}
-    else showMessage('Cuenta creada. Revisa tu correo y confirma la dirección para poder iniciar sesión.');
-  });
-  $('resetForm').addEventListener('submit',async e=>{
-    e.preventDefault();clearMessage();
-    const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
-    if(error) showMessage(error.message,true); else showMessage('Si el correo está registrado, recibirás un enlace para recuperar tu contraseña.');
-  });
-  $('newPasswordForm').addEventListener('submit',async e=>{
-    e.preventDefault();clearMessage();
-    const {error}=await supabaseClient.auth.updateUser({password:$('newPassword').value});
-    if(error) showMessage(error.message,true); else {showMessage('Contraseña actualizada. Ya puedes entrar con tu nueva contraseña.');setTimeout(()=>setAuthView('login'),1800);}
-  });
-
-  function showDashboard(user){
-    $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
-    const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
-    const initials=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase();
-    $('welcomeName').textContent=name.split(' ')[0];$('investorName').textContent=name;$('investorEmail').textContent=user?.email||'Cuenta NovaVest';
-    $('avatar').textContent=initials;$('profileInitials').textContent=initials;
-    loadUserBalances(user).catch(err => { console.error(err); toast('Error cargando los balances demo.'); });
-  }
-  async function signOut(){
-    const {error}=await supabaseClient.auth.signOut();
-    if(error){toast(error.message);return;}
-    currentUserId=null;userBalances={TRX:0,BTC:0,SRB:0,USDT:0};
-    $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');setAuthView('login');toast('Sesión cerrada');
-  }
-  window.signOut=signOut;
-  supabaseClient.auth.onAuthStateChange((event,session)=>{
-    if(event==='PASSWORD_RECOVERY'){ $('authScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');setAuthView('newPassword');return; }
-    if(session?.user) showDashboard(session.user);
-    else if(event==='SIGNED_OUT'){ $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden'); }
-  });
-  supabaseClient.auth.getSession().then(({data})=>{
-    if(data.session?.user) showDashboard(data.session.user);
-  });
-
-  const assets={
-    TRX:{symbol:'TRX',logo:'Ｔ',cls:'trx',wallet:'TDEMO7xNovaVestTRX00000000000000001',price:.2841},
-    BTC:{symbol:'BTC',logo:'₿',cls:'btc',wallet:'bc1qdemo-novavest-bitcoin-address-0001',price:67420.8},
-    SRB:{symbol:'SRB',logo:'S',cls:'srb',wallet:'SRB-DEMO-NOVAVEST-000000000000001',price:.0428},
-    USDT:{symbol:'USDT',logo:'₮',cls:'usdt',wallet:'TDEMO7xNovaVestUSDT0000000000000001',price:1}
-  };
-  let current='TRX';
-  window.changeAsset=function(){
-    current=$('asset').value;const a=assets[current];$('coinBadge').className='coin-logo '+a.cls;$('coinBadge').textContent=a.logo;$('unit').textContent=a.symbol;$('wallet').textContent=a.wallet;
-    $('qr').src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(a.wallet);updateEstimate();toast('Activo cambiado a '+a.symbol);
-  };
-  window.updateEstimate=function(){const value=Math.max(0,Number($('amount').value)||0);$('estimate').textContent='≈ $'+(value*assets[current].price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD · Valor ilustrativo';};
-  window.copyWallet=async function(){try{await navigator.clipboard.writeText(assets[current].wallet);toast('Dirección copiada');}catch(e){toast('No se pudo copiar automáticamente. Selecciona la dirección.');}};
-  window.simulateDeposit=function(){const value=Number($('amount').value);if(!value||value<=0){toast('Introduce una cantidad válida');return;}openModal('Depósito de demostración','Has seleccionado '+value+' '+current+' (≈ $'+(value*assets[current].price).toFixed(2)+' USD). No se realizará ninguna transferencia real.');};
-  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').textContent=message;$('modal').classList.add('open');};
-  window.closeModal=function(){$('modal').classList.remove('open');};
-  window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),2300);};
-  window.goTo=function(id){$(id).scrollIntoView({behavior:'smooth',block:'start'});};
-  window.navTo=function(btn,id){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(id==='home')window.scrollTo({top:0,behavior:'smooth'});else window.goTo(id);};
-  window.editProfile=function(){openModal('Perfil de inversor','Para cambiar el nombre, actualiza los datos de tu cuenta en una futura versión del perfil.');};
-  $('qr').src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(assets.TRX.wallet);
-})();
-</script>
-</body>
-</html>
+    TRX: { price: 0.2841 },
+    BTC: { price: 67420.8 },
+    SRB: { price: 0.0428 }
