@@ -14,10 +14,9 @@
     :root {
       --bg: #05050a;
       --panel: rgba(20, 25, 45, 0.7);
-      --panel-hover: rgba(30, 38, 65, 0.9);
       --muted: #8b96b0;
       --text: #ffffff;
-      --line: rgba(255, 255, 255, 0.08);
+      --line: rgba(255, 255, 255, 0.1);
       --mint: #00f2fe;
       --blue: #4facfe;
       --purple: #9d4edd;
@@ -25,46 +24,57 @@
       --gold: #f9d423;
     }
     
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
     
-    /* FONDO ANIMADO */
+    /* FONDO ANIMADO CON ESFERAS */
     body {
       margin: 0;
-      background: linear-gradient(-45deg, #05050a, #0f1123, #10192e, #05050a);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background-color: var(--bg);
       color: var(--text);
       font-family: "DM Sans", system-ui, sans-serif;
       min-height: 100vh;
       padding-bottom: 92px;
+      overflow-x: hidden;
     }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    
+    .bg-orb {
+      position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.5;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+    .orb-1 { width: 300px; height: 300px; background: var(--purple); top: -100px; left: -100px; }
+    .orb-2 { width: 250px; height: 250px; background: var(--mint); bottom: 10%; right: -100px; animation-delay: -5s; }
+    .orb-3 { width: 200px; height: 200px; background: var(--blue); top: 40%; left: 20%; animation-duration: 15s; }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 50px) scale(1.1); }
     }
 
     button, input, select { font: inherit; }
-    button { cursor: pointer; }
+    button { cursor: pointer; border: none; outline: none; }
     .hidden { display: none !important; }
-    .app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; }
+    .app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; position: relative; z-index: 1; }
     
-    /* ANIMACIONES DE VISTA */
+    /* ANIMACIÓN DE ENTRADA A LAS VISTAS */
     .view { display: none; }
     .view.active {
       display: block;
-      animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
-    @keyframes slideUpFade {
-      0% { opacity: 0; transform: translateY(20px) scale(0.98); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes slideInBlur {
+      0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
+    /* EFECTO PRESIONADO PARA BOTONES */
+    .press-effect { transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s; }
+    .press-effect:active { transform: scale(0.92) translateY(3px); box-shadow: inset 0 4px 10px rgba(0,0,0,0.5); }
+    
     .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; }
-    .brandmark { width: 38px; height: 38px; border-radius: 14px; background: linear-gradient(135deg, var(--mint), var(--blue)); display: grid; place-items: center; color: #000; font-weight: 900; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); }
-    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; font-weight: 800; box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4); }
+    .brandmark { width: 38px; height: 38px; border-radius: 14px; background: linear-gradient(135deg, var(--mint), var(--blue)); display: grid; place-items: center; color: #000; font-weight: 900; box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; font-weight: 800; box-shadow: 0 0 15px rgba(157, 78, 221, 0.5); }
     
     .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
     .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; }
@@ -73,61 +83,55 @@
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 26px; 
       background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(157, 78, 221, 0.15)); 
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      position: relative; overflow: hidden; box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5); 
+      backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative; overflow: hidden; box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6); 
     }
     .balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
     .balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
     .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; }
-    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; }
+    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
     .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
-    .action { border: 0; border-radius: 14px; padding: 12px 16px; font-weight: 800; font-size: 13px; flex: 1; transition: 0.2s; }
-    .action:active { transform: scale(0.95); }
-    .primary { background: linear-gradient(135deg, var(--mint), var(--blue)); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
-    .ghost { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
+    .action { border-radius: 14px; padding: 12px 16px; font-weight: 800; font-size: 13px; flex: 1; }
+    .primary { background: linear-gradient(135deg, var(--mint), var(--blue)); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); }
+    .ghost { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); }
     
     .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
     .section h2 { font-size: 17px; margin: 0; }
     
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 15px; border-radius: 19px; background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--line); }
+    .stat { padding: 15px; border-radius: 19px; background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--line); transition: transform 0.2s; }
+    .stat:active { transform: scale(0.96); }
     .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; }
     .stat strong { display: block; font-size: 19px; margin-top: 12px; }
     .stat small { color: var(--mint); font-size: 11px; }
     
-    /* TARJETAS DE INVERSIÓN ACTIVA */
+    /* INVERSIONES ACTIVAS */
     .active-inv-card { 
-      background: rgba(0, 242, 254, 0.05); 
-      border: 1px solid var(--mint); 
-      border-radius: 18px; padding: 15px; margin-bottom: 10px; 
+      background: rgba(0, 242, 254, 0.05); border: 1px solid var(--mint); border-radius: 18px; padding: 15px; margin-bottom: 10px; 
       display: flex; justify-content: space-between; align-items: center; 
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
-      animation: pulseBorder 2s infinite alternate;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.15); animation: glowPulse 2s infinite alternate;
     }
-    @keyframes pulseBorder {
-      0% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.1); }
-      100% { box-shadow: 0 0 25px rgba(0, 242, 254, 0.3); }
-    }
+    @keyframes glowPulse { 0% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.1); } 100% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.4); } }
+    
     .active-inv-info b { display: block; font-size: 14px; color: var(--mint); margin-bottom: 4px; }
     .active-inv-info span { font-size: 12px; color: #ccc; display: block; }
     .active-inv-timer { text-align: right; }
-    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; }
+    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
     .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;}
     
-    .claim-btn { background: var(--mint); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; animation: bounce 1s infinite; }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
+    .claim-btn { 
+      background: linear-gradient(135deg, var(--mint), var(--blue)); color: #000; padding: 10px 15px; border-radius: 10px; font-weight: 900; font-size: 13px; 
+      animation: bounceHard 0.8s infinite; box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
     }
+    @keyframes bounceHard { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.05); } }
 
     /* PLANES */
     .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 20px; border-radius: 20px; background: var(--panel); backdrop-filter: blur(10px); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid var(--line); }
-    .plan-card:hover { transform: translateY(-2px); }
+    .plan-card { padding: 20px; border-radius: 20px; background: var(--panel); backdrop-filter: blur(10px); position: relative; overflow: hidden; border: 1px solid var(--line); transition: transform 0.15s, box-shadow 0.15s; }
+    .plan-card:active { transform: scale(0.96); box-shadow: 0 0 0 2px var(--mint); }
     
     .plan-card.cold-theme { border-color: rgba(79, 172, 254, 0.5); background: linear-gradient(180deg, var(--panel), rgba(79, 172, 254, 0.05)); }
     .plan-card.cold-theme .plan-title, .plan-card.cold-theme .plan-yield { color: var(--blue); }
@@ -145,29 +149,30 @@
     .cold-theme .plan-freq { background: rgba(79, 172, 254, 0.2); color: var(--blue); }
     .fire-theme .plan-freq { background: rgba(255, 75, 43, 0.2); color: var(--fire); }
     .plan-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid; background: transparent; font-weight: 800; font-size: 13px; transition: 0.2s; }
-    .plan-btn:hover { background: rgba(255,255,255,0.1); }
+    .plan-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
 
     /* FORMULARIOS Y PANELES */
-    .panel { background: var(--panel); backdrop-filter: blur(15px); border: 1px solid var(--line); border-radius: 23px; padding: 17px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .panel { background: var(--panel); backdrop-filter: blur(15px); border: 1px solid var(--line); border-radius: 23px; padding: 17px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; }
-    .select, .number, .field { width: 100%; background: rgba(0, 0, 0, 0.3); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; }
-    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+    .select, .number, .field { width: 100%; background: rgba(0, 0, 0, 0.4); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; }
+    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); transform: scale(1.01); }
     .amount-wrap { position: relative; }
     .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 800; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; }
     
-    .wide { width: 100%; border: 0; border-radius: 15px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 14px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
-    .wide:active { transform: scale(0.98); }
+    .wide { width: 100%; border-radius: 15px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 14px; box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4); }
+    .wide:active { transform: scale(0.94) translateY(2px); box-shadow: 0 2px 10px rgba(0, 242, 254, 0.6); filter: brightness(1.2); }
 
     /* CUADRO INFORMATIVO DE RETIRO */
-    .info-box { background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 12px; margin-top: 15px; }
-    .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: #ccc; }
+    .info-box { background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 15px; margin-top: 15px; }
+    .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: #ccc; }
     .info-row:last-child { margin-bottom: 0; }
     .info-row b { color: var(--mint); }
 
     .coins { display: grid; gap: 9px; }
-    .coin { display: flex; align-items: center; padding: 12px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
+    .coin { display: flex; align-items: center; padding: 12px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; transition: 0.2s; }
+    .coin:active { transform: scale(0.97); background: rgba(255,255,255,0.05); }
     .coin-logo { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; font-size: 18px; font-weight: 900; color: #000; }
     .btc { background: #f7931a; } .trx { background: #ff0013; color: white; } .srb { background: #9d4edd; color: white; } .usdt { background: #26a17b; color: white; }
     .coin-info { flex: 1; }
@@ -176,66 +181,82 @@
     .coin-value b { font-size: 13px; }
 
     .activity { display: grid; gap: 0; }
-    .activity-item { display: flex; align-items: center; gap: 11px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .activity-item { display: flex; align-items: center; gap: 11px; padding: 12px 0; border-bottom: 1px solid var(--line); transition: 0.2s; }
+    .activity-item:hover { background: rgba(255,255,255,0.02); }
     .activity-item:last-child { border: 0; }
-    .activity-icon { width: 36px; height: 36px; border-radius: 13px; background: rgba(255,255,255,0.05); display: grid; place-items: center; }
+    .activity-icon { width: 36px; height: 36px; border-radius: 13px; background: rgba(255,255,255,0.08); display: grid; place-items: center; }
     .activity-info { flex: 1; }
     .activity-info b { font-size: 12px; display: block; }
     .activity-info span { font-size: 10px; color: var(--muted); }
     .activity-amount { font-size: 12px; font-weight: 800; text-align: right; }
 
     .investor { display: flex; align-items: center; gap: 12px; }
-    .investor-face { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); font-weight: 900; font-size: 18px; }
+    .investor-face { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); font-weight: 900; font-size: 18px; box-shadow: 0 0 15px rgba(157, 78, 221, 0.4); }
     .investor-info b { font-size: 16px; display: block; }
     .investor-info span { font-size: 12px; color: var(--muted); }
 
     /* NAV INFERIOR */
-    .nav { position: fixed; z-index: 5; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
+    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
     .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-    .nav button { border: 0; background: transparent; color: var(--muted); padding: 7px 2px; border-radius: 13px; font-size: 10px; font-weight: 800; display: grid; justify-items: center; gap: 4px; transition: 0.3s; }
-    .nav button span { font-size: 19px; }
+    .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 800; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
+    .nav button span { font-size: 20px; transition: 0.2s; }
+    .nav button:active { transform: scale(0.85); }
     .nav button.active { color: var(--mint); background: rgba(0, 242, 254, 0.1); }
-    .nav button.active span { animation: pop 0.3s ease; }
-    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .nav button.active span { transform: translateY(-3px) scale(1.1); text-shadow: 0 0 10px var(--mint); }
 
-    .toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 15px); opacity: 0; pointer-events: none; background: var(--mint); color: #000; padding: 12px 17px; border-radius: 13px; font-size: 12px; font-weight: 800; box-shadow: 0 8px 30px rgba(0,0,0,0.5); transition: 0.25s; white-space: nowrap; }
+    .toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--mint); color: #000; padding: 12px 17px; border-radius: 13px; font-size: 12px; font-weight: 800; box-shadow: 0 8px 30px rgba(0,0,0,0.8); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(5px); }
-    .modal-backdrop.open { display: flex; }
-    .modal { width: 100%; max-width: 490px; background: #111522; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; box-shadow: 0 20px 80px rgba(0,0,0,0.9); max-height: 85vh; overflow-y: auto; animation: slideUpFade 0.3s ease; }
-    .modal h3 { margin: 0 0 6px; font-size: 20px; }
-    .modal p { font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
-    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: white; border-radius: 10px; padding: 7px 10px; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
+    .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal { width: 100%; max-width: 490px; background: #111522; border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 20px; box-shadow: 0 20px 80px rgba(0,0,0,0.9); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @keyframes modalSlideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    
+    /* ANIMACIÓN DE ERROR (VIBRACIÓN) */
+    .modal.error-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--fire); }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    .modal h3 { margin: 0 0 6px; font-size: 22px; }
+    .modal p { font-size: 14px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
+    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: white; border-radius: 10px; padding: 7px 12px; font-weight: bold; }
+    .close:active { background: rgba(255,255,255,0.2); transform: scale(0.9); }
 
     .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: transparent; border: 1px solid var(--muted); color: var(--text); padding: 12px; border-radius: 12px; font-weight: 800; font-size: 14px; }
-    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #000; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 14px; }
-    .modal-btn-confirm.fire { background: var(--fire); color: white; }
+    .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 14px; transition: 0.2s; }
+    .modal-btn-cancel:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
+    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #000; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,242,254,0.4); }
+    .modal-btn-confirm:active { transform: scale(0.95); filter: brightness(1.2); }
+    .modal-btn-confirm.fire { background: var(--fire); color: white; box-shadow: 0 4px 15px rgba(255,75,43,0.4); }
 
     .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
     .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .invest-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--line); padding: 10px 12px; border-radius: 10px; color: white; transition: 0.2s; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+    .invest-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: white; transition: 0.2s; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
     .invest-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--mint); }
-    .invest-btn-price { font-weight: 800; font-size: 15px; }
+    .invest-btn:active { transform: scale(0.9); background: rgba(0, 242, 254, 0.2); border-color: var(--mint); }
+    .invest-btn-price { font-weight: 800; font-size: 16px; }
     .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 600; }
-    .invest-btn-yield { font-size: 10px; font-weight: 700; }
+    .invest-btn-yield { font-size: 11px; font-weight: 700; }
 
-    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; }
+    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; position: relative; z-index: 1; }
     .auth-card { width: 100%; max-width: 430px; background: var(--panel); backdrop-filter: blur(20px); border: 1px solid var(--line); border-radius: 27px; padding: 24px; box-shadow: 0 25px 80px rgba(0,0,0,0.8); }
     .auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 21px; margin-bottom: 27px; }
     .auth-card h1 { font-size: 25px; margin: 0 0 7px; letter-spacing: -0.7px; }
     .auth-sub { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0 0 18px; }
     .auth-form { display: grid; gap: 10px; }
     .auth-form .field { margin-top: 5px; }
-    .auth-btn { border: 0; border-radius: 14px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 8px; }
+    .auth-btn { border-radius: 14px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 8px; box-shadow: 0 6px 20px rgba(0,242,254,0.3); transition: 0.2s; }
+    .auth-btn:active { transform: scale(0.95); filter: brightness(1.2); }
     .auth-switch { color: var(--muted); font-size: 12px; text-align: center; margin-top: 17px; }
-    .link-btn { color: var(--mint); border: 0; background: none; font-weight: 800; }
+    .link-btn { color: var(--mint); background: none; font-weight: 800; }
     .auth-message { font-size: 12px; line-height: 1.5; color: #000; background: var(--mint); border-radius: 12px; padding: 10px; margin: 12px 0; font-weight: bold; }
     .auth-error { color: #fff; background: var(--fire); }
-    .auth-foot { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; margin-top: 18px; }
-    .disclaimer { text-align: center; color: var(--muted); font-size: 10px; line-height: 1.5; margin: 25px 8px 5px; }
     
     @media(min-width:600px) { 
       body { padding-top: 20px; } 
@@ -245,6 +266,11 @@
   </style>
 </head>
 <body>
+  <!-- ESFERAS ANIMADAS DE FONDO -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo"><div class="brandmark">N</div>NovaVest</div>
@@ -256,7 +282,7 @@
         <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
         <label class="field-label" for="loginPassword">Contraseña</label>
         <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" minlength="6" required>
-        <button class="auth-btn" type="submit" id="loginSubmit">Iniciar sesión</button>
+        <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
       </form>
       <form id="registerForm" class="auth-form hidden">
         <label class="field-label" for="fullName">Nombre completo</label>
@@ -265,12 +291,12 @@
         <input class="field" id="registerEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
         <label class="field-label" for="registerPassword">Crear contraseña</label>
         <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
-        <button class="auth-btn" type="submit" id="registerSubmit">Crear cuenta</button>
+        <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
       </form>
       <form id="resetForm" class="auth-form hidden">
         <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
         <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <button class="auth-btn" type="submit">Enviar enlace de recuperación</button>
+        <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
       </form>
       <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
       <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
@@ -285,7 +311,7 @@
       </header>
 
       <!-- VISTA 1: INICIO -->
-       <div id="view-home" class="view active">
+      <div id="view-home" class="view active">
         <div class="eyebrow">Panel personal</div>
         <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
         <div class="sub">Tu resumen de activos en un solo lugar.</div>
@@ -295,8 +321,8 @@
           <div class="amount" id="totalBalance">$0.00</div>
           <div class="change">↗ Rendimiento actual</div>
           <div class="balance-actions">
-            <button class="action primary" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
-            <button class="action ghost" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
+            <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
+            <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
           </div>
         </section>
 
@@ -321,21 +347,21 @@
 
         <div class="section"><h2>Planes de Inversión</h2><span class="pill">Oportunidad</span></div>
         <div class="plans">
-          <div class="plan-card cold-theme">
+          <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
             <div class="plan-title">❄️ Plan Starter</div>
             <div class="plan-yield">9% ROI</div>
             <div class="plan-freq">Retiros cada 24 horas</div>
             <div class="plan-desc">Ideal para empezar. Ganancias diarias.</div>
-            <button class="plan-btn" onclick="openPlanModal('starter')">Ver montos de inversión</button>
+            <button class="plan-btn">Ver montos de inversión</button>
           </div>
           
-          <div class="plan-card fire-theme">
+          <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
             <div class="plan-badge">🔥 MÁS POPULAR</div>
             <div class="plan-title">🔥 Plan Pro</div>
             <div class="plan-yield">12% ROI</div>
             <div class="plan-freq">Retiros cada 72 horas</div>
             <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
-            <button class="plan-btn" onclick="openPlanModal('pro')">Ver montos de inversión</button>
+            <button class="plan-btn">Ver montos de inversión</button>
           </div>
         </div>
       </div>
@@ -349,8 +375,8 @@
           <label class="field-label" for="amount">Cantidad a depositar</label>
           <div class="amount-wrap"><input class="number" id="amount" type="number" min="0" step="any" value="100" oninput="updateEstimate()"><span class="unit" id="unit">TRX</span></div>
           <div class="hint" id="estimate">≈ $28.41 USD · Valor estimado</div>
-          <div class="wallet-box"><div class="wallet-head"><span>Dirección de depósito</span><button class="copy" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet">TDEMO7xNovaVestTRX00000000000000001</div></div>
-          <button class="wide" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
+          <div class="wallet-box" style="margin-top:15px; padding:15px; border-radius:18px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.2);"><div class="wallet-head" style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;"><span>Dirección de depósito</span><button class="copy press-effect" style="background:var(--blue); border:none; color:#000; border-radius:8px; padding:6px 10px; font-weight:bold;" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet" style="font-size:11px; color:#ccc; word-break:break-all; margin-top:10px;">TDEMO7xNovaVestTRX00000000000000001</div></div>
+          <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
         </div>
       </div>
 
@@ -362,8 +388,8 @@
           <div class="info-box">
             <div class="info-row"><span>Mínimo de retiro:</span> <b>$1.00 USD</b></div>
             <div class="info-row"><span>Máximo por día:</span> <b>$550.00 USD</b></div>
-            <div class="info-row" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:6px; margin-top:6px;"><span>Saldo Retirable:</span> <b id="withdrawableBalanceUI" style="color:var(--mint); font-size:14px;">$0.00 USD</b></div>
-            <div style="font-size:10px; color:#888; margin-top:6px;">* Solo puedes retirar las ganancias generadas por tus planes.</div>
+            <div class="info-row" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; margin-top:8px;"><span>Saldo Retirable:</span> <b id="withdrawableBalanceUI" style="color:var(--mint); font-size:15px; text-shadow: 0 0 10px rgba(0,242,254,0.5);">$0.00 USD</b></div>
+            <div style="font-size:10px; color:#888; margin-top:8px;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
           </div>
 
           <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
@@ -386,7 +412,7 @@
           <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
           <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual">
           
-          <button class="wide" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
+          <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
         </div>
       </div>
 
@@ -417,7 +443,7 @@
           </div>
         </div>
 
-        <button class="wide" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
+        <button class="wide press-effect" style="background:rgba(255,255,255,0.1); color:#fff; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
       </div>
 
     </div>
@@ -434,17 +460,17 @@
 
   <div id="toast" class="toast" role="status"></div>
   
-  <div class="modal-backdrop" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide" onclick="closeModal()">Entendido</button></div></div>
+  <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
   
-  <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close" onclick="closePlanModal()">✕</button><h3 id="planModalTitle">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
+  <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close press-effect" onclick="closePlanModal()">✕</button><h3 id="planModalTitle">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
   
   <div class="modal-backdrop" id="confirmInvModal">
     <div class="modal">
       <h3 id="confirmInvTitle" style="margin-bottom: 10px;">Confirmar Inversión</h3>
       <p id="confirmInvText"></p>
       <div class="modal-actions">
-        <button class="modal-btn-cancel" onclick="closeConfirmInvModal()">Cancelar</button>
-        <button class="modal-btn-confirm" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
+        <button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()">Cancelar</button>
+        <button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
       </div>
     </div>
   </div>
@@ -463,12 +489,11 @@
   };
   let currentUserId = null;
   let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
-  let withdrawableBalance = 0; // Saldo en USD de solo ganancias
-  let dailyWithdrawn = 0;      // Retirado hoy en USD
+  let withdrawableBalance = 0;
+  let dailyWithdrawn = 0;
   let pendingInvestment = null;
   let timerInterval = null;
-
-  const PLAN_CONFIG = {
+const PLAN_CONFIG = {
     starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, hours: 24, amounts: [20, 50, 100, 200, 400] },
     pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:', roi: 0.12, hours: 72, amounts: [500, 1000, 2000, 5000] }
   };
@@ -476,11 +501,10 @@
   const $ = (id) => document.getElementById(id);
   function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
-  // --- CARGA DE DATOS Y LOCALSTORAGE ---
+
   async function loadUserData(user) {
     currentUserId = user.id;
     
-    // Cargar saldos de Supabase
     const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
     if (readError) { console.error('Error leyendo balances:', readError); return; }
     
@@ -497,11 +521,10 @@
       }
     });
 
-    // Cargar saldo retirable y límite diario del localStorage
     const walletKey = 'nv_wallet_' + currentUserId;
     const walletData = JSON.parse(localStorage.getItem(walletKey) || '{"withdrawable":0,"lastDate":"","dailyWithdrawn":0}');
-    
     const today = new Date().toISOString().split('T')[0];
+    
     if (walletData.lastDate !== today) {
       walletData.lastDate = today;
       walletData.dailyWithdrawn = 0;
@@ -531,8 +554,6 @@
     $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
     $('holdingSRB').textContent = quantity(userBalances.SRB, 'SRB');
     $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
-    
-    // Actualizar UI de retiro
     $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
   }
 
@@ -544,7 +565,6 @@
     window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
-  // --- HISTORIAL ---
   function saveTransaction(type, asset, amount, extra = '') {
     if (!currentUserId) return;
     const historyKey = 'nv_history_' + currentUserId;
@@ -588,7 +608,6 @@
     });
   }
 
-  // --- INVERSIONES Y TEMPORIZADOR ---
   function saveActiveInvestment(inv) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
@@ -645,7 +664,6 @@
 
       const remaining = inv.endTime - now;
       if (remaining <= 0) {
-        // Cambiar el contenedor por el botón de reclamar si aún no está
         if (!container.classList.contains('claimed')) {
           container.classList.add('claimed');
           container.innerHTML = `<button class="claim-btn" onclick="claimReward(${inv.id})">Reclamar $${inv.profitUsd}</button>`;
@@ -659,7 +677,6 @@
       }
     });
   }
-
   window.claimReward = async function(invId) {
     const key = 'nv_investments_' + currentUserId;
     let investments = JSON.parse(localStorage.getItem(key) || '[]');
@@ -669,29 +686,25 @@
     const inv = investments[invIndex];
     const cryptoEarned = inv.profitUsd / ASSET_INFO[inv.asset].price;
     
-    // Sumar al saldo de Supabase
     userBalances[inv.asset] += cryptoEarned;
     await supabaseClient.from('novavest_balances').upsert({
       user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString()
     }, { onConflict: 'user_id,asset' });
 
-    // Sumar al saldo retirable
     withdrawableBalance += inv.profitUsd;
     updateWalletStorage();
     renderUserBalances();
     
-    // Eliminar de activas
     investments.splice(invIndex, 1);
     localStorage.setItem(key, JSON.stringify(investments));
     
-    // Registrar en historial
     saveTransaction('reward', inv.asset, cryptoEarned, 'Ganancia ' + inv.planName);
     
     loadActiveInvestments();
-    toast(`¡Has ganado $${inv.profitUsd} retirables!`);
+    openModal('¡Felicidades!', `Has reclamado <b>$${inv.profitUsd} USD</b>.<br><br>Este dinero ya está disponible en tu saldo retirable.`);
+    toast(`¡Has ganado $${inv.profitUsd}!`);
   };
 
-  // --- MODALES Y LÓGICA DE INVERSIÓN ---
   window.openPlanModal = function(planType) {
     const config = PLAN_CONFIG[planType];
     $('planModalTitle').innerHTML = config.name;
@@ -730,6 +743,12 @@
     if (userUsdBalance < amountUsd) {
       const shortfallUsd = amountUsd - userUsdBalance;
       closePlanModal();
+      
+      // EFECTO DE VIBRACIÓN DE ERROR
+      const modal = $('mainModal');
+      modal.classList.add('error-shake');
+      setTimeout(() => modal.classList.remove('error-shake'), 500);
+      
       openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b>.<br><br>Necesitas <b>$${shortfallUsd.toFixed(2)} USD</b> más.<br><br>Por favor, recarga tu cuenta para continuar.`);
       return;
     }
@@ -738,7 +757,7 @@
     closePlanModal();
     $('confirmInvTitle').textContent = 'Confirmar Inversión';
     $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${PLAN_CONFIG[planType].name}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> de ganancia en ${PLAN_CONFIG[planType].hours} horas.<br><br>¿Deseas continuar?`;
-    $('confirmInvBtn').className = `modal-btn-confirm ${planType === 'starter' ? '' : 'fire'}`;
+    $('confirmInvBtn').className = `modal-btn-confirm press-effect ${planType === 'starter' ? '' : 'fire'}`;
     $('confirmInvModal').classList.add('open');
   };
 
@@ -778,7 +797,7 @@
       btn.disabled = false; btn.textContent = 'Confirmar';
     }
   };
-  // --- DEPÓSITOS Y RETIROS ---
+
   window.simulateDeposit = async function(){
     if (!currentUserId) { toast('Inicia sesión primero'); return; }
     const value = Number($('amount').value);
@@ -805,9 +824,7 @@
   };
 
   window.updateWithdrawInfo = function() {
-    const asset = $('withdrawAsset').value;
     $('withdrawUnit').textContent = 'USD';
-    $('withdrawBalanceInfo').textContent = 'Balance retirable: ' + money(withdrawableBalance);
   };
 
   window.simulateWithdraw = async function() {
@@ -817,7 +834,6 @@
     const password = $('withdrawPassword').value;
     const btn = $('withdrawBtn');
 
-    // VALIDACIONES
     if (!amountUsd || amountUsd < 1) { toast('El retiro mínimo es de $1.00 USD'); return; }
     if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente. Solo puedes retirar tus ganancias.'); return; }
     if (dailyWithdrawn + amountUsd > 550) { toast('Has superado el límite diario de $550.00 USD.'); return; }
@@ -835,7 +851,13 @@
       if (userError || !userData.user) throw new Error('Sesión no válida');
 
       const { error: authError } = await supabaseClient.auth.signInWithPassword({ email: userData.user.email, password: password });
-      if (authError) { toast('Contraseña incorrecta.'); btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; }
+      if (authError) { 
+        const modal = $('mainModal');
+        modal.classList.add('error-shake');
+        setTimeout(() => modal.classList.remove('error-shake'), 500);
+        toast('Contraseña incorrecta.'); 
+        btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
+      }
 
       const newAmount = (userBalances[asset] || 0) - cryptoToWithdraw;
       const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({
@@ -863,8 +885,6 @@
       btn.disabled = false; btn.textContent = 'Confirmar retiro →';
     }
   };
-
-  // --- AUTENTICACIÓN ---
   function showMessage(message, isError=false) {
     const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
     if(isError) box.classList.add('auth-error');
@@ -946,7 +966,6 @@
   });
 
   window.changeAsset = function() {
-    const a = ASSET_INFO[$('asset').value];
     $('coinBadge').className='coin-logo ' + $('asset').value.toLowerCase();
     $('coinBadge').textContent = $('asset').value === 'BTC' ? '₿' : ($('asset').value === 'TRX' ? 'Ｔ' : ($('asset').value === 'SRB' ? 'S' : '₮'));
     $('unit').textContent = $('asset').value;
@@ -964,7 +983,11 @@
     catch(e) { toast('No se pudo copiar'); }
   };
 
-  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').innerHTML=message;$('modal').classList.add('open');};
+  window.openModal=function(title,message){
+    $('modalTitle').textContent=title;
+    $('modalText').innerHTML=message;
+    $('modal').classList.add('open');
+  };
   window.closeModal=function(){$('modal').classList.remove('open');};
   window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
 })();
