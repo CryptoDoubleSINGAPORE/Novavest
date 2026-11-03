@@ -11,31 +11,52 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{--bg:#0b1020;--panel:#151e35;--panel2:#1b2742;--muted:#91a0bd;--text:#f5f7ff;--line:rgba(255,255,255,.09);--mint:#49e3b1;--blue:#65a8ff;--purple:#a78bfa;--orange:#ffbd62;--pink:#ff789f}
+    :root{--bg:#0b1020;--panel:#151e35;--panel2:#1b2742;--muted:#91a0bd;--text:#f5f7ff;--line:rgba(255,255,255,.09);--mint:#49e3b1;--blue:#65a8ff;--purple:#a78bfa;--orange:#ffbd62;--pink:#ff789f;--fire:#ff5e3a}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 20% -10%,#263b70 0,transparent 36%),radial-gradient(ellipse at 100% 30%,#35245f 0,transparent 30%),var(--bg);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;min-height:100vh;padding-bottom:92px}
     button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.app{max-width:520px;margin:auto;padding:env(safe-area-inset-top) 17px 25px}
     
-    /* SISTEMA DE PESTAÑAS (VIEWS) */
     .view{display:none;animation:fadeIn 0.3s ease-in-out}
     .view.active{display:block}
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
     .top{display:flex;align-items:center;justify-content:space-between;padding:17px 2px 20px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.5px;font-size:21px}.brandmark{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--mint),#57a8ff);display:grid;place-items:center;color:#071525;font-weight:900;box-shadow:0 7px 24px #49e3b144}.avatar{width:39px;height:39px;border-radius:50%;background:linear-gradient(135deg,#7257cb,#ed79a9);display:grid;place-items:center;font-weight:800}
     .eyebrow{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;font-weight:800}.welcome{font-size:24px;font-weight:800;letter-spacing:-.8px;margin:5px 0 3px}.sub{font-size:13px;color:var(--muted)}
+    
     .balance{margin-top:19px;padding:22px;border-radius:26px;background:linear-gradient(135deg,#263d70,#30306b 58%,#512f72);position:relative;overflow:hidden;box-shadow:0 18px 45px #05091688}.balance:before,.balance:after{content:"";position:absolute;border:1px solid #ffffff18;border-radius:50%;width:190px;height:190px;right:-60px;top:-90px}.balance:after{width:130px;height:130px;right:-20px;top:-60px}.balance-head{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}.pill{border:1px solid #ffffff30;background:#ffffff12;border-radius:30px;padding:7px 10px;font-size:11px;color:#dce8ff}.amount{font-size:34px;letter-spacing:-1.5px;font-weight:800;margin:17px 0 4px;position:relative;z-index:1}.change{font-size:12px;color:#8ff4cb;position:relative;z-index:1}.balance-actions{display:flex;gap:10px;margin-top:20px;position:relative;z-index:1}.action{border:0;border-radius:14px;padding:12px 16px;font-weight:800;font-size:13px;flex:1}.primary{background:var(--mint);color:#09231e}.ghost{background:#ffffff18;color:white;border:1px solid #ffffff25}
+    
     .section{display:flex;justify-content:space-between;align-items:center;margin:25px 2px 12px}.section h2{font-size:17px;margin:0}.small-link{color:var(--mint);font-size:12px;font-weight:800;background:none;border:0}
     .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px}.stat{padding:15px;border-radius:19px;background:#151e35ed;border:1px solid var(--line)}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.stat-icon{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;font-size:14px}.stat strong{display:block;font-size:19px;margin-top:12px}.stat small{color:#8ff4cb;font-size:11px}
     
-    /* PLANES DE INVERSIÓN */
-    .plans{display:grid;gap:12px}
-    .plan-card{padding:18px;border-radius:20px;border:1px solid var(--line);background:#151e35ed;position:relative;overflow:hidden}
-    .plan-card.popular{border-color:var(--mint);background:linear-gradient(180deg,#151e35ed,#164b4322)}
-    .plan-badge{position:absolute;top:0;right:0;background:var(--mint);color:#071a25;font-size:10px;font-weight:900;padding:5px 10px;border-bottom-left-radius:10px}
-    .plan-title{font-size:16px;font-weight:800;margin-bottom:5px}
-    .plan-yield{font-size:24px;font-weight:900;color:var(--mint);margin-bottom:5px}
+    .plans{display:grid;gap:15px;margin-top:10px}
+    .plan-card{padding:20px;border-radius:20px;border:1px solid var(--line);background:#151e35ed;position:relative;overflow:hidden;transition:transform 0.2s}
+    .plan-card:active{transform:scale(0.98)}
+    
+    .plan-card.cold-theme {
+      border-color: #65a8ff;
+      background: linear-gradient(180deg, #151e35ed, rgba(101, 168, 255, 0.1));
+      box-shadow: 0 4px 20px rgba(101, 168, 255, 0.15);
+    }
+    .plan-card.cold-theme .plan-title, .plan-card.cold-theme .plan-yield { color: #65a8ff; }
+    .plan-card.cold-theme .plan-btn { border-color: #65a8ff; color: #65a8ff; }
+    .plan-card.cold-theme .plan-btn:hover { background: #65a8ff; color: #071a25; }
+
+    .plan-card.fire-theme {
+      border-color: var(--fire);
+      background: linear-gradient(180deg, #151e35ed, rgba(255, 94, 58, 0.1));
+      box-shadow: 0 4px 25px rgba(255, 94, 58, 0.2);
+    }
+    .plan-card.fire-theme .plan-title, .plan-card.fire-theme .plan-yield { color: var(--fire); }
+    .plan-card.fire-theme .plan-btn { border-color: var(--fire); color: var(--fire); }
+    .plan-card.fire-theme .plan-btn:hover { background: var(--fire); color: #fff; }
+
+    .plan-badge{position:absolute;top:0;right:0;background:var(--fire);color:#fff;font-size:10px;font-weight:900;padding:6px 12px;border-bottom-left-radius:12px;box-shadow:-2px 2px 10px rgba(255,94,58,0.4)}
+    .plan-title{font-size:18px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+    .plan-yield{font-size:28px;font-weight:900;margin-bottom:5px}
     .plan-desc{font-size:12px;color:var(--muted);margin-bottom:15px}
-    .plan-btn{width:100%;padding:12px;border-radius:12px;border:1px solid var(--mint);background:transparent;color:var(--mint);font-weight:800;font-size:13px;transition:.2s}
-    .plan-btn:hover{background:var(--mint);color:#071a25}
+    .plan-freq{font-size:11px;font-weight:800;margin-bottom:15px;padding:4px 8px;border-radius:6px;display:inline-block}
+    .cold-theme .plan-freq { background: rgba(101, 168, 255, 0.2); color: #9ec5ff; }
+    .fire-theme .plan-freq { background: rgba(255, 94, 58, 0.2); color: #ff9e87; }
+    .plan-btn{width:100%;padding:12px;border-radius:12px;border:1px solid;background:transparent;font-weight:800;font-size:13px;transition:.2s}
 
     .coins{display:grid;gap:9px}.coin{display:flex;align-items:center;padding:12px;border-radius:18px;background:#151e35ed;border:1px solid var(--line);gap:11px}.coin-logo{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;font-size:18px;font-weight:900;color:#10172b}.btc{background:var(--orange)}.trx{background:#ff6e83}.srb{background:var(--purple)}.usdt{background:#53d8ad}.coin-info{flex:1;min-width:0}.coin-info b{display:block;font-size:14px}.coin-info span{font-size:11px;color:var(--muted)}.coin-value{text-align:right}.coin-value b{display:block;font-size:13px}.coin-value span{font-size:11px;color:#8ff4cb}
     .panel{background:#151e35ed;border:1px solid var(--line);border-radius:23px;padding:17px;margin-top:13px}.field-label{display:block;font-size:11px;color:var(--muted);margin:14px 0 7px;font-weight:700}.select,.number,.field{width:100%;background:#0e162b;color:var(--text);border:1px solid #ffffff16;border-radius:14px;padding:14px;outline:none}.select:focus,.number:focus,.field:focus{border-color:var(--mint)}.asset-select{display:flex;align-items:center;gap:10px}.asset-select .select{flex:1}.amount-wrap{position:relative}.amount-wrap .number{padding-right:70px;font-size:18px;font-weight:800}.unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);font-weight:800}.hint{color:var(--muted);font-size:11px;margin-top:7px}.wallet-box{margin-top:15px;padding:15px;border-radius:18px;background:#0d172c;border:1px dashed #ffffff2b}.wallet-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800}.copy{background:#233657;border:0;color:#bfe5ff;border-radius:9px;padding:7px 10px;font-size:11px;font-weight:800}.wallet-address{font-size:11px;color:#c6d5f3;overflow-wrap:anywhere;line-height:1.6;margin:12px 0}.qr-row{display:flex;align-items:center;gap:13px}.qr{width:104px;height:104px;background:white;padding:6px;border-radius:12px;object-fit:contain}.qr-note{font-size:11px;color:var(--muted);line-height:1.5}.qr-note b{color:var(--text);display:block;margin-bottom:4px}.wide{width:100%;border:0;border-radius:15px;padding:15px;background:linear-gradient(100deg,var(--mint),#6bb9ff);color:#071a25;font-weight:900;margin-top:14px;box-shadow:0 8px 25px #49e3b128}
@@ -45,14 +66,25 @@
     
     .nav{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 15px calc(10px + env(safe-area-inset-bottom));background:#0c1325ed;backdrop-filter:blur(18px);border-top:1px solid #ffffff12}.nav-inner{max-width:520px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.nav button{border:0;background:transparent;color:#8291ad;padding:7px 2px;border-radius:13px;font-size:10px;font-weight:800;display:grid;justify-items:center;gap:4px;transition:.2s}.nav button span{font-size:19px}.nav button.active{color:var(--mint);background:#49e3b111}
     .toast{position:fixed;z-index:30;bottom:100px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:#eafff7;color:#10251f;padding:12px 17px;border-radius:13px;font-size:12px;font-weight:800;box-shadow:0 8px 30px #0007;transition:.25s;white-space:nowrap;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}
-    .modal-backdrop{position:fixed;inset:0;background:#020611bb;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:15px}.modal-backdrop.open{display:flex}.modal{width:100%;max-width:490px;background:#18243d;border:1px solid #ffffff20;border-radius:24px;padding:20px;box-shadow:0 20px 80px #0009}.modal h3{margin:0 0 6px}.modal p{font-size:12px;color:var(--muted);line-height:1.5}.close{float:right;background:#ffffff12;border:0;color:white;border-radius:10px;padding:7px 10px}
+    
+    .modal-backdrop{position:fixed;inset:0;background:#020611bb;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:15px}.modal-backdrop.open{display:flex}.modal{width:100%;max-width:490px;background:#18243d;border:1px solid #ffffff20;border-radius:24px;padding:20px;box-shadow:0 20px 80px #0009;max-height: 85vh; overflow-y: auto;}.modal h3{margin:0 0 6px}.modal p{font-size:12px;color:var(--muted);line-height:1.5}.close{float:right;background:#ffffff12;border:0;color:white;border-radius:10px;padding:7px 10px}
+
+    .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
+    .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    
+    .invest-btn { background: #0e162b; border: 1px solid #ffffff16; padding: 10px 12px; border-radius: 10px; color: white; transition: .2s; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px;}
+    .invest-btn:hover { border-color: var(--mint); background: #263653; }
+    .invest-btn-price { font-weight: 800; font-size: 15px; }
+    .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 600; }
+    .invest-btn-yield { font-size: 10px; font-weight: 700; }
+
     .auth-wrap{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:22px}.auth-card{width:100%;max-width:430px;background:#151e35ed;border:1px solid var(--line);border-radius:27px;padding:24px;box-shadow:0 25px 80px #0006}.auth-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px;margin-bottom:27px}.auth-card h1{font-size:25px;margin:0 0 7px;letter-spacing:-.7px}.auth-sub{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 18px}.auth-form{display:grid;gap:10px}.auth-form .field{margin-top:5px}.auth-btn{border:0;border-radius:14px;padding:15px;background:linear-gradient(100deg,var(--mint),#6bb9ff);color:#071a25;font-weight:900;margin-top:8px}.auth-switch{color:var(--muted);font-size:12px;text-align:center;margin-top:17px}.link-btn{color:var(--mint);border:0;background:none;font-weight:800}.auth-message{font-size:12px;line-height:1.5;color:#bdebdc;background:#164b433d;border:1px solid #49e3b144;border-radius:12px;padding:10px;margin:12px 0}.auth-error{color:#ffc0ca;background:#642d3b55;border-color:#ff789f66}.auth-foot{font-size:10px;color:#71809c;text-align:center;line-height:1.5;margin-top:18px}
     .disclaimer{text-align:center;color:#71809c;font-size:10px;line-height:1.5;margin:25px 8px 5px}
     @media(min-width:600px){body{padding-top:20px}.nav{position:sticky;bottom:0;border:1px solid var(--line);border-radius:18px;margin:0 auto 12px;max-width:520px}.modal-backdrop{align-items:center}}
   </style>
 </head>
 <body>
-  <!-- PANTALLA DE LOGIN/REGISTRO -->
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo"><div class="brandmark">N</div>NovaVest</div>
@@ -91,12 +123,10 @@
     </div>
   </section>
 
-  <!-- DASHBOARD PRINCIPAL -->
   <main id="dashboard" class="hidden">
     <div class="app">
       <header class="top"><div class="brand"><div class="brandmark">N</div>NovaVest</div><div class="avatar" id="avatar">NV</div></header>
 
-      <!-- VISTA 1: INICIO / PANEL -->
       <div id="view-home" class="view active">
         <div class="eyebrow">Panel personal</div><div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div><div class="sub">Tu resumen de activos en un solo lugar.</div>
         
@@ -117,23 +147,25 @@
 
         <div class="section"><h2>Planes de Inversión</h2><span class="pill">Demo</span></div>
         <div class="plans">
-          <div class="plan-card">
-            <div class="plan-title">Plan Starter</div>
-            <div class="plan-yield">5% ROI</div>
-            <div class="plan-desc">Ideal para empezar. Retiro flexible.</div>
-            <button class="plan-btn" onclick="openModal('Plan Starter','Este es un plan de demostración. No se procesan pagos reales.')">Seleccionar Plan</button>
+          <div class="plan-card cold-theme">
+            <div class="plan-title">❄️ Plan Starter</div>
+            <div class="plan-yield">9% ROI</div>
+            <div class="plan-freq">Retiros cada 24 horas</div>
+            <div class="plan-desc">Ideal para empezar. Ganancias diarias.</div>
+            <button class="plan-btn" onclick="openPlanModal('starter')">Ver montos de inversión</button>
           </div>
-          <div class="plan-card popular">
-            <div class="plan-badge">MÁS POPULAR</div>
-            <div class="plan-title">Plan Pro</div>
+          
+          <div class="plan-card fire-theme">
+            <div class="plan-badge">🔥 MÁS POPULAR</div>
+            <div class="plan-title">🔥 Plan Pro</div>
             <div class="plan-yield">12% ROI</div>
+            <div class="plan-freq">Retiros cada 72 horas</div>
             <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
-            <button class="plan-btn" onclick="openModal('Plan Pro','Este es un plan de demostración. No se procesan pagos reales.')">Seleccionar Plan</button>
+            <button class="plan-btn" onclick="openPlanModal('pro')">Ver montos de inversión</button>
           </div>
         </div>
       </div>
 
-      <!-- VISTA 2: DEPÓSITO -->
       <div id="view-deposit" class="view">
         <div class="section" style="margin-top:0;"><h2>Depósito de prueba</h2><span class="pill">Demo</span></div>
         <div class="panel">
@@ -149,7 +181,6 @@
         </div>
       </div>
 
-      <!-- VISTA 3: RETIRO -->
       <div id="view-withdraw" class="view">
         <div class="section" style="margin-top:0;"><h2>Retiro de prueba</h2><span class="pill">Demo</span></div>
         <div class="panel">
@@ -178,7 +209,6 @@
         </div>
       </div>
 
-      <!-- VISTA 4: PERFIL -->
       <div id="view-profile" class="view">
         <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
         <div class="panel investor" style="margin-top:0;">
@@ -211,7 +241,6 @@
 
     </div>
     
-    <!-- NAVEGACIÓN INFERIOR -->
     <nav class="nav">
       <div class="nav-inner">
         <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
@@ -223,7 +252,17 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <div class="modal-backdrop" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><h3 id="modalTitle">Confirmación</h3><p id="modalText"></p><button class="wide" onclick="closeModal()">Entendido</button></div></div>
+  
+  <div class="modal-backdrop" id="modal"><div class="modal" id="generalModalContent"><button class="close" onclick="closeModal()">✕</button><h3 id="modalTitle">Confirmación</h3><p id="modalText"></p><button class="wide" onclick="closeModal()">Entendido</button></div></div>
+  
+  <div class="modal-backdrop" id="planModal">
+    <div class="modal">
+      <button class="close" onclick="closePlanModal()">✕</button>
+      <h3 id="planModalTitle" style="font-size: 22px; display:flex; align-items:center; gap:8px;">Plan</h3>
+      <p id="planModalDesc" style="margin-bottom: 20px;">Selecciona una moneda y el monto a invertir.</p>
+      <div id="planModalContent"></div>
+    </div>
+  </div>
 
 <script>
 (() => {
@@ -240,6 +279,24 @@
   let currentUserId = null;
   let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
 
+  // CONFIGURACIÓN ACTUALIZADA AL 9%
+  const PLAN_CONFIG = {
+    starter: {
+      name: '❄️ Plan Starter (9%)',
+      desc: 'Ganancias diarias (cada 24 horas). Elige tu criptomoneda y el monto:',
+      theme: 'cold',
+      roi: 0.09,
+      amounts: [20, 50, 100, 200, 400]
+    },
+    pro: {
+      name: '🔥 Plan Pro (12%)',
+      desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:',
+      theme: 'fire',
+      roi: 0.12,
+      amounts: [500, 1000, 2000, 5000]
+    }
+  };
+
   function money(value) {
     return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
@@ -254,7 +311,6 @@
   async function loadUserBalances(user) {
     currentUserId = user.id;
     const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-
     if (readError) { console.error('Error leyendo balances:', readError); return; }
 
     if (!existing || existing.length === 0) {
@@ -263,7 +319,6 @@
     }
 
     const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-
     userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
     (rows || []).forEach(row => {
       if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
@@ -271,8 +326,10 @@
       }
     });
     renderUserBalances();
-    loadHistory(); // Carga el historial al entrar
-  }  function renderUserBalances() {
+    loadHistory();
+  }
+
+  function renderUserBalances() {
     const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
     $('totalBalance').textContent = money(total);
     $('activeInvestment').textContent = money(total);
@@ -286,37 +343,22 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // SISTEMA DE NAVEGACIÓN ENTRE PESTAÑAS
   window.navigate = function(viewName, btnElement) {
-    // Ocultar todas las vistas
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    // Mostrar la vista seleccionada
     $('view-' + viewName).classList.add('active');
-    
-    // Actualizar botón activo en la barra inferior
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     if(btnElement) btnElement.classList.add('active');
-    
-    // Scroll al inicio de la página
     window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
-  // SISTEMA DE HISTORIAL (Guardado en el navegador)
-  function saveTransaction(type, asset, amount) {
+  function saveTransaction(type, asset, amount, extra = '') {
     if (!currentUserId) return;
     const historyKey = 'nv_history_' + currentUserId;
     let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-    
-    const tx = {
-      type: type, // 'deposit' o 'withdraw'
-      asset: asset,
-      amount: amount,
-      date: new Date().toISOString()
-    };
-    
-    history.unshift(tx); // Agregar al principio
+    const tx = { type: type, asset: asset, amount: amount, date: new Date().toISOString(), extra: extra };
+    history.unshift(tx);
     localStorage.setItem(historyKey, JSON.stringify(history));
-    loadHistory(); // Refrescar la vista
+    loadHistory();
   }
 
   function loadHistory() {
@@ -330,30 +372,88 @@
       return;
     }
 
-    panel.innerHTML = ''; // Limpiar panel
+    panel.innerHTML = '';
     history.forEach(tx => {
       const isWithdraw = tx.type === 'withdraw';
-      const icon = isWithdraw ? '↗' : '↙';
-      const title = isWithdraw ? 'Retiro' : 'Depósito';
-      const color = isWithdraw ? '#ffbd62' : '#8ff4cb';
-      const sign = isWithdraw ? '−' : '+';
+      const isInvest = tx.type === 'investment';
+      const isDeposit = tx.type === 'deposit';
+
+      let icon = '↙', title = 'Depósito', color = '#8ff4cb', sign = '+';
+      if (isWithdraw) { icon = '↗'; title = 'Retiro'; color = '#ffbd62'; sign = '−'; }
+      if (isInvest) { icon = '✦'; title = 'Inversión'; color = '#65a8ff'; sign = '−'; }
       
-      // Formatear fecha
       const dateObj = new Date(tx.date);
       const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+      const extraTxt = tx.extra ? ` (${tx.extra})` : '';
 
       const item = document.createElement('div');
       item.className = 'activity-item';
       item.innerHTML = `
         <div class="activity-icon">${icon}</div>
-        <div class="activity-info"><b>${title} de ${tx.asset}</b><span>${dateStr}</span></div>
+        <div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div>
         <div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>
       `;
       panel.appendChild(item);
     });
-  }
+  }   window.openPlanModal = function(planType) {
+    const config = PLAN_CONFIG[planType];
+    $('planModalTitle').innerHTML = config.name;
+    $('planModalDesc').textContent = config.desc;
+    
+    const titleColor = planType === 'starter' ? '#65a8ff' : '#ff5e3a';
+    $('planModalTitle').style.color = titleColor;
 
-  // AUTENTICACIÓN
+    const assetsData = [
+      { symbol: 'TRX', name: 'TRON', icon: 'Ｔ', cls: 'trx' },
+      { symbol: 'BTC', name: 'Bitcoin', icon: '₿', cls: 'btc' },
+      { symbol: 'SRB', name: 'SRB Token', icon: 'S', cls: 'srb' },
+      { symbol: 'USDT', name: 'Tether', icon: '₮', cls: 'usdt' }
+    ];
+
+    let htmlContent = '';
+    assetsData.forEach(coin => {
+      htmlContent += `
+        <div class="invest-coin-section">
+          <div class="invest-coin-header">
+            <div class="coin-logo ${coin.cls}" style="width:32px;height:32px;font-size:14px;border-radius:10px;">${coin.icon}</div>
+            <b style="font-size:15px;">${coin.name} (${coin.symbol})</b>
+          </div>
+          <div class="invest-grid">
+      `;
+      
+      config.amounts.forEach(amt => {
+        const profit = (amt * config.roi).toFixed(2);
+        const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
+        
+        htmlContent += `
+          <button class="invest-btn" onclick="processInvestment('${planType}', '${coin.symbol}', ${amt}, ${profit})">
+            <div class="invest-btn-price">$${amt} <span>USD</span></div>
+            <div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#65a8ff' : '#ff5e3a'};">${profitText}</div>
+          </button>
+        `;
+      });
+
+      htmlContent += `
+          </div>
+        </div>
+      `;
+    });
+
+    $('planModalContent').innerHTML = htmlContent;
+    $('planModal').classList.add('open');
+  };
+
+  window.closePlanModal = function() { $('planModal').classList.remove('open'); };
+
+  window.processInvestment = function(planType, asset, amountUsd, profit) {
+    // TEXTO ACTUALIZADO A 9%
+    const planName = planType === 'starter' ? 'Starter 9%' : 'Pro 12%';
+    const freq = planType === 'starter' ? 'cada 24 horas' : 'cada 72 horas';
+    
+    closePlanModal();
+    openModal('¡Inversión Simulada!', `Has seleccionado el <b>${planName}</b> con una inversión de <b>$${amountUsd} USD</b> en <b>${asset}</b>.<br><br>Recibirás una ganancia de <b>$${profit}</b> ${freq}.<br><br><i>(Esta es una demostración visual, no se ha descontado saldo real).</i>`);
+  };
+
   function showMessage(message, isError=false) {
     const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
     if(isError) box.classList.add('auth-error');
@@ -411,17 +511,13 @@
     $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
     const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
     const initials=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase();
-    
     $('welcomeName').textContent=name.split(' ')[0];
     $('investorName').textContent=name;
     $('investorEmail').textContent=user?.email||'Cuenta NovaVest';
-    
-    // MOSTRAR FECHA DE CREACIÓN
     if(user?.created_at) {
       const date = new Date(user.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
       $('investorDate').textContent = 'Miembro desde: ' + date;
     }
-
     $('avatar').textContent=initials;$('profileInitials').textContent=initials;
     loadUserBalances(user).catch(err => { console.error(err); toast('Error cargando los balances demo.'); });
   }
@@ -432,7 +528,6 @@
     currentUserId=null;userBalances={TRX:0,BTC:0,SRB:0,USDT:0};
     $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');
     setAuthView('login');toast('Sesión cerrada');
-    // Volver a la pestaña de inicio al cerrar sesión
     navigate('home', document.querySelectorAll('.nav button')[0]);
   }
   window.signOut=signOut;
@@ -446,7 +541,6 @@
     if(data.session?.user) showDashboard(data.session.user);
   });
 
-  // FUNCIONES DE DEPÓSITO Y RETIRO
   const assets={
     TRX:{symbol:'TRX',logo:'Ｔ',cls:'trx',wallet:'TDEMO7xNovaVestTRX00000000000000001',price:.2841},
     BTC:{symbol:'BTC',logo:'₿',cls:'btc',wallet:'bc1qdemo-novavest-bitcoin-address-0001',price:67420.8},
@@ -485,7 +579,7 @@
 
       userBalances[asset] = newAmount;
       renderUserBalances();
-      saveTransaction('deposit', asset, value); // GUARDAR HISTORIAL
+      saveTransaction('deposit', asset, value);
 
       openModal('Depósito demo confirmado', 'Se agregaron ' + value + ' ' + asset + ' (≈ $' + usdValue.toFixed(2) + ' USD) a tu balance demo. No es dinero real.');
       toast('Depósito demo agregado: +' + value + ' ' + asset);
@@ -529,7 +623,7 @@
 
       userBalances[asset] = newAmount;
       renderUserBalances();
-      saveTransaction('withdraw', asset, amount); // GUARDAR HISTORIAL
+      saveTransaction('withdraw', asset, amount);
       
       $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
 
@@ -541,7 +635,9 @@
     } finally {
       btn.disabled = false; btn.textContent = 'Confirmar retiro →';
     }
-  };  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').innerHTML=message;$('modal').classList.add('open');};
+  };
+
+  window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').innerHTML=message;$('modal').classList.add('open');};
   window.closeModal=function(){$('modal').classList.remove('open');};
   window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
   
