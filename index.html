@@ -27,24 +27,24 @@
     .section{display:flex;justify-content:space-between;align-items:center;margin:25px 2px 12px}.section h2{font-size:17px;margin:0}.small-link{color:var(--mint);font-size:12px;font-weight:800;background:none;border:0}
     .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px}.stat{padding:15px;border-radius:19px;background:#151e35ed;border:1px solid var(--line)}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.stat-icon{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;font-size:14px}.stat strong{display:block;font-size:19px;margin-top:12px}.stat small{color:#8ff4cb;font-size:11px}
     
+    /* TARJETA DE INVERSIÓN ACTIVA */
+    .active-inv-card { background: linear-gradient(135deg, #1e2946, #162036); border: 1px solid var(--mint); border-radius: 18px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(73, 227, 177, 0.1); }
+    .active-inv-info b { display: block; font-size: 14px; color: var(--mint); margin-bottom: 4px; }
+    .active-inv-info span { font-size: 12px; color: var(--muted); display: block; }
+    .active-inv-timer { text-align: right; }
+    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; }
+    .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;}
+
     .plans{display:grid;gap:15px;margin-top:10px}
     .plan-card{padding:20px;border-radius:20px;border:1px solid var(--line);background:#151e35ed;position:relative;overflow:hidden;transition:transform 0.2s}
     .plan-card:active{transform:scale(0.98)}
     
-    .plan-card.cold-theme {
-      border-color: #65a8ff;
-      background: linear-gradient(180deg, #151e35ed, rgba(101, 168, 255, 0.1));
-      box-shadow: 0 4px 20px rgba(101, 168, 255, 0.15);
-    }
+    .plan-card.cold-theme { border-color: #65a8ff; background: linear-gradient(180deg, #151e35ed, rgba(101, 168, 255, 0.1)); box-shadow: 0 4px 20px rgba(101, 168, 255, 0.15); }
     .plan-card.cold-theme .plan-title, .plan-card.cold-theme .plan-yield { color: #65a8ff; }
     .plan-card.cold-theme .plan-btn { border-color: #65a8ff; color: #65a8ff; }
     .plan-card.cold-theme .plan-btn:hover { background: #65a8ff; color: #071a25; }
 
-    .plan-card.fire-theme {
-      border-color: var(--fire);
-      background: linear-gradient(180deg, #151e35ed, rgba(255, 94, 58, 0.1));
-      box-shadow: 0 4px 25px rgba(255, 94, 58, 0.2);
-    }
+    .plan-card.fire-theme { border-color: var(--fire); background: linear-gradient(180deg, #151e35ed, rgba(255, 94, 58, 0.1)); box-shadow: 0 4px 25px rgba(255, 94, 58, 0.2); }
     .plan-card.fire-theme .plan-title, .plan-card.fire-theme .plan-yield { color: var(--fire); }
     .plan-card.fire-theme .plan-btn { border-color: var(--fire); color: var(--fire); }
     .plan-card.fire-theme .plan-btn:hover { background: var(--fire); color: #fff; }
@@ -67,12 +67,18 @@
     .nav{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 15px calc(10px + env(safe-area-inset-bottom));background:#0c1325ed;backdrop-filter:blur(18px);border-top:1px solid #ffffff12}.nav-inner{max-width:520px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.nav button{border:0;background:transparent;color:#8291ad;padding:7px 2px;border-radius:13px;font-size:10px;font-weight:800;display:grid;justify-items:center;gap:4px;transition:.2s}.nav button span{font-size:19px}.nav button.active{color:var(--mint);background:#49e3b111}
     .toast{position:fixed;z-index:30;bottom:100px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:#eafff7;color:#10251f;padding:12px 17px;border-radius:13px;font-size:12px;font-weight:800;box-shadow:0 8px 30px #0007;transition:.25s;white-space:nowrap;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}
     
-    .modal-backdrop{position:fixed;inset:0;background:#020611bb;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:15px}.modal-backdrop.open{display:flex}.modal{width:100%;max-width:490px;background:#18243d;border:1px solid #ffffff20;border-radius:24px;padding:20px;box-shadow:0 20px 80px #0009;max-height: 85vh; overflow-y: auto;}.modal h3{margin:0 0 6px}.modal p{font-size:12px;color:var(--muted);line-height:1.5}.close{float:right;background:#ffffff12;border:0;color:white;border-radius:10px;padding:7px 10px}
+    /* MODALES */
+    .modal-backdrop{position:fixed;inset:0;background:#020611bb;z-index:20;display:none;align-items:flex-end;justify-content:center;padding:15px}.modal-backdrop.open{display:flex}.modal{width:100%;max-width:490px;background:#18243d;border:1px solid #ffffff20;border-radius:24px;padding:20px;box-shadow:0 20px 80px #0009;max-height: 85vh; overflow-y: auto;}.modal h3{margin:0 0 6px; font-size: 20px;}.modal p{font-size:13px;color:var(--muted);line-height:1.5; margin-bottom: 20px;}.close{float:right;background:#ffffff12;border:0;color:white;border-radius:10px;padding:7px 10px}
+    
+    /* BOTONES MODAL CONFIRMACIÓN */
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn-cancel { flex: 1; background: transparent; border: 1px solid var(--muted); color: var(--text); padding: 12px; border-radius: 12px; font-weight: 800; font-size: 14px; }
+    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #071a25; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 14px; }
+    .modal-btn-confirm.fire { background: var(--fire); color: white; }
 
     .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
     .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    
     .invest-btn { background: #0e162b; border: 1px solid #ffffff16; padding: 10px 12px; border-radius: 10px; color: white; transition: .2s; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px;}
     .invest-btn:hover { border-color: var(--mint); background: #263653; }
     .invest-btn-price { font-weight: 800; font-size: 15px; }
@@ -139,6 +145,12 @@
           </div>
         </section>
 
+        <!-- SECCIÓN DE INVERSIONES ACTIVAS -->
+        <div id="activeInvestmentsSection" class="hidden">
+          <div class="section"><h2>Inversiones Activas</h2></div>
+          <div id="activeInvestmentsList"></div>
+        </div>
+
         <div class="section"><h2>Tu resumen</h2></div>
         <div class="stats">
           <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor total de tus activos</small></div>
@@ -160,13 +172,11 @@
             <div class="plan-title">🔥 Plan Pro</div>
             <div class="plan-yield">12% ROI</div>
             <div class="plan-freq">Retiros cada 72 horas</div>
-            <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
             <button class="plan-btn" onclick="openPlanModal('pro')">Ver montos de inversión</button>
           </div>
         </div>
       </div>
 
-      <!-- VISTA 2: DEPÓSITO (AQUÍ SÍ SE MANTIENE LA PALABRA PRUEBA) -->
       <div id="view-deposit" class="view">
         <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Prueba</span></div>
         <div class="panel">
@@ -182,7 +192,6 @@
         </div>
       </div>
 
-      <!-- VISTA 3: RETIRO (AQUÍ SÍ SE MANTIENE LA PALABRA PRUEBA) -->
       <div id="view-withdraw" class="view">
         <div class="section" style="margin-top:0;"><h2>Retiro de fondos</h2><span class="pill">Prueba</span></div>
         <div class="panel">
@@ -255,14 +264,28 @@
 
   <div id="toast" class="toast" role="status"></div>
   
+  <!-- MODAL GENERAL / INSUFICIENTE -->
   <div class="modal-backdrop" id="modal"><div class="modal" id="generalModalContent"><button class="close" onclick="closeModal()">✕</button><h3 id="modalTitle">Confirmación</h3><p id="modalText"></p><button class="wide" onclick="closeModal()">Entendido</button></div></div>
   
+  <!-- MODAL SELECCIÓN DE PLANES -->
   <div class="modal-backdrop" id="planModal">
     <div class="modal">
       <button class="close" onclick="closePlanModal()">✕</button>
       <h3 id="planModalTitle" style="font-size: 22px; display:flex; align-items:center; gap:8px;">Plan</h3>
       <p id="planModalDesc" style="margin-bottom: 20px;">Selecciona una moneda y el monto a invertir.</p>
       <div id="planModalContent"></div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMACIÓN DE INVERSIÓN -->
+  <div class="modal-backdrop" id="confirmInvModal">
+    <div class="modal">
+      <h3 id="confirmInvTitle" style="font-size: 22px; margin-bottom: 10px;">Confirmar Inversión</h3>
+      <p id="confirmInvText">¿Estás seguro que deseas invertir?</p>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" onclick="closeConfirmInvModal()">Cancelar</button>
+        <button class="modal-btn-confirm" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
+      </div>
     </div>
   </div>
 
@@ -273,27 +296,27 @@
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
   const ASSET_INFO = {
-    TRX: { price: 0.2841 },
-    BTC: { price: 67420.8 },
-    SRB: { price: 0.0428 },
-    USDT: { price: 1 }
+    TRX: { price: 0.2841, name: 'TRON' },
+    BTC: { price: 67420.8, name: 'Bitcoin' },
+    SRB: { price: 0.0428, name: 'SRB Token' },
+    USDT: { price: 1, name: 'Tether' }
   };
   let currentUserId = null;
   let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
+  let pendingInvestment = null;
+  let timerInterval = null;
 
   const PLAN_CONFIG = {
     starter: {
       name: '❄️ Plan Starter (9%)',
-      desc: 'Ganancias diarias (cada 24 horas). Elige tu criptomoneda y el monto:',
-      theme: 'cold',
-      roi: 0.09,
+      desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:',
+      roi: 0.09, hours: 24, type: 'starter',
       amounts: [20, 50, 100, 200, 400]
     },
     pro: {
       name: '🔥 Plan Pro (12%)',
       desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:',
-      theme: 'fire',
-      roi: 0.12,
+      roi: 0.12, hours: 72, type: 'pro',
       amounts: [500, 1000, 2000, 5000]
     }
   };
@@ -328,7 +351,10 @@
     });
     renderUserBalances();
     loadHistory();
-  }   function renderUserBalances() {
+    loadActiveInvestments(); // Carga los temporizadores
+  }
+
+  function renderUserBalances() {
     const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
     $('totalBalance').textContent = money(total);
     $('activeInvestment').textContent = money(total);
@@ -350,6 +376,7 @@
     window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
+  // --- HISTORIAL ---
   function saveTransaction(type, asset, amount, extra = '') {
     if (!currentUserId) return;
     const historyKey = 'nv_history_' + currentUserId;
@@ -394,8 +421,86 @@
       `;
       panel.appendChild(item);
     });
+  }   // --- INVERSIONES ACTIVAS Y TEMPORIZADOR ---
+  function saveActiveInvestment(inv) {
+    const key = 'nv_investments_' + currentUserId;
+    let investments = JSON.parse(localStorage.getItem(key) || '[]');
+    investments.push(inv);
+    localStorage.setItem(key, JSON.stringify(investments));
+    loadActiveInvestments();
   }
 
+  function loadActiveInvestments() {
+    if (!currentUserId) return;
+    const key = 'nv_investments_' + currentUserId;
+    let investments = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    // Filtrar solo las que no han expirado (el tiempo de finalización es mayor al actual)
+    investments = investments.filter(inv => inv.endTime > Date.now());
+    
+    // Guardar por si se limpiaron las expiradas
+    localStorage.setItem(key, JSON.stringify(investments));
+
+    const container = $('activeInvestmentsSection');
+    const list = $('activeInvestmentsList');
+
+    if (investments.length === 0) {
+      container.classList.add('hidden');
+      return;
+    }
+
+    container.classList.remove('hidden');
+    list.innerHTML = '';
+
+    investments.forEach(inv => {
+      const card = document.createElement('div');
+      card.className = 'active-inv-card';
+      card.innerHTML = `
+        <div class="active-inv-info">
+          <b>${inv.planName}</b>
+          <span>Inversión: $${inv.amountUsd} (${inv.asset})</span>
+          <span style="color:#8ff4cb; font-weight:800; margin-top:4px;">Recompensa: +$${inv.profitUsd}</span>
+        </div>
+        <div class="active-inv-timer">
+          <strong id="timer-${inv.id}">00:00:00</strong>
+          <span>Tiempo restante</span>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    // Iniciar el intervalo para actualizar el reloj cada segundo
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimers, 1000);
+    updateTimers();
+  }
+
+  function updateTimers() {
+    const key = 'nv_investments_' + currentUserId;
+    const investments = JSON.parse(localStorage.getItem(key) || '[]');
+    const now = Date.now();
+
+    investments.forEach(inv => {
+      const el = $(`timer-${inv.id}`);
+      if (!el) return;
+
+      const remaining = inv.endTime - now;
+      if (remaining <= 0) {
+        el.textContent = '¡Reclamar!';
+        el.style.color = 'var(--mint)';
+        el.style.fontSize = '14px';
+        return;
+      }
+
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+
+      el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    });
+  }
+
+  // --- SELECCIÓN Y LÓGICA DE INVERSIÓN ---
   window.openPlanModal = function(planType) {
     const config = PLAN_CONFIG[planType];
     $('planModalTitle').innerHTML = config.name;
@@ -404,20 +509,12 @@
     const titleColor = planType === 'starter' ? '#65a8ff' : '#ff5e3a';
     $('planModalTitle').style.color = titleColor;
 
-    const assetsData = [
-      { symbol: 'TRX', name: 'TRON', icon: 'Ｔ', cls: 'trx' },
-      { symbol: 'BTC', name: 'Bitcoin', icon: '₿', cls: 'btc' },
-      { symbol: 'SRB', name: 'SRB Token', icon: 'S', cls: 'srb' },
-      { symbol: 'USDT', name: 'Tether', icon: '₮', cls: 'usdt' }
-    ];
-
     let htmlContent = '';
-    assetsData.forEach(coin => {
+    Object.keys(ASSET_INFO).forEach(asset => {
       htmlContent += `
         <div class="invest-coin-section">
           <div class="invest-coin-header">
-            <div class="coin-logo ${coin.cls}" style="width:32px;height:32px;font-size:14px;border-radius:10px;">${coin.icon}</div>
-            <b style="font-size:15px;">${coin.name} (${coin.symbol})</b>
+            <b style="font-size:15px;">${ASSET_INFO[asset].name} (${asset})</b>
           </div>
           <div class="invest-grid">
       `;
@@ -427,17 +524,14 @@
         const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
         
         htmlContent += `
-          <button class="invest-btn" onclick="processInvestment('${planType}', '${coin.symbol}', ${amt}, ${profit})">
+          <button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})">
             <div class="invest-btn-price">$${amt} <span>USD</span></div>
             <div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#65a8ff' : '#ff5e3a'};">${profitText}</div>
           </button>
         `;
       });
 
-      htmlContent += `
-          </div>
-        </div>
-      `;
+      htmlContent += `</div></div>`;
     });
 
     $('planModalContent').innerHTML = htmlContent;
@@ -446,14 +540,94 @@
 
   window.closePlanModal = function() { $('planModal').classList.remove('open'); };
 
-  window.processInvestment = function(planType, asset, amountUsd, profit) {
-    const planName = planType === 'starter' ? 'Starter 9%' : 'Pro 12%';
-    const freq = planType === 'starter' ? 'cada 24 horas' : 'cada 72 horas';
+  window.checkBalanceForInvestment = function(planType, asset, amountUsd, profit) {
+    const cryptoPrice = ASSET_INFO[asset].price;
+    const cryptoNeeded = amountUsd / cryptoPrice;
+    const userCryptoBalance = userBalances[asset] || 0;
+    const userUsdBalance = userCryptoBalance * cryptoPrice;
+
+    if (userUsdBalance < amountUsd) {
+      // Saldo insuficiente
+      const shortfallUsd = amountUsd - userUsdBalance;
+      closePlanModal();
+      openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b> para este plan.<br><br>Necesitas <b>$${shortfallUsd.toFixed(2)} USD</b> más (aprox. ${quantity(shortfallUsd / cryptoPrice, asset)}).<br><br>Por favor, recarga tu cuenta para continuar.`);
+      return;
+    }
+
+    // Saldo suficiente -> Preparar modal de confirmación
+    pendingInvestment = { planType, asset, amountUsd, profit, cryptoNeeded };
     
     closePlanModal();
-    openModal('¡Inversión Confirmada!', `Has seleccionado el <b>${planName}</b> con una inversión de <b>$${amountUsd} USD</b> en <b>${asset}</b>.<br><br>Recibirás una ganancia de <b>$${profit}</b> ${freq}.<br><br>Tu plan ya está activo.`);
+    
+    const planName = PLAN_CONFIG[planType].name;
+    const freq = PLAN_CONFIG[planType].hours;
+    
+    $('confirmInvTitle').textContent = 'Confirmar Inversión';
+    $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${planName}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> de ganancia en ${freq} horas.<br><br>¿Deseas continuar?`;
+    
+    const btn = $('confirmInvBtn');
+    btn.className = `modal-btn-confirm ${planType === 'starter' ? '' : 'fire'}`;
+    
+    $('confirmInvModal').classList.add('open');
   };
 
+  window.closeConfirmInvModal = function() {
+    $('confirmInvModal').classList.remove('open');
+    pendingInvestment = null;
+  };
+
+  window.executeInvestment = async function() {
+    if (!pendingInvestment) return;
+    
+    const btn = $('confirmInvBtn');
+    btn.disabled = true;
+    btn.textContent = 'Procesando…';
+    
+    const { planType, asset, amountUsd, profit, cryptoNeeded } = pendingInvestment;
+    
+    try {
+      // 1. Calcular y actualizar el saldo en Supabase
+      const newAmount = (userBalances[asset] || 0) - cryptoNeeded;
+      
+      const { error } = await supabaseClient.from('novavest_balances').upsert({
+          user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,asset' });
+
+      if (error) throw error;
+
+      // 2. Actualizar UI
+      userBalances[asset] = newAmount;
+      renderUserBalances();
+      
+      // 3. Guardar en historial
+      saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
+      
+      // 4. Registrar inversión activa para el contador
+      const endTime = Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000);
+      saveActiveInvestment({
+        id: Date.now(),
+        planName: PLAN_CONFIG[planType].name,
+        asset: asset,
+        amountUsd: amountUsd,
+        profitUsd: profit,
+        endTime: endTime
+      });
+
+      // 5. Cerrar modal y redirigir
+      closeConfirmInvModal();
+      navigate('home', document.querySelectorAll('.nav button')[0]);
+      toast('¡Inversión realizada con éxito!');
+
+    } catch (err) {
+      console.error('Error al invertir:', err);
+      toast('Error al procesar la inversión: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Confirmar';
+    }
+  };
+
+  // --- RESTO DE FUNCIONES ---
   function showMessage(message, isError=false) {
     const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
     if(isError) box.classList.add('auth-error');
@@ -529,6 +703,7 @@
     $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');
     setAuthView('login');toast('Sesión cerrada');
     navigate('home', document.querySelectorAll('.nav button')[0]);
+    $('activeInvestmentsSection').classList.add('hidden');
   }
   window.signOut=signOut;
 
@@ -606,7 +781,6 @@
     if (!password) { toast('Introduce tu contraseña'); return; }
 
     btn.disabled = true; btn.textContent = 'Verificando…';
-
     try {
       const { data: userData, error: userError } = await supabaseClient.auth.getUser();
       if (userError || !userData.user) throw new Error('Sesión no válida');
@@ -646,3 +820,4 @@
 </script>
 </body>
 </html>
+            
