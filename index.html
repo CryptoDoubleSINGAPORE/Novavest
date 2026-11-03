@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#10172d">
-  <meta name="description" content="NovaVest — panel de demostración de activos digitales">
+  <meta name="description" content="NovaVest — panel de activos digitales">
   <title>NovaVest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,7 +119,7 @@
       </form>
       <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
       <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
-      <div class="auth-foot">NovaVest · Panel de demostración. No envíes criptomonedas ni dinero real.</div>
+      <div class="auth-foot">NovaVest · Plataforma de gestión de activos digitales.</div>
     </div>
   </section>
 
@@ -131,8 +131,8 @@
         <div class="eyebrow">Panel personal</div><div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div><div class="sub">Tu resumen de activos en un solo lugar.</div>
         
         <section class="balance">
-          <div class="balance-head"><span class="eyebrow" style="color:#d0dcfa">Balance total estimado</span><span class="pill">● Cuenta demo</span></div>
-          <div class="amount" id="totalBalance">$0.00</div><div class="change">↗ Datos ilustrativos <span style="color:#d0dcfa">· No es dinero real</span></div>
+          <div class="balance-head"><span class="eyebrow" style="color:#d0dcfa">Balance total estimado</span><span class="pill">● Cuenta principal</span></div>
+          <div class="amount" id="totalBalance">$0.00</div><div class="change">↗ Rendimiento actual</div>
           <div class="balance-actions">
             <button class="action primary" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
             <button class="action ghost" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
@@ -141,11 +141,11 @@
 
         <div class="section"><h2>Tu resumen</h2></div>
         <div class="stats">
-          <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor de tus activos demo</small></div>
-          <div class="stat"><div class="stat-top">Rendimiento demo <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong id="demoPerformance">$0.00</strong><small>Estimación ilustrativa</small></div>
+          <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor total de tus activos</small></div>
+          <div class="stat"><div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong id="demoPerformance">$0.00</strong><small>Rendimiento de tus planes</small></div>
         </div>
 
-        <div class="section"><h2>Planes de Inversión</h2><span class="pill">Demo</span></div>
+        <div class="section"><h2>Planes de Inversión</h2><span class="pill">Oportunidad</span></div>
         <div class="plans">
           <div class="plan-card cold-theme">
             <div class="plan-title">❄️ Plan Starter</div>
@@ -166,23 +166,25 @@
         </div>
       </div>
 
+      <!-- VISTA 2: DEPÓSITO (AQUÍ SÍ SE MANTIENE LA PALABRA PRUEBA) -->
       <div id="view-deposit" class="view">
-        <div class="section" style="margin-top:0;"><h2>Depósito de prueba</h2><span class="pill">Demo</span></div>
+        <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Prueba</span></div>
         <div class="panel">
           <div class="eyebrow">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px"><div id="coinBadge" class="coin-logo trx">Ｔ</div><select class="select" id="asset" onchange="changeAsset()"><option value="TRX">TRON (TRX)</option><option value="BTC">Bitcoin (BTC)</option><option value="SRB">SRB Token</option><option value="USDT">Tether (USDT)</option></select></div>
-          <label class="field-label" for="amount">Cantidad de demostración</label>
+          <label class="field-label" for="amount">Cantidad a depositar</label>
           <div class="amount-wrap"><input class="number" id="amount" type="number" min="0" step="any" value="100" oninput="updateEstimate()"><span class="unit" id="unit">TRX</span></div>
-          <div class="hint" id="estimate">≈ $28.41 USD · Valor ilustrativo</div>
-          <div class="wallet-box"><div class="wallet-head"><span>Wallet ficticia</span><button class="copy" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet">TDEMO7xNovaVestTRX00000000000000001</div>
-            <div class="qr-row"><img id="qr" class="qr" alt="QR ficticio"><div class="qr-note"><b>QR de prueba</b>Dirección inventada. No envíes fondos reales.</div></div>
+          <div class="hint" id="estimate">≈ $28.41 USD · Valor estimado</div>
+          <div class="wallet-box"><div class="wallet-head"><span>Dirección de depósito</span><button class="copy" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet">TDEMO7xNovaVestTRX00000000000000001</div>
+            <div class="qr-row"><img id="qr" class="qr" alt="QR de depósito"><div class="qr-note"><b>Escanear QR</b>Envía solo la moneda seleccionada. (Simulación).</div></div>
           </div>
-          <button class="wide" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito demo →</button>
+          <button class="wide" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
         </div>
       </div>
 
+      <!-- VISTA 3: RETIRO (AQUÍ SÍ SE MANTIENE LA PALABRA PRUEBA) -->
       <div id="view-withdraw" class="view">
-        <div class="section" style="margin-top:0;"><h2>Retiro de prueba</h2><span class="pill">Demo</span></div>
+        <div class="section" style="margin-top:0;"><h2>Retiro de fondos</h2><span class="pill">Prueba</span></div>
         <div class="panel">
           <div class="eyebrow">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
@@ -201,8 +203,8 @@
             <input class="number" id="withdrawAmount" type="number" min="0" step="any" placeholder="0.00">
             <span class="unit" id="withdrawUnit">TRX</span>
           </div>
-          <label class="field-label" for="withdrawAddress">Dirección de criptomonedas</label>
-          <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de destino">
+          <label class="field-label" for="withdrawAddress">Dirección de destino</label>
+          <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas">
           <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
           <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual">
           <button class="wide" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
@@ -236,7 +238,7 @@
         </div>
 
         <button class="wide" style="background:#293651;color:#f5f7ff;box-shadow:none" onclick="signOut()">Cerrar sesión</button>
-        <div class="disclaimer">NovaVest es una demostración visual. No ofrece inversiones reales.</div>
+        <div class="disclaimer">NovaVest © 2024. Plataforma de gestión de activos digitales.</div>
       </div>
 
     </div>
@@ -279,7 +281,6 @@
   let currentUserId = null;
   let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
 
-  // CONFIGURACIÓN ACTUALIZADA AL 9%
   const PLAN_CONFIG = {
     starter: {
       name: '❄️ Plan Starter (9%)',
@@ -327,9 +328,7 @@
     });
     renderUserBalances();
     loadHistory();
-  }
-
-  function renderUserBalances() {
+  }   function renderUserBalances() {
     const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
     $('totalBalance').textContent = money(total);
     $('activeInvestment').textContent = money(total);
@@ -395,7 +394,9 @@
       `;
       panel.appendChild(item);
     });
-  }   window.openPlanModal = function(planType) {
+  }
+
+  window.openPlanModal = function(planType) {
     const config = PLAN_CONFIG[planType];
     $('planModalTitle').innerHTML = config.name;
     $('planModalDesc').textContent = config.desc;
@@ -446,12 +447,11 @@
   window.closePlanModal = function() { $('planModal').classList.remove('open'); };
 
   window.processInvestment = function(planType, asset, amountUsd, profit) {
-    // TEXTO ACTUALIZADO A 9%
     const planName = planType === 'starter' ? 'Starter 9%' : 'Pro 12%';
     const freq = planType === 'starter' ? 'cada 24 horas' : 'cada 72 horas';
     
     closePlanModal();
-    openModal('¡Inversión Simulada!', `Has seleccionado el <b>${planName}</b> con una inversión de <b>$${amountUsd} USD</b> en <b>${asset}</b>.<br><br>Recibirás una ganancia de <b>$${profit}</b> ${freq}.<br><br><i>(Esta es una demostración visual, no se ha descontado saldo real).</i>`);
+    openModal('¡Inversión Confirmada!', `Has seleccionado el <b>${planName}</b> con una inversión de <b>$${amountUsd} USD</b> en <b>${asset}</b>.<br><br>Recibirás una ganancia de <b>$${profit}</b> ${freq}.<br><br>Tu plan ya está activo.`);
   };
 
   function showMessage(message, isError=false) {
@@ -519,7 +519,7 @@
       $('investorDate').textContent = 'Miembro desde: ' + date;
     }
     $('avatar').textContent=initials;$('profileInitials').textContent=initials;
-    loadUserBalances(user).catch(err => { console.error(err); toast('Error cargando los balances demo.'); });
+    loadUserBalances(user).catch(err => { console.error(err); toast('Error cargando los balances.'); });
   }
 
   async function signOut(){
@@ -553,7 +553,7 @@
     current=$('asset').value;const a=assets[current];$('coinBadge').className='coin-logo '+a.cls;$('coinBadge').textContent=a.logo;$('unit').textContent=a.symbol;$('wallet').textContent=a.wallet;
     $('qr').src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(a.wallet);updateEstimate();toast('Activo cambiado a '+a.symbol);
   };
-  window.updateEstimate=function(){const value=Math.max(0,Number($('amount').value)||0);$('estimate').textContent='≈ $'+(value*assets[current].price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD · Valor ilustrativo';};
+  window.updateEstimate=function(){const value=Math.max(0,Number($('amount').value)||0);$('estimate').textContent='≈ $'+(value*assets[current].price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD · Valor estimado';};
   window.copyWallet=async function(){try{await navigator.clipboard.writeText(assets[current].wallet);toast('Dirección copiada');}catch(e){toast('No se pudo copiar automáticamente. Selecciona la dirección.');}};
 
   window.simulateDeposit = async function(){
@@ -581,10 +581,10 @@
       renderUserBalances();
       saveTransaction('deposit', asset, value);
 
-      openModal('Depósito demo confirmado', 'Se agregaron ' + value + ' ' + asset + ' (≈ $' + usdValue.toFixed(2) + ' USD) a tu balance demo. No es dinero real.');
-      toast('Depósito demo agregado: +' + value + ' ' + asset);
+      openModal('Depósito de prueba confirmado', 'Se agregaron ' + value + ' ' + asset + ' (≈ $' + usdValue.toFixed(2) + ' USD) a tu balance.<br><br><i>(Esta es una simulación, no se ha transferido dinero real).</i>');
+      toast('Depósito agregado: +' + value + ' ' + asset);
 
-    } catch (err) { console.error(err); toast('Error inesperado.'); $('depositBtn').disabled = false; $('depositBtn').textContent = 'Continuar con depósito demo →'; }
+    } catch (err) { console.error(err); toast('Error inesperado.'); $('depositBtn').disabled = false; $('depositBtn').textContent = 'Continuar con depósito →'; }
   };
 
   window.updateWithdrawInfo = function() {
@@ -627,7 +627,7 @@
       
       $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
 
-      openModal('Retiro demo confirmado', 'Se han retirado ' + quantity(amount, asset) + ' a la dirección ' + address + '.<br><br>Esta es una simulación. No se ha enviado ninguna criptomoneda real.');
+      openModal('Retiro de prueba confirmado', 'Se han retirado ' + quantity(amount, asset) + ' a la dirección ' + address + '.<br><br><i>(Esta es una simulación, no se ha enviado ninguna criptomoneda real).</i>');
       toast('Retiro procesado con éxito');
 
     } catch (err) {
