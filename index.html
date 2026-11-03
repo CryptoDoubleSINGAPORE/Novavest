@@ -81,15 +81,15 @@
       </section>
       <div class="section"><h2>Tu resumen</h2><button class="small-link" onclick="toast('Resumen de demostración actualizado')">Actualizar ↻</button></div>
       <div class="stats">
-        <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong>$8,250.00</strong><small>Dato simulado</small></div>
-        <div class="stat"><div class="stat-top">Rendimiento demo <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong>$590.50</strong><small>Dato simulado</small></div>
+        <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#164d48">↗</span></div><strong id="activeInvestment">$—</strong><small>Valor de tus activos demo</small></div>
+        <div class="stat"><div class="stat-top">Rendimiento demo <span class="stat-icon" style="background:#3a2d62">✦</span></div><strong id="demoPerformance">$—</strong><small>Estimación ilustrativa</small></div>
       </div>
       <div class="section" id="market"><h2>Mercado de activos</h2><button class="small-link" onclick="goTo('deposit')">Elegir activo</button></div>
       <div class="coins">
-        <div class="coin"><div class="coin-logo btc">₿</div><div class="coin-info"><b>Bitcoin</b><span>BTC · Criptoactivo</span></div><div class="coin-value"><b>$67,420.80</b><span>Precio ficticio</span></div></div>
-        <div class="coin"><div class="coin-logo trx">Ｔ</div><div class="coin-info"><b>TRON</b><span>TRX · Red TRON</span></div><div class="coin-value"><b>$0.2841</b><span>Precio ficticio</span></div></div>
-        <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB · Token demo</span></div><div class="coin-value"><b>$0.0428</b><span>Precio ficticio</span></div></div>
-        <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT · Stablecoin</span></div><div class="coin-value"><b>$1.00</b><span>Precio ilustrativo</span></div></div>
+        <div class="coin"><div class="coin-logo btc">₿</div><div class="coin-info"><b>Bitcoin</b><span>BTC · Criptoactivo</span></div><div class="coin-value"><b id="holdingBTC">— BTC</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo trx">Ｔ</div><div class="coin-info"><b>TRON</b><span>TRX · Red TRON</span></div><div class="coin-value"><b id="holdingTRX">— TRX</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo srb">S</div><div class="coin-info"><b>SRB</b><span>SRB · Token demo</span></div><div class="coin-value"><b id="holdingSRB">— SRB</b><span>Tu saldo demo</span></div></div>
+        <div class="coin"><div class="coin-logo usdt">₮</div><div class="coin-info"><b>Tether</b><span>USDT · Stablecoin</span></div><div class="coin-value"><b id="holdingUSDT">— USDT</b><span>Tu saldo demo</span></div></div>
       </div>
       <div class="section" id="deposit"><h2>Depósito de prueba</h2><span class="pill">Demo</span></div>
       <div class="panel">
@@ -125,6 +125,101 @@
   const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  // Los saldos se guardan en Supabase por usuario y por activo.
+  // Cada cuenta recibe una asignación demo inicial distinta, que se conserva al volver a entrar.
+  const ASSET_INFO = {
+    TRX: { price: 0.2841, min: 1200, max: 6800 },
+    BTC: { price: 67420.8, min: 0.0015, max: 0.035 },
+    SRB: { price: 0.0428, min: 8000, max: 85000 },
+    USDT: { price: 1, min: 180, max: 2400 }
+  };
+  let currentUserId = null;
+  let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
+
+  function randomStartingBalance(asset) {
+    const cfg = ASSET_INFO[asset];
+    const value = cfg.min + Math.random() * (cfg.max - cfg.min);
+    return Number(value.toFixed(asset === 'BTC' ? 6 : 2));
+  }
+
+  function money(value) {
+    return '$' + Number(value || 0).toLocaleString('en-US', {
+      minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+  }
+
+  function quantity(value, asset) {
+    return Number(value || 0).toLocaleString('en-US', {
+      minimumFractionDigits: asset === 'BTC' ? 6 : 2,
+      maximumFractionDigits: asset === 'BTC' ? 6 : 2
+    }) + ' ' + asset;
+  }
+
+  async function loadUserBalances(user) {
+    currentUserId = user.id;
+    const { data: existing, error: readError } = await supabaseClient
+      .from('novavest_balances')
+      .select('asset, amount')
+      .eq('user_id', user.id);
+
+    if (readError) {
+      console.error('Error leyendo balances:', readError);
+      toast('No se pudieron cargar los saldos. Revisa la tabla y sus permisos en Supabase.');
+      return;
+    }
+
+    // Solo crea la asignación inicial cuando esta cuenta todavía no tiene saldos.
+    if (!existing || existing.length === 0) {
+      const initialRows = Object.keys(ASSET_INFO).map(asset => ({
+        user_id: user.id,
+        asset,
+        amount: randomStartingBalance(asset)
+      }));
+      const { error: insertError } = await supabaseClient
+        .from('novavest_balances')
+        .upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+
+      if (insertError) {
+        console.error('Error creando balances:', insertError);
+        toast('No se pudieron crear los saldos. Ejecuta el SQL de configuración.');
+        return;
+      }
+    }
+
+    const { data: rows, error: finalReadError } = await supabaseClient
+      .from('novavest_balances')
+      .select('asset, amount')
+      .eq('user_id', user.id);
+
+    if (finalReadError) {
+      console.error('Error cargando balances:', finalReadError);
+      toast('No se pudieron cargar los saldos de esta cuenta.');
+      return;
+    }
+
+    userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
+    (rows || []).forEach(row => {
+      if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
+        userBalances[row.asset] = Number(row.amount) || 0;
+      }
+    });
+    renderUserBalances();
+  }
+
+  function renderUserBalances() {
+    const total = Object.keys(ASSET_INFO).reduce((sum, asset) =>
+      sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
+    const btcValue = userBalances.BTC * ASSET_INFO.BTC.price;
+    $('totalBalance').textContent = money(total);
+    $('activeInvestment').textContent = money(total);
+    $('demoPerformance').textContent = money(total * 0.047);
+    $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
+    $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
+    $('holdingSRB').textContent = quantity(userBalances.SRB, 'SRB');
+    $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
+  }
+
 
   const $ = (id) => document.getElementById(id);
   let currentAuthView = 'login';
@@ -184,10 +279,12 @@
     const initials=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase();
     $('welcomeName').textContent=name.split(' ')[0];$('investorName').textContent=name;$('investorEmail').textContent=user?.email||'Cuenta NovaVest';
     $('avatar').textContent=initials;$('profileInitials').textContent=initials;
+    loadUserBalances(user).catch(err => { console.error(err); toast('Error cargando los balances demo.'); });
   }
   async function signOut(){
     const {error}=await supabaseClient.auth.signOut();
     if(error){toast(error.message);return;}
+    currentUserId=null;userBalances={TRX:0,BTC:0,SRB:0,USDT:0};
     $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');setAuthView('login');toast('Sesión cerrada');
   }
   window.signOut=signOut;
