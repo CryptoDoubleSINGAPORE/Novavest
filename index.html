@@ -101,13 +101,13 @@
         <div class="wallet-box"><div class="wallet-head"><span>Wallet ficticia de demostración</span><button class="copy" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet">TDEMO7xNovaVestTRX00000000000000001</div>
           <div class="qr-row"><img id="qr" class="qr" alt="QR ficticio de demostración"><div class="qr-note"><b>QR de prueba</b>Dirección inventada. No envíes fondos reales.</div></div>
         </div>
-        <button class="wide" onclick="simulateDeposit()">Continuar con depósito demo →</button>
+        <button class="wide" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito demo →</button>
       </div>
       <div class="section"><h2>Actividad reciente</h2><button class="small-link" onclick="openModal('Historial de prueba','Los movimientos mostrados son ejemplos visuales y no representan transacciones reales.')">Ver todo</button></div>
-      <div class="panel activity">
-        <div class="activity-item"><div class="activity-icon">↙</div><div class="activity-info"><b>Depósito simulado</b><span>Movimiento de ejemplo</span></div><div class="activity-amount" style="color:#8ff4cb">+$250.00</div></div>
-        <div class="activity-item"><div class="activity-icon">✦</div><div class="activity-info"><b>Rendimiento demo</b><span>Movimiento de ejemplo</span></div><div class="activity-amount" style="color:#8ff4cb">+$12.40</div></div>
-        <div class="activity-item"><div class="activity-icon">↗</div><div class="activity-info"><b>Inversión de prueba</b><span>Movimiento de ejemplo</span></div><div class="activity-amount">−$100.00</div></div>
+      <div class="panel activity" id="activityPanel">
+        <div class="activity-item" style="justify-content: center; padding: 20px 0;">
+          <span style="color: var(--muted); font-size: 13px;">No hay actividad reciente</span>
+        </div>
       </div>
       <div class="section" id="profile"><h2>Perfil de inversor</h2><button class="small-link" onclick="editProfile()">Editar</button></div>
       <div class="panel investor"><div class="investor-face" id="profileInitials">NV</div><div class="investor-info"><b id="investorName">Usuario NovaVest</b><span id="investorEmail">Cuenta registrada</span></div><span class="status">Cuenta activa</span></div>
@@ -121,25 +121,18 @@
 
 <script>
 (() => {
-  // Estas son credenciales públicas del cliente. Nunca pongas aquí una service_role o sb_secret.
   const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-  // Los saldos se guardan en Supabase por usuario y por activo.
-  // Cada cuenta nueva empieza en 0 y solo cambia cuando hace un depósito demo.
   const ASSET_INFO = {
     TRX: { price: 0.2841 },
     BTC: { price: 67420.8 },
-    SRB: { price: 0.0428 }
- };
+    SRB: { price: 0.0428 },
+    USDT: { price: 1 }
+  };
   let currentUserId = null;
   let userBalances = { TRX: 0, BTC: 0, SRB: 0, USDT: 0 };
-
-  // Todos los usuarios nuevos empiezan con balance 0 en cada activo.
-  function startingBalance() {
-    return 0;
-  }
 
   function money(value) {
     return '$' + Number(value || 0).toLocaleString('en-US', {
@@ -153,8 +146,7 @@
       maximumFractionDigits: asset === 'BTC' ? 6 : 2
     }) + ' ' + asset;
   }
-
-  async function loadUserBalances(user) {
+async function loadUserBalances(user) {
     currentUserId = user.id;
     const { data: existing, error: readError } = await supabaseClient
       .from('novavest_balances')
@@ -167,12 +159,11 @@
       return;
     }
 
-    // Solo crea las filas iniciales (en 0) cuando esta cuenta todavía no tiene saldos.
     if (!existing || existing.length === 0) {
       const initialRows = Object.keys(ASSET_INFO).map(asset => ({
         user_id: user.id,
         asset,
-        amount: startingBalance()
+        amount: 0
       }));
       const { error: insertError } = await supabaseClient
         .from('novavest_balances')
@@ -267,7 +258,6 @@
     const {error}=await supabaseClient.auth.updateUser({password:$('newPassword').value});
     if(error) showMessage(error.message,true); else {showMessage('Contraseña actualizada. Ya puedes entrar con tu nueva contraseña.');setTimeout(()=>setAuthView('login'),1800);}
   });
-
   function showDashboard(user){
     $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
     const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
@@ -291,7 +281,8 @@
   supabaseClient.auth.getSession().then(({data})=>{
     if(data.session?.user) showDashboard(data.session.user);
   });
-    const assets={
+
+  const assets={
     TRX:{symbol:'TRX',logo:'Ｔ',cls:'trx',wallet:'TDEMO7xNovaVestTRX00000000000000001',price:.2841},
     BTC:{symbol:'BTC',logo:'₿',cls:'btc',wallet:'bc1qdemo-novavest-bitcoin-address-0001',price:67420.8},
     SRB:{symbol:'SRB',logo:'S',cls:'srb',wallet:'SRB-DEMO-NOVAVEST-000000000000001',price:.0428},
@@ -305,48 +296,57 @@
   window.updateEstimate=function(){const value=Math.max(0,Number($('amount').value)||0);$('estimate').textContent='≈ $'+(value*assets[current].price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USD · Valor ilustrativo';};
   window.copyWallet=async function(){try{await navigator.clipboard.writeText(assets[current].wallet);toast('Dirección copiada');}catch(e){toast('No se pudo copiar automáticamente. Selecciona la dirección.');}};
 
-  // Depósito demo: suma al balance del usuario en Supabase (upsert) y refresca la UI.
+  // Depósito demo: suma al balance del usuario en Supabase
   window.simulateDeposit = async function(){
-    if (!currentUserId) { toast('Inicia sesión primero'); return; }
-    const value = Number($('amount').value);
-    if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
+    console.log('Botón de depósito pulsado');
+    try {
+      if (!currentUserId) { toast('Inicia sesión primero'); return; }
+      const value = Number($('amount').value);
+      if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
 
-    const asset = current;
-    const usdValue = value * assets[asset].price;
-    const newAmount = (userBalances[asset] || 0) + value;
-    const btn = $('depositBtn');
-    const originalText = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Procesando…';
+      const asset = current;
+      const usdValue = value * assets[asset].price;
+      const newAmount = (userBalances[asset] || 0) + value;
+      const btn = $('depositBtn');
+      const originalText = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Procesando…';
 
-    const { error } = await supabaseClient
-      .from('novavest_balances')
-      .upsert({
-        user_id: currentUserId,
-        asset,
-        amount: newAmount,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id,asset' });
+      const { error } = await supabaseClient
+        .from('novavest_balances')
+        .upsert({
+          user_id: currentUserId,
+          asset,
+          amount: newAmount,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,asset' });
 
-    btn.disabled = false; btn.textContent = originalText;
+      btn.disabled = false; btn.textContent = originalText;
 
-    if (error) {
-      console.error('Error guardando depósito:', error);
-      toast('No se pudo guardar el depósito demo.');
-      return;
+      if (error) {
+        console.error('Error guardando depósito:', error);
+        toast('Error: ' + error.message);
+        return;
+      }
+
+      userBalances[asset] = newAmount;
+      renderUserBalances();
+
+      openModal('Depósito demo confirmado',
+        'Se agregaron ' + value + ' ' + asset + ' (≈ $' + usdValue.toFixed(2) +
+        ' USD) a tu balance demo. No es dinero real ni se ha realizado ninguna transferencia.');
+      toast('Depósito demo agregado: +' + value + ' ' + asset);
+
+    } catch (err) {
+      console.error('Excepción inesperada:', err);
+      toast('Error inesperado. Abre la consola para más detalles.');
+      $('depositBtn').disabled = false;
+      $('depositBtn').textContent = 'Continuar con depósito demo →';
     }
-
-    userBalances[asset] = newAmount;
-    renderUserBalances();
-
-    openModal('Depósito demo confirmado',
-      'Se agregaron ' + value + ' ' + asset + ' (≈ $' + usdValue.toFixed(2) +
-      ' USD) a tu balance demo. No es dinero real ni se ha realizado ninguna transferencia.');
-    toast('Depósito demo agregado: +' + value + ' ' + asset);
   };
 
   window.openModal=function(title,message){$('modalTitle').textContent=title;$('modalText').textContent=message;$('modal').classList.add('open');};
   window.closeModal=function(){$('modal').classList.remove('open');};
-  window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),2300);};
+  window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
   window.goTo=function(id){$(id).scrollIntoView({behavior:'smooth',block:'start'});};
   window.navTo=function(btn,id){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');if(id==='home')window.scrollTo({top:0,behavior:'smooth'});else window.goTo(id);};
   window.editProfile=function(){openModal('Perfil de inversor','Para cambiar el nombre, actualiza los datos de tu cuenta en una futura versión del perfil.');};
