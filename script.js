@@ -423,29 +423,46 @@ supabaseClient.auth.getSession().then(({data})=>{
   if(data.session?.user) showDashboard(data.session.user);
 });
 
+// --- ACTUALIZAR DEPÓSITO AL CAMBIAR MONEDA ---
 window.changeAsset = function() {
   const asset = $('asset').value;
   const coin = ASSET_INFO[asset];
   
-  // 1. Actualizar logo, unidad de texto y cantidad estimada
+  // 1. Actualizar logo, unidad y estimado
   $('coinBadge').innerHTML = coin.icon;
   $('unit').textContent = asset;
   updateEstimate();
   
-  // 2. Actualizar Dirección de texto
+  // 2. Actualizar la dirección de texto
   $('wallet').textContent = coin.address;
   
-  // 3. Actualizar QR dinámico
+  // 3. Actualizar el QR
   $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`;
   
-  // 4. Actualizar los textos (TRX, BTC, SOL, USDT)
+  // 4. Actualizar el texto "Envía solo [MONEDA]"
   $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
   
-  // 5. Mostrar u ocultar la etiqueta de red TRC20 solo si es USDT
+  // 5. Mostrar u ocultar la red TRC20
   const networkEl = $('qr-network');
   if (asset === 'USDT') {
     networkEl.style.display = 'inline';
   } else {
     networkEl.style.display = 'none';
   }
+};
+
+// --- ACTUALIZAR SALDO RETIRABLE AL CAMBIAR MONEDA ---
+window.updateWithdrawInfo = function() {
+  const asset = $('withdrawAsset').value;
+  const coin = ASSET_INFO[asset];
+  
+  // Mostrar el saldo en USD (que ya teníamos)
+  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
+  
+  // Calcular y mostrar el equivalente en la criptomoneda seleccionada
+  const cryptoEquivalent = withdrawableBalance / coin.price;
+  const decimals = asset === 'BTC' ? 6 : 2;
+  const cryptoString = cryptoEquivalent.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  
+  $('withdrawableCryptoUI').textContent = `(≈ ${cryptoString} ${asset})`;
 };
