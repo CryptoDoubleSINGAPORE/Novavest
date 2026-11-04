@@ -2,8 +2,8 @@ const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// ⚠️ IMPORTANTE: CAMBIA ESTO POR TU CORREO DE ADMINISTRADOR
-const ADMIN_EMAIL = 'tu@correo.com'; 
+// ⚠️ CORREO DEL ADMINISTRADOR YA CONFIGURADO
+const ADMIN_EMAIL = 'investnova149@gmail.com'; 
 
 const ASSET_INFO = {
   TRX: { price: 0.2841, name: 'TRON', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
@@ -32,17 +32,16 @@ function quantity(value, asset) { return Number(value || 0).toLocaleString('en-U
 async function loadUserData(user) {
   currentUserId = user.id;
   
-  // 1. VALIDAR CORREO (Cerrar al público)
+  // 1. VALIDAR CORREO
   if (!user.email_confirmed_at) {
     await supabaseClient.auth.signOut();
     showMessage('Debes confirmar tu correo electrónico antes de entrar. Revisa tu bandeja de entrada o spam.', true);
     return;
   }
 
-  // 2. MOSTRAR BOTÓN DE ADMIN SI ES EL DUEÑO
+  // 2. MOSTRAR BOTÓN DE ADMIN (usando tu correo configurado)
   if (user.email === ADMIN_EMAIL) {
     $('adminNavBtn').classList.remove('hidden');
-    // Ajustar el menú para que quepan 5 botones
     $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
   } else {
     $('adminNavBtn').classList.add('hidden');
@@ -90,48 +89,137 @@ async function loadUserData(user) {
       dailyWithdrawn = Number(wallet.daily_withdrawn);
     }
     withdrawableBalance = Number(wallet.withdrawable_balance);
-  } 
-renderUserBalances();
+  }
+    renderUserBalances();
   loadHistory();
   loadActiveInvestments(); 
 }
 
-// --- LÓGICA DEL PANEL DE ADMIN ---
+// --- LÓGICA DEL PANEL DE ADMIN (APROBACIONES) ---
 async function loadAdminData() {
-  // Contar usuarios
   const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
   $('adminTotalUsers').textContent = userCount || 0;
 
-  // Ver inversiones globales
-  const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
-  const list = $('adminInvestmentsList');
+  // Cargar Depósitos Pendientes
+  const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
+  const depList = $('adminPendingDeposits');
+  depList.innerHTML = '';
   
-  if (!invs || invs.length === 0) {
-    list.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas en el sistema.</p>';
-    $('adminTotalVolume').textContent = '$0.00';
-    return;
+  if (!deposits || deposits.length === 0) {
+    depList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>';
+  } else {
+    deposits.forEach(dep => {
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <div class="activity-icon" style="background:var(--mint); color:#000;">$</div>
+        <div class="activity-info">
+          <b>Depósito de ${dep.amount} ${dep.asset}</b>
+          <span>User ID: ${dep.user_id.substring(0,8)}...</span>
+        </div>
+        <div style="display:flex; gap:5px;">
+          <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:var(--mint); border:none; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
+          <button onclick="rejectAction('${dep.id}')" style="background:var(--fire); border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
+        </div>
+      `;
+      depList.appendChild(item);
+    });
   }
 
+  // Cargar Retiros Pendientes
+  const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').order('created_at', { ascending: false });
+  const withList = $('adminPendingWithdraws');
+  withList.innerHTML = '';
+  
+  if (!withdraws || withdraws.length === 0) {
+    withList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>';
+  } else {
+    withdraws.forEach(wd => {
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <div class="activity-icon" style="background:var(--fire); color:#fff;">↗</div>
+        <div class="activity-info">
+          <b>Retiro de $${wd.amount} USD (${wd.asset})</b>
+          <span style="font-size:10px; word-break:break-all;">Dir: ${wd.address}</span>
+        </div>
+        <div style="display:flex; gap:5px;">
+          <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:var(--mint); border:none; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
+          <button onclick="rejectAction('${wd.id}')" style="background:var(--fire); border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
+        </div>
+      `;
+      withList.appendChild(item);
+    });
+  }
+
+  // Inversiones globales
+  const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
+  const invList = $('adminInvestmentsList');
   let totalVol = 0;
-  list.innerHTML = '';
-  invs.forEach(inv => {
-    totalVol += Number(inv.amount_usd);
-    const dateStr = new Date(inv.end_time).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
-    
-    const item = document.createElement('div');
-    item.className = 'activity-item';
-    item.innerHTML = `
-      <div class="activity-icon" style="background:var(--fire); color:#fff;">$</div>
-      <div class="activity-info">
-        <b>${inv.plan_name} (${inv.asset})</b>
-        <span>Monto: $${inv.amount_usd} | Vence: ${dateStr}</span>
-      </div>
-      <div class="activity-amount" style="color:var(--mint)">+$${inv.profit_usd}</div>
-    `;
-    list.appendChild(item);
-  });
-  $('adminTotalVolume').textContent = money(totalVol);
+  invList.innerHTML = '';
+  if (!invs || invs.length === 0) {
+    invList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas.</p>';
+    $('adminTotalVolume').textContent = '$0.00';
+  } else {
+    invs.forEach(inv => {
+      totalVol += Number(inv.amount_usd);
+      const dateStr = new Date(inv.end_time).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <div class="activity-icon" style="background:var(--blue); color:#fff;">$</div>
+        <div class="activity-info">
+          <b>${inv.plan_name} (${inv.asset})</b>
+          <span>Monto: $${inv.amount_usd} | Vence: ${dateStr}</span>
+        </div>
+        <div class="activity-amount" style="color:var(--mint)">+$${inv.profit_usd}</div>
+      `;
+      invList.appendChild(item);
+    });
+    $('adminTotalVolume').textContent = money(totalVol);
+  }
 }
+
+// Aprobar solicitudes
+window.approveAction = async function(id, type, userId, asset, amount) {
+  if (type === 'deposit') {
+    // Sumar saldo al usuario
+    const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).single();
+    const newAmount = (currentBal?.amount || 0) + Number(amount);
+    await supabaseClient.from('novavest_balances').upsert({ user_id: userId, asset: asset, amount: newAmount });
+    toast('Depósito acreditado exitosamente');
+  } else {
+    // En retiros, el dinero ya se le descontó al usuario. Solo borramos la solicitud y avisamos.
+    toast('Retiro completado. (El saldo ya fue descontado)');
+  }
+  
+  // Eliminar la acción pendiente
+  await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
+  loadAdminData();
+};
+
+// Rechazar solicitudes
+window.rejectAction = async function(id) {
+  const { data: action } = await supabaseClient.from('novavest_pending_actions').select('*').eq('id', id).single();
+  
+  if (action && action.type === 'withdraw') {
+    // Si rechazas un retiro, hay que devolverle el saldo retirable al usuario
+    const { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', action.user_id).single();
+    if (wallet) {
+      await supabaseClient.from('novavest_wallets').update({ withdrawable_balance: Number(wallet.withdrawable_balance) + Number(action.amount) }).eq('user_id', action.user_id);
+      // Devolver también a los balances
+      const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', action.user_id).eq('asset', action.asset).single();
+      const cryptoAmount = Number(action.amount) / ASSET_INFO[action.asset].price;
+      const newAmount = (currentBal?.amount || 0) + cryptoAmount;
+      await supabaseClient.from('novavest_balances').upsert({ user_id: action.user_id, asset: action.asset, amount: newAmount });
+    }
+    toast('Retiro rechazado y saldo devuelto');
+  } else {
+    toast('Solicitud rechazada');
+}
+    await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
+  loadAdminData();
+};
 
 async function updateWalletStorage() {
   const today = new Date().toISOString().split('T')[0];
@@ -157,9 +245,7 @@ window.navigate = function(viewName, btnElement) {
   $('view-' + viewName).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   if(btnElement) btnElement.classList.add('active');
-  
   if (viewName === 'admin') loadAdminData();
-  
   window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
@@ -171,8 +257,7 @@ async function saveTransaction(type, asset, amount, extra = '') {
 
 async function loadHistory() {
   if (!currentUserId) return;
-  const { data: history, error } = await supabaseClient.from('novavest_history').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false });
-  if (error) { console.error('Error al cargar historial:', error); return; }
+  const { data: history } = await supabaseClient.from('novavest_history').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false });
   const panel = $('activityPanel');
   if (!history || history.length === 0) {
     panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
@@ -201,14 +286,13 @@ async function loadHistory() {
 
 async function saveActiveInvestment(inv) {
   const endTimeISO = new Date(inv.endTime).toISOString();
-  const { error } = await supabaseClient.from('novavest_investments').insert({ user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO });
-  if (error) { console.error('Error guardando inversión:', error); toast('Error al guardar el plan'); return; }
+  await supabaseClient.from('novavest_investments').insert({ user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO });
   loadActiveInvestments();
 }
+
 async function loadActiveInvestments() {
   if (!currentUserId) return;
-  const { data: investments, error } = await supabaseClient.from('novavest_investments').select('*').eq('user_id', currentUserId);
-  if (error) { console.error('Error cargando inversiones:', error); return; }
+  const { data: investments } = await supabaseClient.from('novavest_investments').select('*').eq('user_id', currentUserId);
   activeInvestmentsData = investments || [];
   const container = $('activeInvestmentsSection');
   const list = $('activeInvestmentsList');
@@ -235,23 +319,21 @@ function updateTimers() {
   activeInvestmentsData.forEach(inv => {
     const container = $(`timer-container-${inv.id}`);
     if (!container) return;
-    const endTimeMs = new Date(inv.end_time).getTime();
-    const remaining = endTimeMs - now;
+    const remaining = new Date(inv.end_time).getTime() - now;
     if (remaining <= 0) {
       if (!container.classList.contains('claimed')) {
         container.classList.add('claimed');
         container.innerHTML = `<button class="claim-btn" onclick="claimReward('${inv.id}')">Reclamar $${inv.profit_usd}</button>`;
       }
     } else {
-      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
-      const seconds = Math.floor((remaining / 1000) % 60);
+      const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((remaining / (1000 * 60)) % 60);
+      const s = Math.floor((remaining / 1000) % 60);
       const el = $(`timer-${inv.id}`);
-      if (el) el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      if (el) el.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
   });
 }
-
 window.claimReward = async function(invId) {
   const inv = activeInvestmentsData.find(i => i.id === invId);
   if (!inv) return;
@@ -273,8 +355,7 @@ window.openPlanModal = function(planType) {
   const config = PLAN_CONFIG[planType];
   $('planModalTitle').innerHTML = config.name;
   $('planModalDesc').textContent = config.desc;
-  const titleColor = planType === 'starter' ? 'var(--blue)' : 'var(--fire)';
-  $('planModalTitle').style.color = titleColor;
+  $('planModalTitle').style.color = planType === 'starter' ? 'var(--blue)' : 'var(--fire)';
   let htmlContent = '';
   Object.keys(ASSET_INFO).forEach(asset => {
     const assetData = ASSET_INFO[asset];
@@ -293,23 +374,18 @@ window.openPlanModal = function(planType) {
 window.closePlanModal = function() { $('planModal').classList.remove('open'); };
 
 window.checkBalanceForInvestment = function(planType, asset, amountUsd, profit) {
-  const cryptoPrice = ASSET_INFO[asset].price;
-  const cryptoNeeded = amountUsd / cryptoPrice;
-  const userCryptoBalance = userBalances[asset] || 0;
-  const userUsdBalance = userCryptoBalance * cryptoPrice;
-  if (userUsdBalance < amountUsd) {
-    const shortfallUsd = amountUsd - userUsdBalance;
+  const cryptoNeeded = amountUsd / ASSET_INFO[asset].price;
+  if ((userBalances[asset] || 0) * ASSET_INFO[asset].price < amountUsd) {
+    const shortfall = amountUsd - ((userBalances[asset] || 0) * ASSET_INFO[asset].price);
     closePlanModal();
-    const modal = $('mainModal');
-    modal.classList.add('error-shake');
-    setTimeout(() => modal.classList.remove('error-shake'), 500);
-    openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b>.<br><br>Necesitas <b>$${shortfallUsd.toFixed(2)} USD</b> más.<br><br>Por favor, recarga tu cuenta para continuar.`);
+    const modal = $('mainModal'); modal.classList.add('error-shake'); setTimeout(() => modal.classList.remove('error-shake'), 500);
+    openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b>.<br><br>Necesitas <b>$${shortfall.toFixed(2)} USD</b> más.`);
     return;
   }
   pendingInvestment = { planType, asset, amountUsd, profit, cryptoNeeded };
   closePlanModal();
   $('confirmInvTitle').textContent = 'Confirmar Inversión';
-  $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${PLAN_CONFIG[planType].name}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> de ganancia en ${PLAN_CONFIG[planType].hours} horas.<br><br>¿Deseas continuar?`;
+  $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${PLAN_CONFIG[planType].name}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> en ${PLAN_CONFIG[planType].hours} horas.<br><br>¿Deseas continuar?`;
   $('confirmInvBtn').className = `modal-btn-confirm press-effect ${planType === 'starter' ? '' : 'fire'}`;
   $('confirmInvModal').classList.add('open');
 };
@@ -318,60 +394,58 @@ window.closeConfirmInvModal = function() { $('confirmInvModal').classList.remove
 
 window.executeInvestment = async function() {
   if (!pendingInvestment) return;
-  const btn = $('confirmInvBtn');
-  btn.disabled = true; btn.textContent = 'Procesando…';
+  const btn = $('confirmInvBtn'); btn.disabled = true; btn.textContent = 'Procesando…';
   const { planType, asset, amountUsd, profit, cryptoNeeded } = pendingInvestment;
   try {
     const newAmount = (userBalances[asset] || 0) - cryptoNeeded;
-    const { error } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
-    if (error) throw error;
+    await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount });
     userBalances[asset] = newAmount;
     renderUserBalances();
     await saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
-    const endTime = Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000);
-    await saveActiveInvestment({ planName: PLAN_CONFIG[planType].name, asset, amountUsd, profitUsd: profit, endTime });
+    await saveActiveInvestment({ planName: PLAN_CONFIG[planType].name, asset, amountUsd, profitUsd: profit, endTime: Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000) });
     closeConfirmInvModal();
     navigate('home', document.querySelectorAll('.nav button')[0]);
     toast('¡Inversión realizada con éxito!');
-  } catch (err) { console.error(err); toast('Error: ' + err.message); } 
+  } catch (err) { toast('Error: ' + err.message); } 
   finally { btn.disabled = false; btn.textContent = 'Confirmar'; }
 };
 
+// --- NUEVO FLUJO DE DEPÓSITO (SOLICITUD) ---
 window.simulateDeposit = async function(){
-  if (!currentUserId) { toast('Inicia sesión primero'); return; }
+  if (!currentUserId) return;
   const value = Number($('amount').value);
   if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
   const asset = $('asset').value;
-  const usdValue = value * ASSET_INFO[asset].price;
-  const newAmount = (userBalances[asset] || 0) + value;
   const btn = $('depositBtn');
   btn.disabled = true; btn.textContent = 'Procesando…';
-  const { error } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
+
+  const { error } = await supabaseClient.from('novavest_pending_actions').insert({
+    user_id: currentUserId, type: 'deposit', asset: asset, amount: value
+  });
+
   btn.disabled = false; btn.textContent = 'Continuar con depósito →';
   if (error) { toast('Error: ' + error.message); return; }
-  userBalances[asset] = newAmount;
-  renderUserBalances();
-  await saveTransaction('deposit', asset, value);
-  openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
-  toast('Depósito agregado');
+
+  openModal('Depósito en Revisión', `Hemos recibido tu solicitud para depositar <b>${value} ${asset}</b>.<br><br>Tu saldo se acreditará una vez que el sistema verifique la transacción (de 10 min a 1 hora).`);
+  toast('Solicitud de depósito enviada');
 };
+
 window.updateWithdrawInfo = function() {
   const asset = $('withdrawAsset').value;
   const coin = ASSET_INFO[asset];
   $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
-  const cryptoEquivalent = withdrawableBalance / coin.price;
-  const decimals = asset === 'BTC' ? 6 : 2;
-  const cryptoString = cryptoEquivalent.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  const el = $('withdrawableCryptoUI');
-  if (el) el.textContent = `(≈ ${cryptoString} ${asset})`;
+  const cryptoString = (withdrawableBalance / coin.price).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 });
+  $('withdrawableCryptoUI').textContent = `(≈ ${cryptoString} ${asset})`;
 };
 
+// --- NUEVO FLUJO DE RETIRO (SOLICITUD) ---
 window.simulateWithdraw = async function() {
   const asset = $('withdrawAsset').value;
   const amountUsd = Number($('withdrawAmount').value);
   const address = $('withdrawAddress').value.trim();
   const password = $('withdrawPassword').value;
   const btn = $('withdrawBtn');
+
   if (!amountUsd || amountUsd < 1) { toast('El retiro mínimo es de $1.00 USD'); return; }
   if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente.'); return; }
   if (dailyWithdrawn + amountUsd > 550) { toast('Has superado el límite diario de $550.00 USD.'); return; }
@@ -379,30 +453,40 @@ window.simulateWithdraw = async function() {
   if (cryptoToWithdraw > (userBalances[asset] || 0)) { toast('No tienes suficiente saldo en esta moneda.'); return; }
   if (!address) { toast('Introduce una dirección de destino'); return; }
   if (!password) { toast('Introduce tu contraseña'); return; }
+
   btn.disabled = true; btn.textContent = 'Verificando…';
   try {
     const { data: userData, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !userData.user) throw new Error('Sesión no válida');
+
     const { error: authError } = await supabaseClient.auth.signInWithPassword({ email: userData.user.email, password: password });
     if (authError) { 
-      const modal = $('mainModal'); modal.classList.add('error-shake');
-      setTimeout(() => modal.classList.remove('error-shake'), 500);
+      const modal = $('mainModal'); modal.classList.add('error-shake'); setTimeout(() => modal.classList.remove('error-shake'), 500);
       toast('Contraseña incorrecta.'); btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
     }
+
+    // Descontar el saldo y crear la solicitud
     const newAmount = (userBalances[asset] || 0) - cryptoToWithdraw;
-    const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
-    if (updateError) throw updateError;
+    await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount });
     userBalances[asset] = newAmount;
+    
     withdrawableBalance -= amountUsd;
     dailyWithdrawn += amountUsd;
     await updateWalletStorage();
     renderUserBalances();
-    await saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro');
+    await saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro Solicitado');
+
+    // Insertar en la tabla de pendientes
+    await supabaseClient.from('novavest_pending_actions').insert({
+      user_id: currentUserId, type: 'withdraw', asset: asset, amount: amountUsd, address: address
+    });
+    
     $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
-    openModal('Retiro Confirmado', `Se han retirado $${amountUsd.toFixed(2)} USD (${cryptoToWithdraw.toFixed(4)} ${asset}) a la dirección proporcionada.<br><br><i>(Simulación).</i>`);
-    toast('Retiro procesado con éxito');
+    openModal('Retiro en Revisión', `Tu solicitud de retiro por <b>$${amountUsd.toFixed(2)} USD</b> ha sido enviada.<br><br>Se procesará en un plazo de 1 a 24 horas.`);
+    toast('Solicitud de retiro enviada');
+
   } catch (err) {
-    console.error('Error en retiro:', err); toast('Error: ' + (err.message || 'No se pudo procesar'));
+    toast('Error: ' + (err.message || 'No se pudo procesar'));
   } finally { btn.disabled = false; btn.textContent = 'Confirmar retiro →'; }
 };
 
@@ -441,7 +525,6 @@ $('registerForm').addEventListener('submit', async e=>{
   if(data.session){showDashboard(data.user);}
   else showMessage('Cuenta creada. Revisa tu correo para confirmar.');
 });
-
 $('resetForm').addEventListener('submit',async e=>{
   e.preventDefault();clearMessage();
   const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
@@ -491,8 +574,7 @@ window.changeAsset = function() {
   $('wallet').textContent = coin.address;
   $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`;
   $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
-  const networkEl = $('qr-network');
-  if (asset === 'USDT') networkEl.style.display = 'inline'; else networkEl.style.display = 'none';
+  $('qr-network').style.display = asset === 'USDT' ? 'inline' : 'none';
 };
 
 window.updateEstimate = function() {
