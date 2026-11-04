@@ -193,53 +193,7 @@
         </div>
         NovaVest
       </div>
-      <h1 id="authTitle">Bienvenido de nuevo</h1>
-      <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel personal.</p>
-      <div id="authMessage" class="auth-message hidden" role="status"></div>
-      <form id="loginForm" class="auth-form">
-        <label class="field-label" for="loginEmail">Correo electrónico</label>
-        <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <label class="field-label" for="loginPassword">Contraseña</label>
-        <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" minlength="6" required>
-        <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
-      </form>
-      <form id="registerForm" class="auth-form hidden">
-        <label class="field-label" for="fullName">Nombre completo</label>
-        <input class="field" id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" maxlength="70" required>
-        <label class="field-label" for="registerEmail">Correo electrónico</label>
-        <input class="field" id="registerEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <label class="field-label" for="registerPassword">Crear contraseña</label>
-        <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
-        <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
-      </form>
-      <form id="resetForm" class="auth-form hidden">
-        <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
-        <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
-      </form>
-      <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
-      <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
-    </div>
-  </section>
-
-  <main id="dashboard" class="hidden">
-    <div class="app">
-      <header class="top">
-        <div class="brand">
-          <div class="brandmark">
-            <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="40" height="40" rx="14" fill="url(#paint0_linear2)"/>
-              <path d="M12 28V12L28 28V12" stroke="#071525" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              <defs>
-                <linearGradient id="paint0_linear2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#00f2fe"/>
-                  <stop offset="1" stop-color="#4facfe"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          NovaVest
-        </div>
+       </div>
         <div class="avatar" id="avatar">NV</div>
       </header>
 
@@ -297,7 +251,7 @@
           </div>
         </div>
       </div>
-      <!-- VISTA DEPÓSITO -->
+
       <div id="view-deposit" class="view">
         <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Oficial</span></div>
         <div class="panel">
@@ -334,14 +288,12 @@
           
           <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
           
-          <!-- RECUADRO INFORMATIVO DE DEPÓSITO -->
           <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(255, 189, 98, 0.1); border: 1px solid rgba(255, 189, 98, 0.3); font-size: 11px; color: #ffbd62; text-align: center; line-height: 1.5;">
             ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
           </div>
         </div>
       </div>
 
-      <!-- VISTA RETIRO -->
       <div id="view-withdraw" class="view">
         <div class="section" style="margin-top:0;"><h2>Retiro de Ganancias</h2><span class="pill">Oficial</span></div>
         <div class="panel">
@@ -356,9 +308,8 @@
               </b>
             </div>
             <div style="font-size:10px; color:#888; margin-top:8px;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
-          </div>
-
-          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+          </div
+                      <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
             <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
               <option value="TRX">TRON (TRX)</option>
@@ -380,7 +331,6 @@
           
           <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: linear-gradient(100deg, #ff789f, #ffbd62); color: #071a25; margin-top: 20px;">Confirmar retiro →</button>
           
-          <!-- RECUADRO INFORMATIVO DE RETIRO -->
           <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(101, 168, 254, 0.1); border: 1px solid rgba(101, 168, 254, 0.3); font-size: 11px; color: #65a8fe; text-align: center; line-height: 1.5;">
             ⏳ <b>Tiempo de procesamiento:</b><br>Los retiros son procesados de 1 hora a 24 horas.
           </div>
@@ -430,47 +380,77 @@
       </div>
 
       <!-- VISTA ADMIN (OCULTA) -->
-<div id="view-admin" class="view">
-  <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:var(--fire); color:#fff;">Dueño</span></div>
+      <div id="view-admin" class="view">
+        <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:var(--fire); color:#fff;">Dueño</span></div>
+        
+        <div class="stats" style="margin-bottom: 15px;">
+          <div class="stat">
+            <div class="stat-top">Usuarios Totales</div>
+            <strong id="adminTotalUsers">0</strong>
+            <small>Cuentas registradas</small>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Volumen Total</div>
+            <strong id="adminTotalVolume">$0.00</strong>
+            <small>En depósitos (Aprox)</small>
+          </div>
+        </div>
+
+        <!-- NUEVO: Solicitudes de Depósito -->
+        <div class="panel" style="margin-top:0; border-color: var(--mint);">
+          <div class="section" style="margin-top:0;"><h2 style="color:var(--mint);">Depósitos Pendientes</h2></div>
+          <div id="adminPendingDeposits" class="activity">
+            <p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>
+          </div>
+        </div>
+
+        <!-- NUEVO: Solicitudes de Retiro -->
+        <div class="panel" style="margin-top:15px; border-color: var(--fire);">
+          <div class="section" style="margin-top:0;"><h2 style="color:var(--fire);">Retiros Pendientes</h2></div>
+          <div id="adminPendingWithdraws" class="activity">
+            <p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:15px;">
+          <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
+          <div id="adminInvestmentsList" class="activity">
+            <p style="color:var(--muted); font-size:12px; text-align:center;">Cargando datos...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <nav class="nav">
+      <div class="nav-inner" id="navInner">
+        <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
+        <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
+        <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
+        <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
+        <!-- Pestaña oculta para Admin -->
+        <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:var(--fire);"><span>⚙</span>Admin</button>
+      </div>
+    </nav>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
   
-  <div class="stats" style="margin-bottom: 15px;">
-    <div class="stat">
-      <div class="stat-top">Usuarios Totales</div>
-      <strong id="adminTotalUsers">0</strong>
-      <small>Cuentas registradas</small>
-    </div>
-    <div class="stat">
-      <div class="stat-top">Volumen Total</div>
-      <strong id="adminTotalVolume">$0.00</strong>
-      <small>En depósitos (Aprox)</small>
-    </div>
-  </div>
-
-  <!-- NUEVO: Solicitudes de Depósito -->
-  <div class="panel" style="margin-top:0; border-color: var(--mint);">
-    <div class="section" style="margin-top:0;"><h2 style="color:var(--mint);">Depósitos Pendientes</h2></div>
-    <div id="adminPendingDeposits" class="activity">
-      <p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>
+  <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
+  
+  <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close press-effect" onclick="closePlanModal()">✕</button><h3 id="planModalTitle">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
+  
+  <div class="modal-backdrop" id="confirmInvModal">
+    <div class="modal">
+      <h3 id="confirmInvTitle" style="margin-bottom: 10px;">Confirmar Inversión</h3>
+      <p id="confirmInvText"></p>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()">Cancelar</button>
+        <button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
+      </div>
     </div>
   </div>
-
-  <!-- NUEVO: Solicitudes de Retiro -->
-  <div class="panel" style="margin-top:15px; border-color: var(--fire);">
-    <div class="section" style="margin-top:0;"><h2 style="color:var(--fire);">Retiros Pendientes</h2></div>
-    <div id="adminPendingWithdraws" class="activity">
-      <p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>
-    </div>
-  </div>
-
-  <div class="panel" style="margin-top:15px;">
-    <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
-    <div id="adminInvestmentsList" class="activity">
-      <p style="color:var(--muted); font-size:12px; text-align:center;">Cargando datos...</p>
-    </div>
-  </div>
-</div>
-
-  <!-- BOTÓN FLOTANTE DE SOPORTE AL CLIENTE (TELEGRAM) -->
+<!-- BOTÓN FLOTANTE DE SOPORTE AL CLIENTE (TELEGRAM) -->
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#229ED9; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 15px rgba(34,158,217,0.4); z-index: 100; text-decoration: none;">
     <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
