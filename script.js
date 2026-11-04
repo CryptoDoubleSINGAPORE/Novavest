@@ -26,31 +26,10 @@ const $ = (id) => document.getElementById(id);
 function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
 
-// --- FUNCIÓN PARA RESCATAR LOS PLANES VIEJOS ---
-async function migrateOldInvestments() {
-  const oldKey = 'nv_investments_' + currentUserId;
-  const oldInvs = JSON.parse(localStorage.getItem(oldKey) || '[]');
-  
-  if (oldInvs.length > 0) {
-    console.log("Rescatando planes viejos...", oldInvs);
-    for (const inv of oldInvs) {
-      const endTimeISO = new Date(inv.endTime).toISOString();
-      await supabaseClient.from('novavest_investments').insert({
-        user_id: currentUserId,
-        plan_name: inv.planName,
-        asset: inv.asset,
-        amount_usd: inv.amountUsd,
-        profit_usd: inv.profitUsd,
-        end_time: endTimeISO
-      });
-    }
-    localStorage.removeItem(oldKey);
-    toast('Planes anteriores sincronizados a la nube');
-  }
-}
-
 async function loadUserData(user) {
   currentUserId = user.id;
+  
+  // 1. Cargar Balances de Monedas
   const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
   if (readError) { console.error('Error leyendo balances:', readError); return; }
   
@@ -67,29 +46,39 @@ async function loadUserData(user) {
     }
   });
 
-  const walletKey = 'nv_wallet_' + currentUserId;
-  const walletData = JSON.parse(localStorage.getItem(walletKey) || '{"withdrawable":0,"lastDate":"","dailyWithdrawn":0}');
+  // 2. Cargar Billetera (Saldo retirable y límite diario)
+  let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
   const today = new Date().toISOString().split('T')[0];
   
-  if (walletData.lastDate !== today) {
-    walletData.lastDate = today;
-    walletData.dailyWithdrawn = 0;
-    localStorage.setItem(walletKey, JSON.stringify(walletData));
+  if (!wallet) {
+    // Crear billetera nueva si no existe
+    await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
+    withdrawableBalance = 0;
+    dailyWithdrawn = 0;
+  } else {
+    // Si el último retiro fue en otra fecha, reiniciamos el contador diario
+    if (wallet.last_withdrawn_date !== today) {
+      dailyWithdrawn = 0;
+      await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id);
+    } else {
+      dailyWithdrawn = Number(wallet.daily_withdrawn);
+    }
+    withdrawableBalance = Number(wallet.withdrawable_balance);
   }
-  withdrawableBalance = walletData.withdrawable || 0;
-  dailyWithdrawn = walletData.dailyWithdrawn || 0;
 
   renderUserBalances();
   loadHistory();
-  await migrateOldInvestments(); 
   loadActiveInvestments(); 
 }
 
-function updateWalletStorage() {
-  const walletKey = 'nv_wallet_' + currentUserId;
+async function updateWalletStorage() {
   const today = new Date().toISOString().split('T')[0];
-  const walletData = { withdrawable: withdrawableBalance, lastDate: today, dailyWithdrawn: dailyWithdrawn };
-  localStorage.setItem(walletKey, JSON.stringify(walletData));
+  await supabaseClient.from('novavest_wallets').upsert({
+    user_id: currentUserId,
+    withdrawable_balance: withdrawableBalance,
+    daily_withdrawn: dailyWithdrawn,
+    last_withdrawn_date: today
+  });
 }
 
 function renderUserBalances() {
@@ -112,23 +101,30 @@ window.navigate = function(viewName, btnElement) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
-function saveTransaction(type, asset, amount, extra = '') {
+async function saveTransaction(type, asset, amount, extra = '') {
   if (!currentUserId) return;
-  const historyKey = 'nv_history_' + currentUserId;
-  let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-  const tx = { type: type, asset: asset, amount: amount, date: new Date().toISOString(), extra: extra };
-  history.unshift(tx);
-  localStorage.setItem(historyKey, JSON.stringify(history));
+  await supabaseClient.from('novavest_history').insert({
+    user_id: currentUserId,
+    type: type,
+    asset: asset,
+    amount: amount,
+    details: extra
+  });
   loadHistory();
 }
 
-function loadHistory() {
+async function loadHistory() {
   if (!currentUserId) return;
-  const historyKey = 'nv_history_' + currentUserId;
-  const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  const { data: history, error } = await supabaseClient.from('novavest_history')
+    .select('*')
+    .eq('user_id', currentUserId)
+    .order('created_at', { ascending: false });
+  
+  if (error) { console.error('Error al cargar historial:', error); return; }
+  
   const panel = $('activityPanel');
   
-  if (history.length === 0) {
+  if (!history || history.length === 0) {
     panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
     return;
   }
@@ -140,10 +136,10 @@ function loadHistory() {
     if (tx.type === 'investment') { icon = '✦'; title = 'Inversión'; color = 'var(--blue)'; sign = '−'; }
     if (tx.type === 'reward') { icon = '★'; title = 'Ganancia'; color = 'var(--mint)'; sign = '+'; }
     
-    const dateObj = new Date(tx.date);
+    const dateObj = new Date(tx.created_at);
     const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
-    const extraTxt = tx.extra ? ` (${tx.extra})` : '';
-    const assetData = ASSET_INFO[tx.asset];
+    const extraTxt = tx.details ? ` (${tx.details})` : '';
+    const assetData = ASSET_INFO[tx.asset] || { icon: '' };
 
     const item = document.createElement('div');
     item.className = 'activity-item';
@@ -154,7 +150,7 @@ function loadHistory() {
     `;
     panel.appendChild(item);
   });
-        } async function saveActiveInvestment(inv) {
+} async function saveActiveInvestment(inv) {
   const endTimeISO = new Date(inv.endTime).toISOString();
   const { error } = await supabaseClient.from('novavest_investments').insert({
     user_id: currentUserId,
@@ -255,12 +251,12 @@ window.claimReward = async function(invId) {
   }, { onConflict: 'user_id,asset' });
 
   withdrawableBalance += Number(inv.profit_usd);
-  updateWalletStorage();
+  await updateWalletStorage();
   renderUserBalances();
   
   await supabaseClient.from('novavest_investments').delete().eq('id', invId);
   
-  saveTransaction('reward', inv.asset, cryptoEarned, 'Ganancia ' + inv.plan_name);
+  await saveTransaction('reward', inv.asset, cryptoEarned, 'Ganancia ' + inv.plan_name);
   
   loadActiveInvestments();
   openModal('¡Felicidades!', `Has reclamado <b>$${inv.profit_usd} USD</b>.<br><br>Este dinero ya está disponible en tu saldo retirable.`);
@@ -344,7 +340,7 @@ window.executeInvestment = async function() {
 
     userBalances[asset] = newAmount;
     renderUserBalances();
-    saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
+    await saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
     
     const endTime = Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000);
     await saveActiveInvestment({ planName: PLAN_CONFIG[planType].name, asset, amountUsd, profitUsd: profit, endTime });
@@ -378,7 +374,7 @@ window.executeInvestment = async function() {
 
   userBalances[asset] = newAmount;
   renderUserBalances();
-  saveTransaction('deposit', asset, value);
+  await saveTransaction('deposit', asset, value);
   openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
   toast('Depósito agregado');
 };
@@ -426,10 +422,10 @@ window.simulateWithdraw = async function() {
     userBalances[asset] = newAmount;
     withdrawableBalance -= amountUsd;
     dailyWithdrawn += amountUsd;
-    updateWalletStorage();
+    await updateWalletStorage();
     
     renderUserBalances();
-    saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro');
+    await saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro');
     
     $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
 
