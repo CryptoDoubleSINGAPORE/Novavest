@@ -426,19 +426,26 @@ supabaseClient.auth.getSession().then(({data})=>{
 window.changeAsset = function() {
   const asset = $('asset').value;
   const coin = ASSET_INFO[asset];
+  
+  // 1. Actualizar logo, unidad de texto y cantidad estimada
   $('coinBadge').innerHTML = coin.icon;
   $('unit').textContent = asset;
   updateEstimate();
+  
+  // 2. Actualizar Dirección de texto
+  $('wallet').textContent = coin.address;
+  
+  // 3. Actualizar QR dinámico
+  $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`;
+  
+  // 4. Actualizar los textos (TRX, BTC, SOL, USDT)
+  $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
+  
+  // 5. Mostrar u ocultar la etiqueta de red TRC20 solo si es USDT
+  const networkEl = $('qr-network');
+  if (asset === 'USDT') {
+    networkEl.style.display = 'inline';
+  } else {
+    networkEl.style.display = 'none';
+  }
 };
-window.updateEstimate = function() {
-  const value = Math.max(0, Number($('amount').value)||0);
-  const price = ASSET_INFO[$('asset').value].price;
-  $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
-};
-window.copyWallet = async function() {
-  try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); }
-  catch(e) { toast('No se pudo copiar'); }
-};
-window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
-window.closeModal=function(){$('modal').classList.remove('open');};
-window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
