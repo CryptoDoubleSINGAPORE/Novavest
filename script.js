@@ -2,7 +2,9 @@ const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Direcciones oficiales configuradas
+// ⚠️ IMPORTANTE: CAMBIA ESTO POR TU CORREO DE ADMINISTRADOR
+const ADMIN_EMAIL = 'tu@correo.com'; 
+
 const ASSET_INFO = {
   TRX: { price: 0.2841, name: 'TRON', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
   BTC: { price: 67420.8, name: 'Bitcoin', address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">' },
@@ -30,7 +32,24 @@ function quantity(value, asset) { return Number(value || 0).toLocaleString('en-U
 async function loadUserData(user) {
   currentUserId = user.id;
   
-  // 1. TRAER EL ID DEL INVERSOR
+  // 1. VALIDAR CORREO (Cerrar al público)
+  if (!user.email_confirmed_at) {
+    await supabaseClient.auth.signOut();
+    showMessage('Debes confirmar tu correo electrónico antes de entrar. Revisa tu bandeja de entrada o spam.', true);
+    return;
+  }
+
+  // 2. MOSTRAR BOTÓN DE ADMIN SI ES EL DUEÑO
+  if (user.email === ADMIN_EMAIL) {
+    $('adminNavBtn').classList.remove('hidden');
+    // Ajustar el menú para que quepan 5 botones
+    $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
+  } else {
+    $('adminNavBtn').classList.add('hidden');
+    $('navInner').style.gridTemplateColumns = 'repeat(4, 1fr)';
+  }
+
+  // 3. TRAER EL ID DEL INVERSOR
   const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
   if (profile) {
     $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
@@ -38,7 +57,7 @@ async function loadUserData(user) {
     $('investorId').textContent = 'ID de inversor: Pendiente';
   }
 
-  // 2. CARGAR BALANCES
+  // 4. CARGAR BALANCES
   const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
   if (readError) { console.error('Error leyendo balances:', readError); return; }
   
@@ -55,7 +74,7 @@ async function loadUserData(user) {
     }
   });
 
-  // 3. CARGAR BILLETERA (SALDO RETIRABLE)
+  // 5. CARGAR BILLETERA (SALDO RETIRABLE)
   let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
   const today = new Date().toISOString().split('T')[0];
   
@@ -71,20 +90,53 @@ async function loadUserData(user) {
       dailyWithdrawn = Number(wallet.daily_withdrawn);
     }
     withdrawableBalance = Number(wallet.withdrawable_balance);
-  }
-
-  renderUserBalances();
+  } 
+renderUserBalances();
   loadHistory();
   loadActiveInvestments(); 
+}
+
+// --- LÓGICA DEL PANEL DE ADMIN ---
+async function loadAdminData() {
+  // Contar usuarios
+  const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
+  $('adminTotalUsers').textContent = userCount || 0;
+
+  // Ver inversiones globales
+  const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
+  const list = $('adminInvestmentsList');
+  
+  if (!invs || invs.length === 0) {
+    list.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas en el sistema.</p>';
+    $('adminTotalVolume').textContent = '$0.00';
+    return;
+  }
+
+  let totalVol = 0;
+  list.innerHTML = '';
+  invs.forEach(inv => {
+    totalVol += Number(inv.amount_usd);
+    const dateStr = new Date(inv.end_time).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+    
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <div class="activity-icon" style="background:var(--fire); color:#fff;">$</div>
+      <div class="activity-info">
+        <b>${inv.plan_name} (${inv.asset})</b>
+        <span>Monto: $${inv.amount_usd} | Vence: ${dateStr}</span>
+      </div>
+      <div class="activity-amount" style="color:var(--mint)">+$${inv.profit_usd}</div>
+    `;
+    list.appendChild(item);
+  });
+  $('adminTotalVolume').textContent = money(totalVol);
 }
 
 async function updateWalletStorage() {
   const today = new Date().toISOString().split('T')[0];
   await supabaseClient.from('novavest_wallets').upsert({
-    user_id: currentUserId,
-    withdrawable_balance: withdrawableBalance,
-    daily_withdrawn: dailyWithdrawn,
-    last_withdrawn_date: today
+    user_id: currentUserId, withdrawable_balance: withdrawableBalance, daily_withdrawn: dailyWithdrawn, last_withdrawn_date: today
   });
 }
 
@@ -97,8 +149,6 @@ function renderUserBalances() {
   $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
   $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
   $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
-  
-  // Actualizamos el saldo en dólares y el texto de la moneda en Retiro
   window.updateWithdrawInfo();
 }
 
@@ -107,14 +157,15 @@ window.navigate = function(viewName, btnElement) {
   $('view-' + viewName).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   if(btnElement) btnElement.classList.add('active');
+  
+  if (viewName === 'admin') loadAdminData();
+  
   window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
 async function saveTransaction(type, asset, amount, extra = '') {
   if (!currentUserId) return;
-  await supabaseClient.from('novavest_history').insert({
-    user_id: currentUserId, type: type, asset: asset, amount: amount, details: extra
-  });
+  await supabaseClient.from('novavest_history').insert({ user_id: currentUserId, type: type, asset: asset, amount: amount, details: extra });
   loadHistory();
 }
 
@@ -150,13 +201,10 @@ async function loadHistory() {
 
 async function saveActiveInvestment(inv) {
   const endTimeISO = new Date(inv.endTime).toISOString();
-  const { error } = await supabaseClient.from('novavest_investments').insert({
-    user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO
-  });
+  const { error } = await supabaseClient.from('novavest_investments').insert({ user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO });
   if (error) { console.error('Error guardando inversión:', error); toast('Error al guardar el plan'); return; }
   loadActiveInvestments();
 }
-
 async function loadActiveInvestments() {
   if (!currentUserId) return;
   const { data: investments, error } = await supabaseClient.from('novavest_investments').select('*').eq('user_id', currentUserId);
@@ -234,12 +282,7 @@ window.openPlanModal = function(planType) {
     config.amounts.forEach(amt => {
       const profit = (amt * config.roi).toFixed(2);
       const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
-      htmlContent += `
-        <button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})">
-          <div class="invest-btn-price">$${amt} <span>USD</span></div>
-          <div class="invest-btn-yield" style="color: ${planType === 'starter' ? 'var(--blue)' : 'var(--fire)'};">${profitText}</div>
-        </button>
-      `;
+      htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? 'var(--blue)' : 'var(--fire)'};">${profitText}</div></button>`;
     });
     htmlContent += `</div></div>`;
   });
@@ -312,25 +355,15 @@ window.simulateDeposit = async function(){
   openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
   toast('Depósito agregado');
 };
-
-// --- ACTUALIZAR EL TEXTO DEL SALDO RETIRABLE SEGÚN LA MONEDA ---
 window.updateWithdrawInfo = function() {
   const asset = $('withdrawAsset').value;
   const coin = ASSET_INFO[asset];
-  
-  // Mostrar el saldo total en USD
   $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
-  
-  // Calcular y mostrar el equivalente en la moneda seleccionada (BTC, TRX, etc)
   const cryptoEquivalent = withdrawableBalance / coin.price;
   const decimals = asset === 'BTC' ? 6 : 2;
   const cryptoString = cryptoEquivalent.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  
-  // Actualizamos el texto entre paréntesis
   const el = $('withdrawableCryptoUI');
-  if (el) {
-    el.textContent = `(≈ ${cryptoString} ${asset})`;
-  }
+  if (el) el.textContent = `(≈ ${cryptoString} ${asset})`;
 };
 
 window.simulateWithdraw = async function() {
@@ -340,7 +373,7 @@ window.simulateWithdraw = async function() {
   const password = $('withdrawPassword').value;
   const btn = $('withdrawBtn');
   if (!amountUsd || amountUsd < 1) { toast('El retiro mínimo es de $1.00 USD'); return; }
-  if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente. Solo puedes retirar tus ganancias.'); return; }
+  if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente.'); return; }
   if (dailyWithdrawn + amountUsd > 550) { toast('Has superado el límite diario de $550.00 USD.'); return; }
   const cryptoToWithdraw = amountUsd / ASSET_INFO[asset].price;
   if (cryptoToWithdraw > (userBalances[asset] || 0)) { toast('No tienes suficiente saldo en esta moneda.'); return; }
@@ -352,8 +385,7 @@ window.simulateWithdraw = async function() {
     if (userError || !userData.user) throw new Error('Sesión no válida');
     const { error: authError } = await supabaseClient.auth.signInWithPassword({ email: userData.user.email, password: password });
     if (authError) { 
-      const modal = $('mainModal');
-      modal.classList.add('error-shake');
+      const modal = $('mainModal'); modal.classList.add('error-shake');
       setTimeout(() => modal.classList.remove('error-shake'), 500);
       toast('Contraseña incorrecta.'); btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
     }
@@ -450,32 +482,17 @@ supabaseClient.auth.getSession().then(({data})=>{
   if(data.session?.user) showDashboard(data.session.user);
 });
 
-// --- ACTUALIZAR DIRECCIÓN Y QR AL CAMBIAR MONEDA EN DEPÓSITO ---
 window.changeAsset = function() {
   const asset = $('asset').value;
   const coin = ASSET_INFO[asset];
-  
-  // 1. Actualizar logo, unidad y estimado
   $('coinBadge').innerHTML = coin.icon;
   $('unit').textContent = asset;
   updateEstimate();
-  
-  // 2. Actualizar la dirección de texto
   $('wallet').textContent = coin.address;
-  
-  // 3. Actualizar el QR
   $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`;
-  
-  // 4. Actualizar el texto "Envía solo [MONEDA]"
   $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
-  
-  // 5. Mostrar u ocultar la red TRC20
   const networkEl = $('qr-network');
-  if (asset === 'USDT') {
-    networkEl.style.display = 'inline';
-  } else {
-    networkEl.style.display = 'none';
-  }
+  if (asset === 'USDT') networkEl.style.display = 'inline'; else networkEl.style.display = 'none';
 };
 
 window.updateEstimate = function() {
