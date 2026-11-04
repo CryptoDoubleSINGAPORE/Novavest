@@ -2,7 +2,6 @@ const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// ⚠️ CORREO DEL ADMINISTRADOR
 const ADMIN_EMAIL = 'investnova149@gmail.com'; 
 
 const ASSET_INFO = {
@@ -13,6 +12,7 @@ const ASSET_INFO = {
 };
 
 let currentUserId = null;
+let currentUserEmail = null; // <-- NUEVA VARIABLE GLOBAL
 let userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
 let withdrawableBalance = 0;
 let dailyWithdrawn = 0;
@@ -21,22 +21,8 @@ let timerInterval = null;
 let activeInvestmentsData = [];
 
 const PLAN_CONFIG = {
-  starter: { 
-    name: '❄️ Plan Starter (9%)', 
-    desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', 
-    roi: 0.09, 
-    totalPayouts: 7,
-    intervalHours: 24,
-    amounts: [20, 50, 100, 200, 400] 
-  },
-  pro: { 
-    name: '🔥 Plan Pro (12%)', 
-    desc: 'Ganancias cada 48 horas. Elige tu criptomoneda y el monto:', 
-    roi: 0.12, 
-    totalPayouts: 7,
-    intervalHours: 48,
-    amounts: [500, 1000, 2000, 5000] 
-  }
+  starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, totalPayouts: 7, intervalHours: 24, amounts: [20, 50, 100, 200, 400] },
+  pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 48 horas. Elige tu criptomoneda y el monto:', roi: 0.12, totalPayouts: 7, intervalHours: 48, amounts: [500, 1000, 2000, 5000] }
 };
 
 const $ = (id) => document.getElementById(id);
@@ -45,8 +31,8 @@ function quantity(value, asset) { return Number(value || 0).toLocaleString('en-U
 
 async function loadUserData(user) {
   currentUserId = user.id;
+  currentUserEmail = user.email; // <-- GUARDAMOS EL CORREO AQUÍ
   
-  // MOSTRAR BOTÓN DE ADMIN
   if (user.email === ADMIN_EMAIL) {
     $('adminNavBtn').classList.remove('hidden');
     $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
@@ -55,18 +41,10 @@ async function loadUserData(user) {
     $('navInner').style.gridTemplateColumns = 'repeat(4, 1fr)';
   }
 
-  // TRAER EL ID DEL INVERSOR
   const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
-  if (profile) {
-    $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
-  } else {
-    $('investorId').textContent = 'ID de inversor: Pendiente';
-  }
+  if (profile) $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
 
-  // CARGAR BALANCES
-  const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-  if (readError) { console.error('Error leyendo balances:', readError); return; }
-  
+  const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
   if (!existing || existing.length === 0) {
     const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
     await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
@@ -80,14 +58,12 @@ async function loadUserData(user) {
     }
   });
 
-  // CARGAR BILLETERA (SALDO RETIRABLE)
   let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
   const today = new Date().toISOString().split('T')[0];
   
   if (!wallet) {
     await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
-    withdrawableBalance = 0;
-    dailyWithdrawn = 0;
+    withdrawableBalance = 0; dailyWithdrawn = 0;
   } else {
     if (wallet.last_withdrawn_date !== today) {
       dailyWithdrawn = 0;
@@ -103,12 +79,10 @@ async function loadUserData(user) {
   loadActiveInvestments(); 
 }
 
-// --- LÓGICA DEL PANEL DE ADMIN (APROBACIONES) ---
 async function loadAdminData() {
   const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
   $('adminTotalUsers').textContent = userCount || 0;
 
-  // Cargar Depósitos Pendientes
   const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
   const depList = $('adminPendingDeposits');
   depList.innerHTML = '';
@@ -133,8 +107,7 @@ async function loadAdminData() {
       `;
       depList.appendChild(item);
     });
-      }
-    // Cargar Retiros Pendientes
+                                       }
   const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').order('created_at', { ascending: false });
   const withList = $('adminPendingWithdraws');
   withList.innerHTML = '';
@@ -162,7 +135,6 @@ async function loadAdminData() {
     });
   }
 
-  // Inversiones globales
   const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
   const invList = $('adminInvestmentsList');
   let totalVol = 0;
@@ -280,7 +252,6 @@ async function loadHistory() {
     panel.appendChild(item);
   });
 }
-
 async function saveActiveInvestment(inv) {
   const { error } = await supabaseClient.from('novavest_investments').insert({ 
     user_id: currentUserId, 
@@ -293,6 +264,7 @@ async function saveActiveInvestment(inv) {
     payouts_claimed: 0,
     next_payout_time: new Date(Date.now() + (inv.intervalHours * 60 * 60 * 1000)).toISOString()
   });
+  
   if (error) { 
     console.error('Error crítico en DB al guardar plan:', error);
     throw new Error('No se pudo crear el plan en el servidor.'); 
@@ -366,31 +338,21 @@ window.claimReward = async function(invId) {
   if (!inv) return;
   if (Date.now() < new Date(inv.next_payout_time).getTime()) { toast('El pago aún no está disponible.'); return; }
   
-  // Deshabilitar botón para evitar doble clic
   const btn = document.querySelector(`button[onclick="claimReward('${invId}')"]`);
   if (btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
 
   const cryptoEarned = inv.profit_per_payout / ASSET_INFO[inv.asset].price;
-  
-  // 1. Actualizar base de datos de la inversión PRIMERO (para verificar permisos)
   const newPayoutsClaimed = inv.payouts_claimed + 1;
   
   if (newPayoutsClaimed >= inv.total_payouts) {
-    // Si es el último pago, eliminamos el plan
     const { error } = await supabaseClient.from('novavest_investments').delete().eq('id', invId);
-    if (error) { toast("Error de servidor. Contacta a soporte."); return; }
+    if (error) { toast("Error de servidor."); return; }
   } else {
-    // Si no es el último, actualizamos la fecha al siguiente pago
     const nextTime = new Date(Date.now() + (inv.payout_interval_hours * 60 * 60 * 1000)).toISOString();
     const { error } = await supabaseClient.from('novavest_investments').update({ payouts_claimed: newPayoutsClaimed, next_payout_time: nextTime }).eq('id', invId);
-    if (error) {
-      console.error("Error guardando pago:", error);
-      toast("Error de servidor. Contacta a soporte.");
-      return;
-    }
+    if (error) { toast("Error de servidor."); return; }
   }
 
-  // 2. Si no hubo error, actualizamos el saldo del usuario
   userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
   await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
   
@@ -399,9 +361,8 @@ window.claimReward = async function(invId) {
   renderUserBalances();
   await saveTransaction('reward', inv.asset, cryptoEarned, 'Pago ' + (inv.payouts_claimed + 1) + '/' + inv.total_payouts);
 
-  // 3. Mostrar mensaje de éxito y recargar planes
   if (newPayoutsClaimed >= inv.total_payouts) {
-    openModal('¡Plan Completado!', `Has reclamado el último pago de <b>$${inv.profit_per_payout} USD</b>.<br><br>El plan ha finalizado. Puedes activar uno nuevo cuando quieras.`);
+    openModal('¡Plan Completado!', `Has reclamado el último pago de <b>$${inv.profit_per_payout} USD</b>.<br><br>El plan ha finalizado.`);
   } else {
     openModal('¡Pago Reclamado!', `Has recibido <b>$${inv.profit_per_payout} USD</b>.<br><br>Tu próximo pago estará disponible en ${inv.payout_interval_hours} horas.`);
   }
@@ -456,17 +417,7 @@ window.executeInvestment = async function() {
   const cfg = PLAN_CONFIG[planType];
   
   try {
-    // 1. Primero guardamos el plan
-    await saveActiveInvestment({ 
-      planName: cfg.name, 
-      asset, 
-      amountUsd, 
-      profitPerPayout: profit, 
-      intervalHours: cfg.intervalHours,
-      totalPayouts: cfg.totalPayouts 
-    });
-
-    // 2. Si no falló, descontamos el saldo
+    await saveActiveInvestment({ planName: cfg.name, asset, amountUsd, profitPerPayout: profit, intervalHours: cfg.intervalHours, totalPayouts: cfg.totalPayouts });
     const newAmount = (userBalances[asset] || 0) - cryptoNeeded;
     await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount });
     
@@ -476,10 +427,7 @@ window.executeInvestment = async function() {
     
     closeConfirmInvModal();
     toast('¡Inversión realizada con éxito!');
-    
-    // 3. Recargamos para asegurar que el reloj aparezca
     setTimeout(() => { window.location.reload(); }, 1000);
-
   } catch (err) { 
     toast('Error al procesar. Tu saldo está a salvo.'); 
     console.error(err);
@@ -488,22 +436,19 @@ window.executeInvestment = async function() {
   }
 };
 
-// --- NUEVO FLUJO DE DEPÓSITO (CON CORREO) ---
 window.simulateDeposit = async function(){
   if (!currentUserId) return;
   const value = Number($('amount').value);
   if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
   const asset = $('asset').value;
   const btn = $('depositBtn');
-  
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  const userEmail = user ? user.email : 'Desconocido';
 
   btn.disabled = true; btn.textContent = 'Procesando…';
 
+  // USAMOS LA VARIABLE GLOBAL currentUserEmail
   const { error } = await supabaseClient.from('novavest_pending_actions').insert({ 
     user_id: currentUserId, 
-    user_email: userEmail, 
+    user_email: currentUserEmail, 
     type: 'deposit', 
     asset: asset, 
     amount: value 
@@ -524,7 +469,6 @@ window.updateWithdrawInfo = function() {
   $('withdrawableCryptoUI').textContent = `(≈ ${cryptoString} ${asset})`;
 };
 
-// --- NUEVO FLUJO DE RETIRO (CON CORREO) ---
 window.simulateWithdraw = async function() {
   const asset = $('withdrawAsset').value;
   const amountUsd = Number($('withdrawAmount').value);
@@ -558,10 +502,9 @@ window.simulateWithdraw = async function() {
     renderUserBalances();
     await saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro Solicitado');
 
-    const userEmail = userData.user.email || 'Desconocido';
     await supabaseClient.from('novavest_pending_actions').insert({ 
       user_id: currentUserId, 
-      user_email: userEmail, 
+      user_email: currentUserEmail, 
       type: 'withdraw', 
       asset: asset, 
       amount: amountUsd, 
@@ -602,6 +545,7 @@ $('loginForm').addEventListener('submit', async e=>{
   btn.disabled=false; btn.textContent='Iniciar sesión';
   if(error) showMessage(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message,true);
 });
+
 $('registerForm').addEventListener('submit', async e=>{
   e.preventDefault(); clearMessage(); const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
   const {data,error}=await supabaseClient.auth.signUp({ email:$('registerEmail').value.trim(), password:$('registerPassword').value, options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname} });
@@ -631,11 +575,10 @@ function showDashboard(user){
   $('profileInitials').textContent=$('avatar').textContent;
   loadUserData(user).catch(err => { console.error(err); toast('Error cargando datos.'); });
 }
-
 async function signOut(){
   const {error}=await supabaseClient.auth.signOut();
   if(error){toast(error.message);return;}
-  currentUserId=null; withdrawableBalance=0; dailyWithdrawn=0;
+  currentUserId=null; currentUserEmail=null; withdrawableBalance=0; dailyWithdrawn=0;
   $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');
   setAuthView('login'); toast('Sesión cerrada');
   navigate('home', document.querySelectorAll('.nav button')[0]);
