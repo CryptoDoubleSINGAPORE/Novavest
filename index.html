@@ -116,7 +116,9 @@
             <strong id="demoPerformance">$0.00</strong>
             <small>Rendimiento de planes</small>
           </div>
-  </div>         <div class="section"><h2>Planes de Inversión</h2><span class="pill">Oportunidad</span></div>
+        </div>
+
+        <div class="section"><h2>Planes de Inversión</h2><span class="pill">Oportunidad</span></div>
         <div class="plans">
           <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
             <div class="plan-title">❄️ Plan Starter</div>
@@ -138,7 +140,7 @@
       </div>
 
       <div id="view-deposit" class="view">
-        <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Prueba</span></div>
+        <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2><span class="pill">Oficial</span></div>
         <div class="panel">
           <div class="eyebrow">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
@@ -147,19 +149,36 @@
               <option value="TRX">TRON (TRX)</option>
               <option value="BTC">Bitcoin (BTC)</option>
               <option value="SOL">Solana (SOL)</option>
-              <option value="USDT">Tether (USDT)</option>
+              <option value="USDT">Tether (USDT TRC20)</option>
             </select>
           </div>
           <label class="field-label" for="amount">Cantidad a depositar</label>
           <div class="amount-wrap"><input class="number" id="amount" type="number" min="0" step="any" value="100" oninput="updateEstimate()"><span class="unit" id="unit">TRX</span></div>
           <div class="hint" id="estimate">≈ $28.41 USD · Valor estimado</div>
-          <div class="wallet-box" style="margin-top:15px; padding:15px; border-radius:18px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.2);"><div class="wallet-head" style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;"><span>Dirección de depósito</span><button class="copy press-effect" style="background:var(--blue); border:none; color:#000; border-radius:8px; padding:6px 10px; font-weight:bold;" onclick="copyWallet()">Copiar</button></div><div class="wallet-address" id="wallet" style="font-size:11px; color:#ccc; word-break:break-all; margin-top:10px;">TDEMO7xNovaVestTRX00000000000000001</div></div>
+          
+          <div class="wallet-box" style="margin-top:15px; padding:15px; border-radius:18px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.2);">
+            <div class="wallet-head" style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
+              <span>Dirección de depósito</span>
+              <button class="copy press-effect" style="background:var(--blue); border:none; color:#000; border-radius:8px; padding:6px 10px; font-weight:bold;" onclick="copyWallet()">Copiar</button>
+            </div>
+            <div class="wallet-address" id="wallet" style="font-size:11px; color:#ccc; word-break:break-all; margin-top:10px;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
+            
+            <div class="qr-row" style="display:flex; align-items:center; gap:12px; margin-top:15px;">
+              <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:100px; height:100px; background:white; border-radius:12px; padding:5px; object-fit:contain;">
+              <div style="font-size:11px; color:#aaa; line-height:1.4;">
+                <b style="color:var(--text);">Escanear QR</b><br>
+                Envía solo <span id="qr-asset-name" style="color:var(--mint); font-weight:bold;">TRX</span> a esta dirección.<br>
+                <span style="font-size:10px;">(Red: TRC20 para USDT)</span>
+              </div>
+            </div>
+          </div>
+          
           <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
         </div>
       </div>
 
       <div id="view-withdraw" class="view">
-        <div class="section" style="margin-top:0;"><h2>Retiro de Ganancias</h2><span class="pill">Prueba</span></div>
+        <div class="section" style="margin-top:0;"><h2>Retiro de Ganancias</h2><span class="pill">Oficial</span></div>
         <div class="panel">
           <div class="info-box">
             <div class="info-row"><span>Mínimo de retiro:</span> <b>$1.00 USD</b></div>
@@ -200,8 +219,7 @@
             <b id="investorName">Usuario NovaVest</b>
             <span id="investorEmail">Cuenta registrada</span>
             <span id="investorDate" style="display:block; margin-top:4px; color:var(--mint); font-weight:bold;">Cargando fecha...</span>
-            <!-- AQUÍ ESTÁ EL ID -->
-            <span id="investorId" style="display:block; margin-top:6px; color:#65a8fe; font-size:13px; font-weight:bold;">ID: Cargando...</span>
+            <span id="investorId" style="display:block; margin-top:6px; color:#65a8fe; font-size:13px; font-weight:bold;">ID de inversor: Cargando...</span>
           </div>
         </div>
 
@@ -266,4 +284,4 @@
 
   <script src="script.js"></script>
 </body>
-                                                                </html>
+          </html>
