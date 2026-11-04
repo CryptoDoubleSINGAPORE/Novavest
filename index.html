@@ -430,60 +430,45 @@
       </div>
 
       <!-- VISTA ADMIN (OCULTA) -->
-      <div id="view-admin" class="view">
-        <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:var(--fire); color:#fff;">Dueño</span></div>
-        
-        <div class="stats" style="margin-bottom: 15px;">
-          <div class="stat">
-            <div class="stat-top">Usuarios Totales</div>
-            <strong id="adminTotalUsers">0</strong>
-            <small>Cuentas registradas</small>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Volumen Total</div>
-            <strong id="adminTotalVolume">$0.00</strong>
-            <small>En depósitos (Aprox)</small>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:0;">
-          <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
-          <div id="adminInvestmentsList" class="activity">
-            <p style="color:var(--muted); font-size:12px; text-align:center;">Cargando datos...</p>
-          </div>
-        </div>
-      </div>
-
-      </div>
-    
-    <nav class="nav">
-      <div class="nav-inner" id="navInner">
-        <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
-        <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
-        <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
-        <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
-        <!-- Pestaña oculta para Admin -->
-        <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:var(--fire);"><span>⚙</span>Admin</button>
-      </div>
-    </nav>
-  </main>
-
-  <div id="toast" class="toast" role="status"></div>
+<div id="view-admin" class="view">
+  <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:var(--fire); color:#fff;">Dueño</span></div>
   
-  <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
-  
-  <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close press-effect" onclick="closePlanModal()">✕</button><h3 id="planModalTitle">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
-  
-  <div class="modal-backdrop" id="confirmInvModal">
-    <div class="modal">
-      <h3 id="confirmInvTitle" style="margin-bottom: 10px;">Confirmar Inversión</h3>
-      <p id="confirmInvText"></p>
-      <div class="modal-actions">
-        <button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()">Cancelar</button>
-        <button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
-      </div>
+  <div class="stats" style="margin-bottom: 15px;">
+    <div class="stat">
+      <div class="stat-top">Usuarios Totales</div>
+      <strong id="adminTotalUsers">0</strong>
+      <small>Cuentas registradas</small>
+    </div>
+    <div class="stat">
+      <div class="stat-top">Volumen Total</div>
+      <strong id="adminTotalVolume">$0.00</strong>
+      <small>En depósitos (Aprox)</small>
     </div>
   </div>
+
+  <!-- NUEVO: Solicitudes de Depósito -->
+  <div class="panel" style="margin-top:0; border-color: var(--mint);">
+    <div class="section" style="margin-top:0;"><h2 style="color:var(--mint);">Depósitos Pendientes</h2></div>
+    <div id="adminPendingDeposits" class="activity">
+      <p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>
+    </div>
+  </div>
+
+  <!-- NUEVO: Solicitudes de Retiro -->
+  <div class="panel" style="margin-top:15px; border-color: var(--fire);">
+    <div class="section" style="margin-top:0;"><h2 style="color:var(--fire);">Retiros Pendientes</h2></div>
+    <div id="adminPendingWithdraws" class="activity">
+      <p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:15px;">
+    <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
+    <div id="adminInvestmentsList" class="activity">
+      <p style="color:var(--muted); font-size:12px; text-align:center;">Cargando datos...</p>
+    </div>
+  </div>
+</div>
 
   <!-- BOTÓN FLOTANTE DE SOPORTE AL CLIENTE (TELEGRAM) -->
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#229ED9; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 15px rgba(34,158,217,0.4); z-index: 100; text-decoration: none;">
