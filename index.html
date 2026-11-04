@@ -189,7 +189,7 @@
   </style>
 </head>
 <body>
-   <section id="authScreen" class="auth-wrap">
+  <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
         <div class="brandmark">
@@ -199,15 +199,15 @@
           </svg>
         </div>
         NovaVest
-      </div>
-      <h1 id="authTitle">Bienvenido de nuevo</h1>
+              </div>
+               <h1 id="authTitle">Bienvenido de nuevo</h1>
       <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel financiero.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
       <form id="loginForm" class="auth-form">
         <label class="field-label" for="loginEmail">Correo electrónico</label>
         <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
         <label class="field-label" for="loginPassword">Contraseña</label>
-        <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" minlength="6" required>
+        <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
         <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
       </form>
       <form id="registerForm" class="auth-form hidden">
@@ -215,8 +215,8 @@
         <input class="field" id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" maxlength="70" required>
         <label class="field-label" for="registerEmail">Correo electrónico</label>
         <input class="field" id="registerEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <label class="field-label" for="registerPassword">Crear contraseña</label>
-        <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+        <label class="field-label" for="registerPassword">Crear contraseña (Mín. 8 caracteres, 1 mayúscula, 1 número)</label>
+        <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Ej: Nova2024*" required>
         
         <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
           <input type="checkbox" id="termsCheck" required style="width:18px; height:18px; accent-color:#0f172a;">
@@ -344,7 +344,8 @@
               </div>
             </div>
           </div>
-                  <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
+          
+          <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
             ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
           </div>
 
@@ -370,9 +371,8 @@
               </b>
             </div>
             <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
-          </div>
-
-          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+            </div>
+                      <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
             <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
               <option value="TRX">TRON (TRX)</option>
@@ -464,7 +464,15 @@
           </div>
         </div>
 
-        <div class="panel" style="margin-top:0; border-left: 4px solid #10b981;">
+        <!-- NUEVA LISTA DE USUARIOS -->
+        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6;">
+          <div class="section" style="margin-top:0;"><h2 style="color:#3b82f6;">Usuarios Registrados</h2></div>
+          <div id="adminUsersList" class="activity">
+            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
           <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
           <div id="adminPendingDeposits" class="activity">
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
@@ -498,7 +506,8 @@
       </div>
     </nav>
   </main>
-    <div id="toast" class="toast" role="status"></div>
+
+  <div id="toast" class="toast" role="status"></div>
   
   <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
   
@@ -529,8 +538,7 @@
       <button class="wide press-effect" onclick="closeTerms()">Aceptar y Cerrar</button>
     </div>
   </div>
-
-  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;">
+    <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
     </svg>
@@ -622,6 +630,27 @@
       const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
       $('adminTotalUsers').textContent = userCount || 0;
 
+      // Cargar Lista de Usuarios
+      const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
+      const userList = $('adminUsersList');
+      userList.innerHTML = '';
+      if (!users || users.length === 0) {
+        userList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay usuarios.</p>';
+      } else {
+        users.forEach(u => {
+          const item = document.createElement('div');
+          item.className = 'activity-item';
+          item.innerHTML = `
+            <div class="activity-icon" style="background:#eff6ff; color:#3b82f6;">👤</div>
+            <div class="activity-info">
+              <b style="font-size:12px; color:#0f172a;">${u.email || 'Sin correo'}</b>
+              <span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span>
+            </div>
+          `;
+          userList.appendChild(item);
+        });
+      }
+
       const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
       const depList = $('adminPendingDeposits');
       depList.innerHTML = '';
@@ -674,8 +703,7 @@
           withList.appendChild(item);
         });
       }
-
-      const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
+            const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
       const invList = $('adminInvestmentsList');
       let totalVol = 0;
       invList.innerHTML = '';
@@ -700,7 +728,8 @@
         $('adminTotalVolume').textContent = money(totalVol);
       }
     }
-        window.approveAction = async function(id, type, userId, asset, amount) {
+
+    window.approveAction = async function(id, type, userId, asset, amount) {
       if (type === 'deposit') {
         const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).single();
         const newAmount = (currentBal?.amount || 0) + Number(amount);
@@ -1030,7 +1059,8 @@
         toast('Error: ' + (err.message || 'No se pudo procesar'));
       } finally { btn.disabled = false; btn.textContent = 'Confirmar retiro →'; }
     };
-        window.openTerms = function() { $('termsModal').classList.add('open'); };
+
+    window.openTerms = function() { $('termsModal').classList.add('open'); };
     window.closeTerms = function() { $('termsModal').classList.remove('open'); };
 
     function showMessage(message, isError=false) {
@@ -1062,10 +1092,20 @@
 
     $('registerForm').addEventListener('submit', async e=>{
       e.preventDefault(); clearMessage(); 
-      if(!$('termsCheck').checked) { showMessage('Debes aceptar los términos y condiciones para continuar.', true); return; }
+      
+      const password = $('registerPassword').value;
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        showMessage('La contraseña debe tener al menos 8 caracteres, 1 letra mayúscula y 1 número.', true);
+        return;
+    }
+          if(!$('termsCheck').checked) { 
+        showMessage('Debes aceptar los términos y condiciones para continuar.', true); 
+        return; 
+      }
       
       const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
-      const {data,error}=await supabaseClient.auth.signUp({ email:$('registerEmail').value.trim(), password:$('registerPassword').value, options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname} });
+      const {data,error}=await supabaseClient.auth.signUp({ email:$('registerEmail').value.trim(), password:password, options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname} });
       btn.disabled=false; btn.textContent='Crear cuenta';
       if(error){showMessage(error.message,true);return;}
       if(data.session){showDashboard(data.user);}
@@ -1144,4 +1184,4 @@
     window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
   </script>
 </body>
-</html
+</html>  
