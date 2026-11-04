@@ -1,197 +1,460 @@
-:root {
-  --bg: #05050a;
-  --panel: rgba(20, 25, 45, 0.7);
-  --muted: #8b96b0;
-  --text: #ffffff;
-  --line: rgba(255, 255, 255, 0.1);
-  --mint: #00f2fe;
-  --blue: #4facfe;
-  --purple: #9d4edd;
-  --fire: #ff4b2b;
-  --gold: #f9d423;
+const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+// CONFIGURACIÓN CON LAS NUEVAS DIRECCIONES REALES
+const ASSET_INFO = {
+  TRX: { price: 0.2841, name: 'TRON', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
+  BTC: { price: 67420.8, name: 'Bitcoin', address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">' },
+  SOL: { price: 145.50, name: 'Solana', address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">' },
+  USDT: { price: 1, name: 'Tether (TRC20)', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">' }
+};
+
+let currentUserId = null;
+let userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+let withdrawableBalance = 0;
+let dailyWithdrawn = 0;
+let pendingInvestment = null;
+let timerInterval = null;
+let activeInvestmentsData = [];
+
+const PLAN_CONFIG = {
+  starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, hours: 24, amounts: [20, 50, 100, 200, 400] },
+  pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:', roi: 0.12, hours: 72, amounts: [500, 1000, 2000, 5000] }
+};
+
+const $ = (id) => document.getElementById(id);
+function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
+
+async function loadUserData(user) {
+  currentUserId = user.id;
+  
+  // TRAER EL ID DEL INVERSOR
+  const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+  if (profile) {
+    $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
+  } else {
+    $('investorId').textContent = 'ID de inversor: Pendiente';
+  }
+
+  // CARGAR BALANCES
+  const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  if (readError) { console.error('Error leyendo balances:', readError); return; }
+  
+  if (!existing || existing.length === 0) {
+    const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
+    await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+  }
+  
+  const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+  (rows || []).forEach(row => {
+    if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
+      userBalances[row.asset] = Number(row.amount) || 0;
+    }
+  });
+
+  // CARGAR BILLETERA (SALDO RETIRABLE)
+  let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (!wallet) {
+    await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
+    withdrawableBalance = 0;
+    dailyWithdrawn = 0;
+  } else {
+    if (wallet.last_withdrawn_date !== today) {
+      dailyWithdrawn = 0;
+      await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id);
+    } else {
+      dailyWithdrawn = Number(wallet.daily_withdrawn);
+    }
+    withdrawableBalance = Number(wallet.withdrawable_balance);
+  }
+
+  renderUserBalances();
+  loadHistory();
+  loadActiveInvestments(); 
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-html { scroll-behavior: smooth; }
-body { margin: 0; background-color: var(--bg); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; }
-
-.bg-orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.5; animation: float 10s infinite alternate ease-in-out; }
-.orb-1 { width: 300px; height: 300px; background: var(--purple); top: -100px; left: -100px; }
-.orb-2 { width: 250px; height: 250px; background: var(--mint); bottom: 10%; right: -100px; animation-delay: -5s; }
-.orb-3 { width: 200px; height: 200px; background: var(--blue); top: 40%; left: 20%; animation-duration: 15s; }
-@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
-
-button, input, select { font: inherit; }
-button { cursor: pointer; border: none; outline: none; }
-.hidden { display: none !important; }
-.app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; position: relative; z-index: 1; }
-.view { display: none; }
-.view.active { display: block; animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-@keyframes slideInBlur { 0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
-
-.press-effect { transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s; }
-.press-effect:active { transform: scale(0.92) translateY(3px); box-shadow: inset 0 4px 10px rgba(0,0,0,0.5); }
-
-.top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; }
-.brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
-.avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); display: grid; place-items: center; font-weight: 800; box-shadow: 0 0 15px rgba(157, 78, 221, 0.5); }
-
-.eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
-.welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; }
-.sub { font-size: 13px; color: var(--muted); }
-
-.balance { margin-top: 19px; padding: 22px; border-radius: 26px; background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(157, 78, 221, 0.15)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); position: relative; overflow: hidden; box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6); }
-.balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
-.balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
-.balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
-.pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; }
-.amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
-.change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
-
-.balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
-.action { border-radius: 14px; padding: 12px 16px; font-weight: 800; font-size: 13px; flex: 1; }
-.primary { background: linear-gradient(135deg, var(--mint), var(--blue)); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); }
-.ghost { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); }
-
-.section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
-.section h2 { font-size: 17px; margin: 0; }
-
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-.stat { padding: 15px; border-radius: 19px; background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--line); transition: transform 0.2s; }
-.stat:active { transform: scale(0.96); }
-.stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; }
-.stat strong { display: block; font-size: 19px; margin-top: 12px; }
-.stat small { color: var(--mint); font-size: 11px; }
-
-.active-inv-card { background: rgba(0, 242, 254, 0.05); border: 1px solid var(--mint); border-radius: 18px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 20px rgba(0, 242, 254, 0.15); animation: glowPulse 2s infinite alternate; }
-@keyframes glowPulse { 0% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.1); } 100% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.4); } }
-.active-inv-info b { display: block; font-size: 14px; color: var(--mint); margin-bottom: 4px; }
-.active-inv-info span { font-size: 12px; color: #ccc; display: block; }
-.active-inv-timer { text-align: right; }
-.active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-.active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;}
-.claim-btn { background: linear-gradient(135deg, var(--mint), var(--blue)); color: #000; padding: 10px 15px; border-radius: 10px; font-weight: 900; font-size: 13px; animation: bounceHard 0.8s infinite; box-shadow: 0 0 15px rgba(0, 242, 254, 0.6); }
-@keyframes bounceHard { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.05); } }
-
-.plans { display: grid; gap: 15px; margin-top: 10px; }
-.plan-card { padding: 20px; border-radius: 20px; background: var(--panel); backdrop-filter: blur(10px); position: relative; overflow: hidden; border: 1px solid var(--line); transition: transform 0.15s, box-shadow 0.15s; }
-.plan-card:active { transform: scale(0.96); box-shadow: 0 0 0 2px var(--mint); }
-.plan-card.cold-theme { border-color: rgba(79, 172, 254, 0.5); background: linear-gradient(180deg, var(--panel), rgba(79, 172, 254, 0.05)); }
-.plan-card.cold-theme .plan-title, .plan-card.cold-theme .plan-yield { color: var(--blue); }
-.plan-card.cold-theme .plan-btn { border-color: var(--blue); color: var(--blue); }
-.plan-card.fire-theme { border-color: rgba(255, 75, 43, 0.5); background: linear-gradient(180deg, var(--panel), rgba(255, 75, 43, 0.05)); }
-.plan-card.fire-theme .plan-title, .plan-card.fire-theme .plan-yield { color: var(--fire); }
-.plan-card.fire-theme .plan-btn { border-color: var(--fire); color: var(--fire); }
-.plan-badge { position: absolute; top: 0; right: 0; background: linear-gradient(90deg, var(--fire), #ff8a00); color: #fff; font-size: 10px; font-weight: 900; padding: 6px 12px; border-bottom-left-radius: 12px; }
-.plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-.plan-yield { font-size: 28px; font-weight: 900; margin-bottom: 5px; }
-.plan-desc { font-size: 12px; color: #aaa; margin-bottom: 15px; }
-.plan-freq { font-size: 11px; font-weight: 800; margin-bottom: 15px; padding: 4px 8px; border-radius: 6px; display: inline-block; }
-.cold-theme .plan-freq { background: rgba(79, 172, 254, 0.2); color: var(--blue); }
-.fire-theme .plan-freq { background: rgba(255, 75, 43, 0.2); color: var(--fire); }
-.plan-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid; background: transparent; font-weight: 800; font-size: 13px; transition: 0.2s; }
-.plan-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
-
-.panel { background: var(--panel); backdrop-filter: blur(15px); border: 1px solid var(--line); border-radius: 23px; padding: 17px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-.field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; }
-.select, .number, .field { width: 100%; background: rgba(0, 0, 0, 0.4); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; }
-.select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); transform: scale(1.01); }
-.amount-wrap { position: relative; }
-.amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
-.unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 800; }
-.hint { color: var(--muted); font-size: 11px; margin-top: 7px; }
-
-.wide { width: 100%; border-radius: 15px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 14px; box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4); }
-.wide:active { transform: scale(0.94) translateY(2px); box-shadow: 0 2px 10px rgba(0, 242, 254, 0.6); filter: brightness(1.2); }
-
-.info-box { background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 15px; margin-top: 15px; }
-.info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: #ccc; }
-.info-row:last-child { margin-bottom: 0; }
-.info-row b { color: var(--mint); }
-
-.coins { display: grid; gap: 9px; }
-.coin { display: flex; align-items: center; padding: 12px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; transition: 0.2s; }
-.coin:active { transform: scale(0.97); background: rgba(255,255,255,0.05); }
-.coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); overflow: hidden; padding: 4px; }
-.coin-logo img { width: 100%; height: 100%; object-fit: contain; }
-.coin-info { flex: 1; }
-.coin-info b { display: block; font-size: 14px; }
-.coin-info span { font-size: 11px; color: var(--muted); }
-.coin-value b { font-size: 13px; }
-
-.activity { display: grid; gap: 0; }
-.activity-item { display: flex; align-items: center; gap: 11px; padding: 12px 0; border-bottom: 1px solid var(--line); transition: 0.2s; }
-.activity-item:hover { background: rgba(255,255,255,0.02); }
-.activity-item:last-child { border: 0; }
-.activity-icon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: #fff; padding: 3px; }
-.activity-icon img { width: 100%; height: 100%; object-fit: contain; }
-.activity-info { flex: 1; }
-.activity-info b { font-size: 12px; display: block; }
-.activity-info span { font-size: 10px; color: var(--muted); }
-.activity-amount { font-size: 12px; font-weight: 800; text-align: right; }
-
-.investor { display: flex; align-items: center; gap: 12px; }
-.investor-face { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); font-weight: 900; font-size: 18px; box-shadow: 0 0 15px rgba(157, 78, 221, 0.4); }
-.investor-info b { font-size: 16px; display: block; }
-.investor-info span { font-size: 12px; color: var(--muted); }
-
-.nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
-.nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-.nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 800; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
-.nav button span { font-size: 20px; transition: 0.2s; }
-.nav button:active { transform: scale(0.85); }
-.nav button.active { color: var(--mint); background: rgba(0, 242, 254, 0.1); }
-.nav button.active span { transform: translateY(-3px) scale(1.1); text-shadow: 0 0 10px var(--mint); }
-
-.toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--mint); color: #000; padding: 12px 17px; border-radius: 13px; font-size: 12px; font-weight: 800; box-shadow: 0 8px 30px rgba(0,0,0,0.8); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
-.modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.modal { width: 100%; max-width: 490px; background: #111522; border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 20px; box-shadow: 0 20px 80px rgba(0,0,0,0.9); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-@keyframes modalSlideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.modal.error-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--fire); }
-@keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
-.modal h3 { margin: 0 0 6px; font-size: 22px; }
-.modal p { font-size: 14px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
-.close { float: right; background: rgba(255,255,255,0.1); border: 0; color: white; border-radius: 10px; padding: 7px 12px; font-weight: bold; }
-.close:active { background: rgba(255,255,255,0.2); transform: scale(0.9); }
-
-.modal-actions { display: flex; gap: 10px; }
-.modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 14px; transition: 0.2s; }
-.modal-btn-cancel:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
-.modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #000; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,242,254,0.4); }
-.modal-btn-confirm:active { transform: scale(0.95); filter: brightness(1.2); }
-.modal-btn-confirm.fire { background: var(--fire); color: white; box-shadow: 0 4px 15px rgba(255,75,43,0.4); }
-
-.invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
-.invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.invest-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: white; transition: 0.2s; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
-.invest-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--mint); }
-.invest-btn:active { transform: scale(0.9); background: rgba(0, 242, 254, 0.2); border-color: var(--mint); }
-.invest-btn-price { font-weight: 800; font-size: 16px; }
-.invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 600; }
-.invest-btn-yield { font-size: 11px; font-weight: 700; }
-
-.auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; position: relative; z-index: 1; }
-.auth-card { width: 100%; max-width: 430px; background: var(--panel); backdrop-filter: blur(20px); border: 1px solid var(--line); border-radius: 27px; padding: 24px; box-shadow: 0 25px 80px rgba(0,0,0,0.8); }
-.auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 21px; margin-bottom: 27px; }
-.auth-card h1 { font-size: 25px; margin: 0 0 7px; letter-spacing: -0.7px; }
-.auth-sub { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0 0 18px; }
-.auth-form { display: grid; gap: 10px; }
-.auth-form .field { margin-top: 5px; }
-.auth-btn { border-radius: 14px; padding: 15px; background: linear-gradient(100deg, var(--mint), var(--blue)); color: #000; font-weight: 900; margin-top: 8px; box-shadow: 0 6px 20px rgba(0,242,254,0.3); transition: 0.2s; }
-.auth-btn:active { transform: scale(0.95); filter: brightness(1.2); }
-.auth-switch { color: var(--muted); font-size: 12px; text-align: center; margin-top: 17px; }
-.link-btn { color: var(--mint); background: none; font-weight: 800; }
-.auth-message { font-size: 12px; line-height: 1.5; color: #000; background: var(--mint); border-radius: 12px; padding: 10px; margin: 12px 0; font-weight: bold; }
-.auth-error { color: #fff; background: var(--fire); }
-
-@media(min-width:600px) { 
-  body { padding-top: 20px; } 
-  .nav { position: sticky; bottom: 0; border: 1px solid var(--line); border-radius: 18px; margin: 0 auto 12px; max-width: 520px; } 
-  .modal-backdrop { align-items: center; } 
+async function updateWalletStorage() {
+  const today = new Date().toISOString().split('T')[0];
+  await supabaseClient.from('novavest_wallets').upsert({
+    user_id: currentUserId,
+    withdrawable_balance: withdrawableBalance,
+    daily_withdrawn: dailyWithdrawn,
+    last_withdrawn_date: today
+  });
 }
+
+function renderUserBalances() {
+  const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
+  $('totalBalance').textContent = money(total);
+  $('activeInvestment').textContent = money(total);
+  $('demoPerformance').textContent = money(total * 0.047);
+  $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
+  $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
+  $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
+  $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
+  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
+}
+
+window.navigate = function(viewName, btnElement) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  $('view-' + viewName).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  if(btnElement) btnElement.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
+async function saveTransaction(type, asset, amount, extra = '') {
+  if (!currentUserId) return;
+  await supabaseClient.from('novavest_history').insert({
+    user_id: currentUserId, type: type, asset: asset, amount: amount, details: extra
+  });
+  loadHistory();
+}
+
+async function loadHistory() {
+  if (!currentUserId) return;
+  const { data: history, error } = await supabaseClient.from('novavest_history').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false });
+  if (error) { console.error('Error al cargar historial:', error); return; }
+  const panel = $('activityPanel');
+  if (!history || history.length === 0) {
+    panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
+    return;
+  }
+  panel.innerHTML = '';
+  history.forEach(tx => {
+    let icon = '↙', title = 'Depósito', color = 'var(--mint)', sign = '+';
+    if (tx.type === 'withdraw') { icon = '↗'; title = 'Retiro'; color = 'var(--gold)'; sign = '−'; }
+    if (tx.type === 'investment') { icon = '✦'; title = 'Inversión'; color = 'var(--blue)'; sign = '−'; }
+    if (tx.type === 'reward') { icon = '★'; title = 'Ganancia'; color = 'var(--mint)'; sign = '+'; }
+    const dateObj = new Date(tx.created_at);
+    const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+    const extraTxt = tx.details ? ` (${tx.details})` : '';
+    const assetData = ASSET_INFO[tx.asset] || { icon: '' };
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <div class="coin-logo" style="width:36px; height:36px;">${assetData.icon}</div>
+      <div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div>
+      <div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>
+    `;
+    panel.appendChild(item);
+  });
+  }
+  async function saveActiveInvestment(inv) {
+  const endTimeISO = new Date(inv.endTime).toISOString();
+  const { error } = await supabaseClient.from('novavest_investments').insert({
+    user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO
+  });
+  if (error) { console.error('Error guardando inversión:', error); toast('Error al guardar el plan'); return; }
+  loadActiveInvestments();
+}
+
+async function loadActiveInvestments() {
+  if (!currentUserId) return;
+  const { data: investments, error } = await supabaseClient.from('novavest_investments').select('*').eq('user_id', currentUserId);
+  if (error) { console.error('Error cargando inversiones:', error); return; }
+  activeInvestmentsData = investments || [];
+  const container = $('activeInvestmentsSection');
+  const list = $('activeInvestmentsList');
+  if (activeInvestmentsData.length === 0) { container.classList.add('hidden'); return; }
+  container.classList.remove('hidden');
+  list.innerHTML = '';
+  activeInvestmentsData.forEach(inv => {
+    const card = document.createElement('div');
+    card.className = 'active-inv-card';
+    card.innerHTML = `
+      <div class="active-inv-info"><b>${inv.plan_name}</b><span>Inversión: $${inv.amount_usd}</span></div>
+      <div class="active-inv-timer" id="timer-container-${inv.id}"><strong id="timer-${inv.id}">00:00:00</strong><span>Tiempo restante</span></div>
+    `;
+    list.appendChild(card);
+  });
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimers, 1000);
+  updateTimers();
+}
+
+function updateTimers() {
+  if (!activeInvestmentsData) return;
+  const now = Date.now();
+  activeInvestmentsData.forEach(inv => {
+    const container = $(`timer-container-${inv.id}`);
+    if (!container) return;
+    const endTimeMs = new Date(inv.end_time).getTime();
+    const remaining = endTimeMs - now;
+    if (remaining <= 0) {
+      if (!container.classList.contains('claimed')) {
+        container.classList.add('claimed');
+        container.innerHTML = `<button class="claim-btn" onclick="claimReward('${inv.id}')">Reclamar $${inv.profit_usd}</button>`;
+      }
+    } else {
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+      const el = $(`timer-${inv.id}`);
+      if (el) el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+  });
+}
+
+window.claimReward = async function(invId) {
+  const inv = activeInvestmentsData.find(i => i.id === invId);
+  if (!inv) return;
+  if (Date.now() < new Date(inv.end_time).getTime()) { toast('La inversión aún no ha terminado.'); return; }
+  const cryptoEarned = inv.profit_usd / ASSET_INFO[inv.asset].price;
+  userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
+  await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
+  withdrawableBalance += Number(inv.profit_usd);
+  await updateWalletStorage();
+  renderUserBalances();
+  await supabaseClient.from('novavest_investments').delete().eq('id', invId);
+  await saveTransaction('reward', inv.asset, cryptoEarned, 'Ganancia ' + inv.plan_name);
+  loadActiveInvestments();
+  openModal('¡Felicidades!', `Has reclamado <b>$${inv.profit_usd} USD</b>.<br><br>Este dinero ya está disponible en tu saldo retirable.`);
+  toast(`¡Has ganado $${inv.profit_usd}!`);
+};
+
+window.openPlanModal = function(planType) {
+  const config = PLAN_CONFIG[planType];
+  $('planModalTitle').innerHTML = config.name;
+  $('planModalDesc').textContent = config.desc;
+  const titleColor = planType === 'starter' ? 'var(--blue)' : 'var(--fire)';
+  $('planModalTitle').style.color = titleColor;
+  let htmlContent = '';
+  Object.keys(ASSET_INFO).forEach(asset => {
+    const assetData = ASSET_INFO[asset];
+    htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
+    config.amounts.forEach(amt => {
+      const profit = (amt * config.roi).toFixed(2);
+      const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
+      htmlContent += `
+        <button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})">
+          <div class="invest-btn-price">$${amt} <span>USD</span></div>
+          <div class="invest-btn-yield" style="color: ${planType === 'starter' ? 'var(--blue)' : 'var(--fire)'};">${profitText}</div>
+        </button>
+      `;
+    });
+    htmlContent += `</div></div>`;
+  });
+  $('planModalContent').innerHTML = htmlContent;
+  $('planModal').classList.add('open');
+};
+
+window.closePlanModal = function() { $('planModal').classList.remove('open'); };
+
+window.checkBalanceForInvestment = function(planType, asset, amountUsd, profit) {
+  const cryptoPrice = ASSET_INFO[asset].price;
+  const cryptoNeeded = amountUsd / cryptoPrice;
+  const userCryptoBalance = userBalances[asset] || 0;
+  const userUsdBalance = userCryptoBalance * cryptoPrice;
+  if (userUsdBalance < amountUsd) {
+    const shortfallUsd = amountUsd - userUsdBalance;
+    closePlanModal();
+    const modal = $('mainModal');
+    modal.classList.add('error-shake');
+    setTimeout(() => modal.classList.remove('error-shake'), 500);
+    openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b>.<br><br>Necesitas <b>$${shortfallUsd.toFixed(2)} USD</b> más.<br><br>Por favor, recarga tu cuenta para continuar.`);
+    return;
+  }
+  pendingInvestment = { planType, asset, amountUsd, profit, cryptoNeeded };
+  closePlanModal();
+  $('confirmInvTitle').textContent = 'Confirmar Inversión';
+  $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${PLAN_CONFIG[planType].name}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> de ganancia en ${PLAN_CONFIG[planType].hours} horas.<br><br>¿Deseas continuar?`;
+  $('confirmInvBtn').className = `modal-btn-confirm press-effect ${planType === 'starter' ? '' : 'fire'}`;
+  $('confirmInvModal').classList.add('open');
+};
+
+window.closeConfirmInvModal = function() { $('confirmInvModal').classList.remove('open'); pendingInvestment = null; };
+
+window.executeInvestment = async function() {
+  if (!pendingInvestment) return;
+  const btn = $('confirmInvBtn');
+  btn.disabled = true; btn.textContent = 'Procesando…';
+  const { planType, asset, amountUsd, profit, cryptoNeeded } = pendingInvestment;
+  try {
+    const newAmount = (userBalances[asset] || 0) - cryptoNeeded;
+    const { error } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
+    if (error) throw error;
+    userBalances[asset] = newAmount;
+    renderUserBalances();
+    await saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
+    const endTime = Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000);
+    await saveActiveInvestment({ planName: PLAN_CONFIG[planType].name, asset, amountUsd, profitUsd: profit, endTime });
+    closeConfirmInvModal();
+    navigate('home', document.querySelectorAll('.nav button')[0]);
+    toast('¡Inversión realizada con éxito!');
+  } catch (err) { console.error(err); toast('Error: ' + err.message); } 
+  finally { btn.disabled = false; btn.textContent = 'Confirmar'; }
+};
+  window.simulateDeposit = async function(){
+  if (!currentUserId) { toast('Inicia sesión primero'); return; }
+  const value = Number($('amount').value);
+  if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
+  const asset = $('asset').value;
+  const usdValue = value * ASSET_INFO[asset].price;
+  const newAmount = (userBalances[asset] || 0) + value;
+  const btn = $('depositBtn');
+  btn.disabled = true; btn.textContent = 'Procesando…';
+  const { error } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
+  btn.disabled = false; btn.textContent = 'Continuar con depósito →';
+  if (error) { toast('Error: ' + error.message); return; }
+  userBalances[asset] = newAmount;
+  renderUserBalances();
+  await saveTransaction('deposit', asset, value);
+  openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
+  toast('Depósito agregado');
+};
+
+window.updateWithdrawInfo = function() { $('withdrawUnit').textContent = 'USD'; };
+
+window.simulateWithdraw = async function() {
+  const asset = $('withdrawAsset').value;
+  const amountUsd = Number($('withdrawAmount').value);
+  const address = $('withdrawAddress').value.trim();
+  const password = $('withdrawPassword').value;
+  const btn = $('withdrawBtn');
+  if (!amountUsd || amountUsd < 1) { toast('El retiro mínimo es de $1.00 USD'); return; }
+  if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente. Solo puedes retirar tus ganancias.'); return; }
+  if (dailyWithdrawn + amountUsd > 550) { toast('Has superado el límite diario de $550.00 USD.'); return; }
+  const cryptoToWithdraw = amountUsd / ASSET_INFO[asset].price;
+  if (cryptoToWithdraw > (userBalances[asset] || 0)) { toast('No tienes suficiente saldo en esta moneda.'); return; }
+  if (!address) { toast('Introduce una dirección de destino'); return; }
+  if (!password) { toast('Introduce tu contraseña'); return; }
+  btn.disabled = true; btn.textContent = 'Verificando…';
+  try {
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !userData.user) throw new Error('Sesión no válida');
+    const { error: authError } = await supabaseClient.auth.signInWithPassword({ email: userData.user.email, password: password });
+    if (authError) { 
+      const modal = $('mainModal');
+      modal.classList.add('error-shake');
+      setTimeout(() => modal.classList.remove('error-shake'), 500);
+      toast('Contraseña incorrecta.'); btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
+    }
+    const newAmount = (userBalances[asset] || 0) - cryptoToWithdraw;
+    const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
+    if (updateError) throw updateError;
+    userBalances[asset] = newAmount;
+    withdrawableBalance -= amountUsd;
+    dailyWithdrawn += amountUsd;
+    await updateWalletStorage();
+    renderUserBalances();
+    await saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro');
+    $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
+    openModal('Retiro Confirmado', `Se han retirado $${amountUsd.toFixed(2)} USD (${cryptoToWithdraw.toFixed(4)} ${asset}) a la dirección proporcionada.<br><br><i>(Simulación).</i>`);
+    toast('Retiro procesado con éxito');
+  } catch (err) {
+    console.error('Error en retiro:', err); toast('Error: ' + (err.message || 'No se pudo procesar'));
+  } finally { btn.disabled = false; btn.textContent = 'Confirmar retiro →'; }
+};
+
+function showMessage(message, isError=false) {
+  const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
+  if(isError) box.classList.add('auth-error');
+}
+function clearMessage(){ $('authMessage').classList.add('hidden'); $('authMessage').textContent=''; }
+
+function setAuthView(view) {
+  clearMessage();
+  ['loginForm','registerForm','resetForm'].forEach(id=>$(id).classList.add('hidden'));
+  $(view+'Form').classList.remove('hidden');
+  $('authTitle').textContent = view==='login'?'Bienvenido de nuevo':view==='register'?'Crea tu cuenta':'Recuperar contraseña';
+  $('authSubtitle').textContent = view==='login'?'Inicia sesión para acceder a tu panel personal.':view==='register'?'Regístrate para crear tu cuenta NovaVest.':'Te enviaremos un enlace a tu correo.';
+  $('authSwitch').classList.toggle('hidden',view==='reset');
+  $('authSwitch').innerHTML = view==='register'?'¿Ya tienes cuenta? <button class="link-btn" type="button" id="showLogin">Iniciar sesión</button>':'¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button>';
+  $('showRegister')?.addEventListener('click',()=>setAuthView('register'));
+  $('showLogin')?.addEventListener('click',()=>setAuthView('login'));
+}
+$('showRegister').addEventListener('click',()=>setAuthView('register'));
+$('showReset').addEventListener('click',()=>setAuthView('reset'));
+
+$('loginForm').addEventListener('submit', async e=>{
+  e.preventDefault(); clearMessage(); const btn=$('loginSubmit'); btn.disabled=true; btn.textContent='Entrando…';
+  const {error}=await supabaseClient.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
+  btn.disabled=false; btn.textContent='Iniciar sesión';
+  if(error) showMessage(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message,true);
+});
+
+$('registerForm').addEventListener('submit', async e=>{
+  e.preventDefault(); clearMessage(); const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
+  const {data,error}=await supabaseClient.auth.signUp({ email:$('registerEmail').value.trim(), password:$('registerPassword').value, options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname} });
+  btn.disabled=false; btn.textContent='Crear cuenta';
+  if(error){showMessage(error.message,true);return;}
+  if(data.session){showDashboard(data.user);}
+  else showMessage('Cuenta creada. Revisa tu correo para confirmar.');
+});
+
+$('resetForm').addEventListener('submit',async e=>{
+  e.preventDefault();clearMessage();
+  const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
+  if(error) showMessage(error.message,true); else showMessage('Enlace enviado si el correo está registrado.');
+});
+
+function showDashboard(user){
+  $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
+  const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
+  $('welcomeName').textContent=name.split(' ')[0];
+  $('investorName').textContent=name;
+  $('investorEmail').textContent=user?.email||'Cuenta NovaVest';
+  if(user?.created_at) {
+    const date = new Date(user.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+    $('investorDate').textContent = 'Miembro desde: ' + date;
+  }
+  $('avatar').textContent=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase();
+  $('profileInitials').textContent=$('avatar').textContent;
+  loadUserData(user).catch(err => { console.error(err); toast('Error cargando datos.'); });
+}
+
+async function signOut(){
+  const {error}=await supabaseClient.auth.signOut();
+  if(error){toast(error.message);return;}
+  currentUserId=null; withdrawableBalance=0; dailyWithdrawn=0;
+  $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');
+  setAuthView('login'); toast('Sesión cerrada');
+  navigate('home', document.querySelectorAll('.nav button')[0]);
+  $('activeInvestmentsSection').classList.add('hidden');
+}
+window.signOut=signOut;
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session?.user) showDashboard(session.user);
+  else if(event==='SIGNED_OUT'){ $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden'); }
+});
+supabaseClient.auth.getSession().then(({data})=>{
+  if(data.session?.user) showDashboard(data.session.user);
+});
+
+// ACTUALIZACIÓN AUTOMÁTICA DE DIRECCIÓN Y QR
+window.changeAsset = function() {
+  const asset = $('asset').value;
+  const coin = ASSET_INFO[asset];
+  
+  // Actualizar logo y unidad
+  $('coinBadge').innerHTML = coin.icon;
+  $('unit').textContent = asset;
+  
+  // Actualizar Dirección de texto
+  $('wallet').textContent = coin.address;
+  
+  // Actualizar QR dinámico y nombre de la moneda
+  $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`;
+  $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
+  
+  updateEstimate();
+};
+window.updateEstimate = function() {
+  const value = Math.max(0, Number($('amount').value)||0);
+  const price = ASSET_INFO[$('asset').value].price;
+  $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
+};
+window.copyWallet = async function() {
+  try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); }
+  catch(e) { toast('No se pudo copiar'); }
+};
+window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
+window.closeModal=function(){$('modal').classList.remove('open');};
+window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
