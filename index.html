@@ -175,11 +175,24 @@
     .auth-message { font-size: 13px; line-height: 1.5; color: #fff; background: #0f172a; border-radius: 12px; padding: 12px; margin: 12px 0; font-weight: 600; }
     .auth-error { color: #fff; background: var(--fire); }
     
-    /* BADGES DE CONFIANZA */
     .trust-badges { display: flex; justify-content: center; gap: 15px; margin-top: 20px; opacity: 0.7; }
     .trust-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--muted); }
     
     .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
+    
+    /* NUEVOS ESTILOS PARA EL CALENDARIO Y LISTA DE USUARIOS */
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
+    .calendar-day { padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text); background: var(--bg); }
+    .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; }
+    .calendar-header { font-size: 10px; font-weight: 800; color: var(--muted); padding: 4px; }
+    .user-card { background: var(--bg); border-radius: 16px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--line); }
+    .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
+    .user-header b { font-size: 13px; color: #0f172a; }
+    .user-header span { font-size: 11px; color: var(--muted); }
+    .user-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 11px; color: var(--muted); }
+    .user-balances span { font-weight: 700; color: var(--text); }
+    .user-status { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--muted); }
+    .status-pending { color: var(--fire); font-weight: 800; }
     
     @media(min-width:600px) { 
       body { padding-top: 20px; } 
@@ -199,8 +212,8 @@
           </svg>
         </div>
         NovaVest
-              </div>
-               <h1 id="authTitle">Bienvenido de nuevo</h1>
+      </div>
+         <h1 id="authTitle">Bienvenido de nuevo</h1>
       <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel financiero.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
       <form id="loginForm" class="auth-form">
@@ -371,8 +384,9 @@
               </b>
             </div>
             <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
-            </div>
-                      <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+          </div>
+
+          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
             <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
               <option value="TRX">TRON (TRX)</option>
@@ -464,11 +478,14 @@
           </div>
         </div>
 
-        <!-- NUEVA LISTA DE USUARIOS -->
-        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6;">
-          <div class="section" style="margin-top:0;"><h2 style="color:#3b82f6;">Usuarios Registrados</h2></div>
-          <div id="adminUsersList" class="activity">
-            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
+        <!-- BOTÓN PARA IR AL NUEVO PANEL DE USUARIOS -->
+        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[4])">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
+              <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad detallada.</p>
+            </div>
+            <span style="font-size:24px; color:#3b82f6;">→</span>
           </div>
         </div>
 
@@ -478,8 +495,7 @@
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
           </div>
         </div>
-
-        <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+                <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
           <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
           <div id="adminPendingWithdraws" class="activity">
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
@@ -491,6 +507,43 @@
           <div id="adminInvestmentsList" class="activity">
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
           </div>
+        </div>
+      </div>
+
+      <!-- NUEVA VISTA: PANEL DE USUARIOS -->
+      <div id="view-admin-users" class="view">
+        <div class="section" style="margin-top:0;">
+          <h2>Panel de Usuarios</h2>
+          <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[4])">← Volver</button>
+        </div>
+        
+        <div class="stats" style="margin-bottom: 15px;">
+          <div class="stat">
+            <div class="stat-top">Total Registrados</div>
+            <strong id="statsTotalUsers">0</strong>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Activos (5 min)</div>
+            <strong id="statsActiveUsers">0</strong>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Nuevos Hoy</div>
+            <strong id="statsTodayUsers">0</strong>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Acciones Pendientes</div>
+            <strong id="statsPendingActions">0</strong>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:0;">
+          <h3 style="margin-bottom: 10px;">Registros del Mes</h3>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+
+        <div class="section"><h2>Todos los Usuarios</h2></div>
+        <div id="adminUsersList" class="panel activity">
+          <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
         </div>
       </div>
 
@@ -538,7 +591,8 @@
       <button class="wide press-effect" onclick="closeTerms()">Aceptar y Cerrar</button>
     </div>
   </div>
-    <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;">
+
+  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
     </svg>
@@ -580,6 +634,9 @@
       currentUserId = user.id;
       currentUserEmail = user.email; 
       
+      // Actualizar última conexión
+      await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
+
       if (user.email === ADMIN_EMAIL) {
         $('adminNavBtn').classList.remove('hidden');
         $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
@@ -625,31 +682,9 @@
       loadHistory();
       loadActiveInvestments(); 
     }
-
-    async function loadAdminData() {
+        async function loadAdminData() {
       const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
       $('adminTotalUsers').textContent = userCount || 0;
-
-      // Cargar Lista de Usuarios
-      const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
-      const userList = $('adminUsersList');
-      userList.innerHTML = '';
-      if (!users || users.length === 0) {
-        userList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay usuarios.</p>';
-      } else {
-        users.forEach(u => {
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <div class="activity-icon" style="background:#eff6ff; color:#3b82f6;">👤</div>
-            <div class="activity-info">
-              <b style="font-size:12px; color:#0f172a;">${u.email || 'Sin correo'}</b>
-              <span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span>
-            </div>
-          `;
-          userList.appendChild(item);
-        });
-      }
 
       const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
       const depList = $('adminPendingDeposits');
@@ -703,7 +738,8 @@
           withList.appendChild(item);
         });
       }
-            const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
+
+      const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
       const invList = $('adminInvestmentsList');
       let totalVol = 0;
       invList.innerHTML = '';
@@ -729,6 +765,130 @@
       }
     }
 
+    // NUEVA FUNCIÓN PARA EL PANEL DE USUARIOS AVANZADO
+    async function loadAdminUsersData() {
+      const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
+      
+      const { data: balances } = await supabaseClient.from('novavest_balances').select('*');
+      const { data: wallets } = await supabaseClient.from('novavest_wallets').select('*');
+      const { data: pending } = await supabaseClient.from('novavest_pending_actions').select('*');
+
+      if (!users) return;
+
+      // Procesar datos
+      let totalUsers = users.length;
+      let activeUsers = 0;
+      let todayUsers = 0;
+      let pendingCount = pending ? pending.length : 0;
+
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const fiveMinsAgo = new Date(now.getTime() - 5 * 60000).toISOString();
+      
+      const calendarMap = {};
+      users.forEach(u => {
+        if (u.last_seen && u.last_seen > fiveMinsAgo) activeUsers++;
+        if (u.created_at && u.created_at.startsWith(todayStr)) todayUsers++;
+        if (u.created_at) {
+          const day = u.created_at.split('T')[0];
+          calendarMap[day] = (calendarMap[day] || 0) + 1;
+        }
+      });
+
+      // Renderizar Stats
+      $('statsTotalUsers').textContent = totalUsers;
+      $('statsActiveUsers').textContent = activeUsers;
+      $('statsTodayUsers').textContent = todayUsers;
+      $('statsPendingActions').textContent = pendingCount;
+
+      // Renderizar Calendario
+      renderCalendar(calendarMap);
+
+      // Renderizar Lista de Usuarios
+      const list = $('adminUsersList');
+      list.innerHTML = '';
+      
+      users.forEach(u => {
+        const userBalances = balances ? balances.filter(b => b.user_id === u.user_id) : [];
+        const userWallet = wallets ? wallets.find(w => w.user_id === u.user_id) : null;
+        const userPending = pending ? pending.filter(p => p.user_id === u.user_id) : [];
+
+        const withdrawable = userWallet ? Number(userWallet.withdrawable_balance) : 0;
+        const depPendingCount = userPending.filter(p => p.type === 'deposit').length;
+        const withPendingCount = userPending.filter(p => p.type === 'withdraw').length;
+        
+        const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
+
+        // Construir balances por moneda
+        let balancesHtml = '';
+        ['TRX', 'BTC', 'SOL', 'USDT'].forEach(asset => {
+          const bal = userBalances.find(b => b.asset === asset);
+          const amount = bal ? Number(bal.amount) : 0;
+          if (amount > 0) {
+            balancesHtml += `<div><span>${asset}:</span> ${quantity(amount, asset)}</div>`;
+          }
+        });
+        if (!balancesHtml) balancesHtml = '<div style="grid-column: span 2; color: var(--muted);">Sin saldo en monedas</div>';
+
+        const item = document.createElement('div');
+        item.className = 'user-card';
+        item.innerHTML = `
+          <div class="user-header">
+            <div>
+              <b>${u.email || 'Sin correo'}</b>
+              <br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span>
+            </div>
+            <span style="font-size:10px; background:#eff6ff; color:#3b82f6; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span>
+          </div>
+          <div class="user-balances">
+            ${balancesHtml}
+          </div>
+          <div class="user-status">
+            <div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div>
+            <div style="text-align:right;">
+              ${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}
+              ${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}
+              <span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span>
+            </div>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+                }
+        function renderCalendar(calendarMap) {
+      const grid = $('calendarGrid');
+      grid.innerHTML = '';
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      // Cabeceras
+      ['D', 'L', 'M', 'M', 'J', 'V', 'S'].forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'calendar-header';
+        el.textContent = d;
+        grid.appendChild(el);
+      });
+
+      // Primer día del mes
+      const firstDay = new Date(year, month, 1).getDay();
+      for (let i = 0; i < firstDay; i++) {
+        grid.appendChild(document.createElement('div'));
+      }
+
+      // Días
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const count = calendarMap[dateStr] || 0;
+        const el = document.createElement('div');
+        el.className = `calendar-day ${count > 0 ? 'has-users' : ''}`;
+        el.textContent = i;
+        if (count > 0) el.title = `${count} registros`;
+        grid.appendChild(el);
+      }
+    }
+
     window.approveAction = async function(id, type, userId, asset, amount) {
       if (type === 'deposit') {
         const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).single();
@@ -742,6 +902,7 @@
       }
       await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
       loadAdminData();
+      if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
     };
 
     window.rejectAction = async function(id) {
@@ -760,6 +921,7 @@
       } else { toast('Solicitud rechazada'); }
       await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
       loadAdminData();
+      if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
     };
 
     async function updateWalletStorage() {
@@ -785,6 +947,7 @@
       document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
       if(btnElement) btnElement.classList.add('active');
       if (viewName === 'admin') loadAdminData();
+      if (viewName === 'admin-users') loadAdminUsersData();
       window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
@@ -893,7 +1056,8 @@
         }
       });
     }
-        window.claimReward = async function(invId) {
+
+    window.claimReward = async function(invId) {
       const inv = activeInvestmentsData.find(i => i.id === invId);
       if (!inv) return;
       if (Date.now() < new Date(inv.next_payout_time).getTime()) { toast('El pago aún no está disponible.'); return; }
@@ -911,9 +1075,8 @@
         const nextTime = new Date(Date.now() + (inv.payout_interval_hours * 60 * 60 * 1000)).toISOString();
         const { error } = await supabaseClient.from('novavest_investments').update({ payouts_claimed: newPayoutsClaimed, next_payout_time: nextTime }).eq('id', invId);
         if (error) { toast("Error de servidor."); return; }
-      }
-
-      userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
+    }
+            userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
       await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
       
       withdrawableBalance += Number(inv.profit_per_payout);
@@ -1098,8 +1261,9 @@
       if (!passwordRegex.test(password)) {
         showMessage('La contraseña debe tener al menos 8 caracteres, 1 letra mayúscula y 1 número.', true);
         return;
-    }
-          if(!$('termsCheck').checked) { 
+      }
+
+      if(!$('termsCheck').checked) { 
         showMessage('Debes aceptar los términos y condiciones para continuar.', true); 
         return; 
       }
@@ -1117,7 +1281,6 @@
       const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
       if(error) showMessage(error.message,true); else showMessage('Enlace enviado si el correo está registrado.');
     });
-
     function showDashboard(user){
       $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
       const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
@@ -1184,4 +1347,4 @@
     window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
   </script>
 </body>
-</html>  
+</html>
