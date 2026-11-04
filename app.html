@@ -1,1 +1,505 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="NovaVest — plataforma de activos digitales">
+  <title>NovaVest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    :root { 
+      --bg: #f8fafc; 
+      --panel: #ffffff; 
+      --muted: #64748b; 
+      --text: #0f172a; 
+      --line: #e2e8f0; 
+      --mint: #10b981; 
+      --blue: #3b82f6; 
+      --fire: #ef4444; 
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background-color: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", system-ui, sans-serif; min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; }
+    
+    button, input, select { font: inherit; }
+    button { cursor: pointer; border: none; outline: none; }
+    .hidden { display: none !important; }
+    .app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; position: relative; z-index: 1; }
+    .view { display: none; }
+    .view.active { display: block; animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    @keyframes slideInBlur { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    .press-effect { transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s; }
+    .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+    
+    .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; }
+    .brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
+    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, #0f172a, #334155); display: grid; place-items: center; font-weight: 800; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    
+    .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
+    .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; }
+    .sub { font-size: 13px; color: var(--muted); }
+    
+    .balance { margin-top: 19px; padding: 22px; border-radius: 24px; background: #0f172a; color: #fff; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2); }
+    .balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
+    .balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
+    .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+    .balance .eyebrow { color: #94a3b8; }
+    .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
+    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; }
+    .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
+    
+    .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
+    .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; }
+    .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); }
+    .ghost { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+    
+    .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
+    .section h2 { font-size: 17px; margin: 0; font-weight: 800; }
+    
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
+    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #0f172a; }
+    .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
+    
+    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
+    .active-inv-info b { display: block; font-size: 14px; color: #0f172a; margin-bottom: 4px; font-weight: 800; }
+    .active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
+    .active-inv-timer { text-align: right; }
+    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #0f172a; font-weight: 800; }
+    .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
+    .claim-btn { background: var(--mint); color: #fff; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 13px; animation: pulse 2s infinite; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    .plans { display: grid; gap: 15px; margin-top: 10px; }
+    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; }
+    .plan-card:active { transform: scale(0.98); }
+    
+    .plan-card.cold-theme { border-top: 4px solid var(--blue); }
+    .plan-card.cold-theme .plan-title { color: var(--blue); }
+    .plan-card.cold-theme .plan-btn { background: var(--blue); color: #fff; }
+    
+    .plan-card.fire-theme { border-top: 4px solid var(--fire); }
+    .plan-card.fire-theme .plan-title { color: var(--fire); }
+    .plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
+    
+    .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; }
+    .plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
+    .plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
+    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: var(--bg); color: var(--text); }
+    .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
+    .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
 
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .select, .number, .field { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
+    .select:focus, .number:focus, .field:focus { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
+    .amount-wrap { position: relative; }
+    .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
+    .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
+    .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
+    
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); }
+    .wide:active { transform: scale(0.96); opacity: 0.9; }
+
+    .info-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
+    .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--text); font-weight: 600; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-row b { color: var(--mint); }
+
+    .coins { display: grid; gap: 9px; }
+    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
+    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
+    .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .coin-info { flex: 1; }
+    .coin-info b { display: block; font-size: 14px; font-weight: 700; }
+    .coin-info span { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .coin-value b { font-size: 13px; font-weight: 800; }
+
+    .activity { display: grid; gap: 0; }
+    .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .activity-item:last-child { border: 0; }
+    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--bg); color: var(--text); }
+    .activity-info { flex: 1; }
+    .activity-info b { font-size: 13px; display: block; font-weight: 700; }
+    .activity-info span { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
+
+    .investor { display: flex; align-items: center; gap: 14px; }
+    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #0f172a; color: #fff; font-weight: 800; font-size: 18px; }
+    .investor-info b { font-size: 16px; display: block; font-weight: 800; }
+    .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
+    .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
+    .nav button span { font-size: 20px; }
+    .nav button.active { color: #0f172a; background: var(--bg); }
+    .nav button.active span { transform: translateY(-2px); }
+    
+    .toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(4px); }
+    .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
+    .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
+    .close { float: right; background: var(--bg); border: 0; color: var(--text); border-radius: 50%; width: 32px; height: 32px; display: grid; place-items: center; font-weight: bold; }
+    
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn-cancel { flex: 1; background: var(--bg); border: none; color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+    .modal-btn-confirm { flex: 1; background: #0f172a; border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+
+    .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
+    .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .invest-btn { background: var(--bg); border: 1px solid var(--line); padding: 14px; border-radius: 14px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 3px; transition: 0.2s; }
+    .invest-btn:hover { border-color: #0f172a; }
+    .invest-btn-price { font-weight: 800; font-size: 16px; }
+    .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
+    .invest-btn-yield { font-size: 11px; font-weight: 700; }
+
+    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; }
+    .auth-card { width: 100%; max-width: 430px; background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+    .auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; margin-bottom: 27px; }
+    .auth-card h1 { font-size: 26px; margin: 0 0 7px; font-weight: 800; }
+    .auth-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 24px; font-weight: 500; }
+    .auth-form { display: grid; gap: 10px; }
+    .auth-btn { border-radius: 14px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 8px; }
+    .auth-switch { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; font-weight: 500; }
+    .link-btn { color: #0f172a; background: none; font-weight: 800; }
+    .auth-message { font-size: 13px; line-height: 1.5; color: #fff; background: #0f172a; border-radius: 12px; padding: 12px; margin: 12px 0; font-weight: 600; }
+    .auth-error { color: #fff; background: var(--fire); }
+    
+    @media(min-width:600px) { 
+      body { padding-top: 20px; } 
+      .nav { position: sticky; bottom: 0; border-radius: 20px; margin: 0 auto 12px; max-width: 520px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.05); } 
+      .modal-backdrop { align-items: center; } 
+    }
+     </style>
+</head>
+<body>
+  <section id="authScreen" class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="brandmark">
+          <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="12" fill="#0f172a"/>
+            <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        NovaVest
+      </div>
+      <h1 id="authTitle">Bienvenido de nuevo</h1>
+      <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel personal.</p>
+      <div id="authMessage" class="auth-message hidden" role="status"></div>
+      <form id="loginForm" class="auth-form">
+        <label class="field-label" for="loginEmail">Correo electrónico</label>
+        <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+        <label class="field-label" for="loginPassword">Contraseña</label>
+        <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" minlength="6" required>
+        <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
+      </form>
+      <form id="registerForm" class="auth-form hidden">
+        <label class="field-label" for="fullName">Nombre completo</label>
+        <input class="field" id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" maxlength="70" required>
+        <label class="field-label" for="registerEmail">Correo electrónico</label>
+        <input class="field" id="registerEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+        <label class="field-label" for="registerPassword">Crear contraseña</label>
+        <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+        <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
+      </form>
+      <form id="resetForm" class="auth-form hidden">
+        <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
+        <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+        <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
+      </form>
+      <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
+      <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
+    </div>
+  </section>
+
+  <main id="dashboard" class="hidden">
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <div class="brandmark">
+            <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="12" fill="#0f172a"/>
+              <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          NovaVest
+        </div>
+        <div class="avatar" id="avatar">NV</div>
+      </header>
+
+      <div id="view-home" class="view active">
+        <div class="eyebrow">Panel personal</div>
+        <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
+        <div class="sub">Tu resumen de activos en un solo lugar.</div>
+        
+        <section class="balance">
+          <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta principal</span></div>
+          <div class="amount" id="totalBalance">$0.00</div>
+          <div class="change">↗ Rendimiento actual</div>
+          <div class="balance-actions">
+            <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
+            <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
+          </div>
+        </section>
+
+        <div id="activeInvestmentsSection" class="hidden">
+          <div class="section"><h2>Inversiones Activas</h2></div>
+          <div id="activeInvestmentsList"></div>
+        </div>
+
+        <div class="section"><h2>Tu resumen</h2></div>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div>
+            <strong id="activeInvestment">$0.00</strong>
+            <small>Valor de tus activos</small>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div>
+            <strong id="demoPerformance">$0.00</strong>
+            <small>Rendimiento de planes</small>
+          </div>
+        </div>
+
+        <div class="section"><h2>Planes de Inversión</h2></div>
+        <div class="plans">
+          <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
+            <div class="plan-title">❄️ Plan Starter</div>
+            <div class="plan-yield">9% ROI</div>
+            <div class="plan-freq">Retiros cada 24 horas (7 días)</div>
+            <div class="plan-desc">Ganancias diarias. Reactiva tu plan al finalizar.</div>
+            <button class="plan-btn press-effect">Ver montos de inversión</button>
+          </div>
+          
+          <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
+            <div class="plan-badge">🔥 MÁS POPULAR</div>
+            <div class="plan-title">🔥 Plan Pro</div>
+            <div class="plan-yield">12% ROI</div>
+            <div class="plan-freq">Retiros cada 48 horas (15 días)</div>
+            <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
+            <button class="plan-btn press-effect">Ver montos de inversión</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="view-deposit" class="view">
+        <div class="section" style="margin-top:0;"><h2>Depósito de fondos</h2></div>
+        <div class="panel">
+          <div class="eyebrow">Selecciona tu moneda</div>
+          <div class="asset-select" style="margin-top:10px">
+            <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
+            <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
+              <option value="TRX">TRON (TRX)</option>
+              <option value="BTC">Bitcoin (BTC)</option>
+              <option value="SOL">Solana (SOL)</option>
+              <option value="USDT">Tether (USDT TRC20)</option>
+            </select>
+          </div>
+          <label class="field-label" for="amount">Cantidad a depositar</label>
+          <div class="amount-wrap"><input class="number" id="amount" type="number" min="0" step="any" value="100" oninput="updateEstimate()"><span class="unit" id="unit">TRX</span></div>
+          <div class="hint" id="estimate">≈ $28.41 USD · Valor estimado</div>
+          
+          <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
+              <span>Dirección de depósito</span>
+              <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
+            </div>
+            <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
+            
+            <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
+              <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
+              <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;">
+                <b style="color:#0f172a;">Escanear QR</b><br>
+                Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br>
+                <span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span>
+              </div>
+            </div>
+          </div>
+          
+          <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
+          
+          <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">
+            ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
+          </div>
+        </div>
+      </div>
+            <div id="view-withdraw" class="view">
+        <div class="section" style="margin-top:0;"><h2>Retiro de Ganancias</h2></div>
+        <div class="panel">
+          <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
+            <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
+            <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
+            <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
+              <span>Saldo Retirable:</span> 
+              <b style="text-align:right;">
+                <span id="withdrawableBalanceUI" style="color:#10b981; font-size:16px;">$0.00 USD</span><br>
+                <span id="withdrawableCryptoUI" style="color:#64748b; font-size:12px;">(0.00 TRX)</span>
+              </b>
+            </div>
+            <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
+          </div>
+
+          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+          <div class="asset-select" style="margin-top:10px">
+            <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
+              <option value="TRX">TRON (TRX)</option>
+              <option value="BTC">Bitcoin (BTC)</option>
+              <option value="SOL">Solana (SOL)</option>
+              <option value="USDT">Tether (USDT)</option>
+            </select>
+          </div>
+          
+          <label class="field-label" for="withdrawAmount">Cantidad a retirar (en USD)</label>
+          <div class="amount-wrap">
+            <input class="number" id="withdrawAmount" type="number" min="1" step="any" placeholder="Ej: 5.00">
+            <span class="unit">USD</span>
+          </div>
+          <label class="field-label" for="withdrawAddress">Dirección de destino</label>
+          <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas">
+          <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
+          <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual">
+          
+          <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-top: 20px;">Confirmar retiro →</button>
+          
+          <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 11px; color: #1e40af; text-align: center; line-height: 1.5; font-weight: 600;">
+            ⏳ <b>Tiempo de procesamiento:</b><br>Los retiros son procesados de 1 hora a 24 horas.
+          </div>
+        </div>
+      </div>
+
+      <div id="view-profile" class="view">
+        <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
+        <div class="panel investor" style="margin-top:0;">
+          <div class="investor-face" id="profileInitials">NV</div>
+          <div class="investor-info">
+            <b id="investorName">Usuario NovaVest</b>
+            <span id="investorEmail">Cuenta registrada</span>
+            <span id="investorDate" style="display:block; margin-top:4px; color:#3b82f6; font-weight:700; font-size: 12px;">Cargando fecha...</span>
+            <span id="investorId" style="display:block; margin-top:4px; color:#64748b; font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
+          </div>
+        </div>
+
+        <div class="section"><h2>Todos tus saldos</h2></div>
+        <div class="coins">
+          <div class="coin">
+            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"></div>
+            <div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX"></div>
+            <div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL"></div>
+            <div class="coin-info"><b>Solana</b><span>SOL</span></div><div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div>
+          </div>
+          <div class="coin">
+            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"></div>
+            <div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div>
+          </div>
+        </div>
+
+        <div class="section"><h2>Historial de Movimientos</h2></div>
+        <div class="panel activity" id="activityPanel">
+          <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity">
+            <span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span>
+          </div>
+        </div>
+
+        <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
+      </div>
+
+      <div id="view-admin" class="view">
+        <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
+        
+        <div class="stats" style="margin-bottom: 15px;">
+          <div class="stat">
+            <div class="stat-top">Usuarios Totales</div>
+            <strong id="adminTotalUsers">0</strong>
+            <small>Cuentas registradas</small>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Volumen Total</div>
+            <strong id="adminTotalVolume">$0.00</strong>
+            <small>En depósitos (Aprox)</small>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:0; border-left: 4px solid #10b981;">
+          <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
+          <div id="adminPendingDeposits" class="activity">
+            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+          <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
+          <div id="adminPendingWithdraws" class="activity">
+            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:15px;">
+          <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
+          <div id="adminInvestmentsList" class="activity">
+            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <nav class="nav">
+      <div class="nav-inner" id="navInner">
+        <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
+        <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
+        <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
+        <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
+        <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:#ef4444;"><span>⚙</span>Admin</button>
+      </div>
+    </nav>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  
+  <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
+  
+  <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close press-effect" onclick="closePlanModal()">✕</button><h3 id="planModalTitle">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
+  
+  <div class="modal-backdrop" id="confirmInvModal">
+    <div class="modal">
+      <h3 id="confirmInvTitle" style="margin-bottom: 10px;">Confirmar Inversión</h3>
+      <p id="confirmInvText"></p>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()">Cancelar</button>
+        <button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+    </svg>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
