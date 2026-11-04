@@ -164,14 +164,13 @@
             <div class="wallet-address" id="wallet" style="font-size:11px; color:#ccc; word-break:break-all; margin-top:10px;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
             
             <div class="qr-row" style="display:flex; align-items:center; gap:12px; margin-top:15px;">
-              <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:100px; height:100px; background:white; border-radius:12px; padding:5px; object-fit:contain;">
-              <div style="font-size:11px; color:#aaa; line-height:1.4;">
-                <b style="color:var(--text);">Escanear QR</b><br>
-                Envía solo <span id="qr-asset-name" style="color:var(--mint); font-weight:bold;">TRX</span> a esta dirección.<br>
-                <span style="font-size:10px;">(Red: TRC20 para USDT)</span>
-              </div>
+  <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:100px; height:100px; background:white; border-radius:12px; padding:5px; object-fit:contain;">
+  <div style="font-size:11px; color:#aaa; line-height:1.4;">
+    <b style="color:var(--text);">Escanear QR</b><br>
+    Envía solo <span id="qr-asset-name" style="color:var(--mint); font-weight:bold;">TRX</span> a esta dirección.<br>
+    <span id="qr-network" style="font-size:10px; display:none; color:var(--fire);">(Red: TRC20)</span>
+  </div>
             </div>
-          </div>
           
           <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
         </div>
