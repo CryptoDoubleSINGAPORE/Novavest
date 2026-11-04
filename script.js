@@ -32,14 +32,9 @@ function quantity(value, asset) { return Number(value || 0).toLocaleString('en-U
 async function loadUserData(user) {
   currentUserId = user.id;
   
-  // 1. VALIDAR CORREO
-  if (!user.email_confirmed_at) {
-    await supabaseClient.auth.signOut();
-    showMessage('Debes confirmar tu correo electrónico antes de entrar. Revisa tu bandeja de entrada o spam.', true);
-    return;
-  }
+  // (Confirmación de correo temporalmente desactivada para pruebas)
 
-  // 2. MOSTRAR BOTÓN DE ADMIN (usando tu correo configurado)
+  // MOSTRAR BOTÓN DE ADMIN
   if (user.email === ADMIN_EMAIL) {
     $('adminNavBtn').classList.remove('hidden');
     $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
@@ -48,7 +43,7 @@ async function loadUserData(user) {
     $('navInner').style.gridTemplateColumns = 'repeat(4, 1fr)';
   }
 
-  // 3. TRAER EL ID DEL INVERSOR
+  // TRAER EL ID DEL INVERSOR
   const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
   if (profile) {
     $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
@@ -56,7 +51,7 @@ async function loadUserData(user) {
     $('investorId').textContent = 'ID de inversor: Pendiente';
   }
 
-  // 4. CARGAR BALANCES
+  // CARGAR BALANCES
   const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
   if (readError) { console.error('Error leyendo balances:', readError); return; }
   
@@ -73,7 +68,7 @@ async function loadUserData(user) {
     }
   });
 
-  // 5. CARGAR BILLETERA (SALDO RETIRABLE)
+  // CARGAR BILLETERA (SALDO RETIRABLE)
   let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
   const today = new Date().toISOString().split('T')[0];
   
@@ -90,7 +85,8 @@ async function loadUserData(user) {
     }
     withdrawableBalance = Number(wallet.withdrawable_balance);
   }
-    renderUserBalances();
+
+  renderUserBalances();
   loadHistory();
   loadActiveInvestments(); 
 }
@@ -124,9 +120,8 @@ async function loadAdminData() {
       `;
       depList.appendChild(item);
     });
-  }
-
-  // Cargar Retiros Pendientes
+  } 
+    // Cargar Retiros Pendientes
   const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').order('created_at', { ascending: false });
   const withList = $('adminPendingWithdraws');
   withList.innerHTML = '';
@@ -189,7 +184,7 @@ window.approveAction = async function(id, type, userId, asset, amount) {
     await supabaseClient.from('novavest_balances').upsert({ user_id: userId, asset: asset, amount: newAmount });
     toast('Depósito acreditado exitosamente');
   } else {
-    // En retiros, el dinero ya se le descontó al usuario. Solo borramos la solicitud y avisamos.
+    // En retiros, el dinero ya se le descontó al usuario.
     toast('Retiro completado. (El saldo ya fue descontado)');
   }
   
@@ -216,8 +211,9 @@ window.rejectAction = async function(id) {
     toast('Retiro rechazado y saldo devuelto');
   } else {
     toast('Solicitud rechazada');
-}
-    await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
+  }
+  
+  await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
   loadAdminData();
 };
 
@@ -283,7 +279,6 @@ async function loadHistory() {
     panel.appendChild(item);
   });
 }
-
 async function saveActiveInvestment(inv) {
   const endTimeISO = new Date(inv.endTime).toISOString();
   await supabaseClient.from('novavest_investments').insert({ user_id: currentUserId, plan_name: inv.planName, asset: inv.asset, amount_usd: inv.amountUsd, profit_usd: inv.profitUsd, end_time: endTimeISO });
@@ -334,6 +329,7 @@ function updateTimers() {
     }
   });
 }
+
 window.claimReward = async function(invId) {
   const inv = activeInvestmentsData.find(i => i.id === invId);
   if (!inv) return;
@@ -464,8 +460,7 @@ window.simulateWithdraw = async function() {
       const modal = $('mainModal'); modal.classList.add('error-shake'); setTimeout(() => modal.classList.remove('error-shake'), 500);
       toast('Contraseña incorrecta.'); btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
     }
-
-    // Descontar el saldo y crear la solicitud
+        // Descontar el saldo y crear la solicitud
     const newAmount = (userBalances[asset] || 0) - cryptoToWithdraw;
     await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset, amount: newAmount });
     userBalances[asset] = newAmount;
@@ -525,6 +520,7 @@ $('registerForm').addEventListener('submit', async e=>{
   if(data.session){showDashboard(data.user);}
   else showMessage('Cuenta creada. Revisa tu correo para confirmar.');
 });
+
 $('resetForm').addEventListener('submit',async e=>{
   e.preventDefault();clearMessage();
   const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
