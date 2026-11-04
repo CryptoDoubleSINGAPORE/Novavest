@@ -1,0 +1,531 @@
+const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const ASSET_INFO = {
+  TRX: { price: 0.2841, name: 'TRON', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
+  BTC: { price: 67420.8, name: 'Bitcoin', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">' },
+  SOL: { price: 145.50, name: 'Solana', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">' },
+  USDT: { price: 1, name: 'Tether', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">' }
+};
+
+let currentUserId = null;
+let userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+let withdrawableBalance = 0;
+let dailyWithdrawn = 0;
+let pendingInvestment = null;
+let timerInterval = null;
+let activeInvestmentsData = [];
+
+const PLAN_CONFIG = {
+  starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, hours: 24, amounts: [20, 50, 100, 200, 400] },
+  pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 72 horas. Elige tu criptomoneda y el monto:', roi: 0.12, hours: 72, amounts: [500, 1000, 2000, 5000] }
+};
+
+const $ = (id) => document.getElementById(id);
+function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
+
+async function loadUserData(user) {
+  currentUserId = user.id;
+  const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  if (readError) { console.error('Error leyendo balances:', readError); return; }
+  
+  if (!existing || existing.length === 0) {
+    const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
+    await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+  }
+  
+  const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+  (rows || []).forEach(row => {
+    if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
+      userBalances[row.asset] = Number(row.amount) || 0;
+    }
+  });
+
+  const walletKey = 'nv_wallet_' + currentUserId;
+  const walletData = JSON.parse(localStorage.getItem(walletKey) || '{"withdrawable":0,"lastDate":"","dailyWithdrawn":0}');
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (walletData.lastDate !== today) {
+    walletData.lastDate = today;
+    walletData.dailyWithdrawn = 0;
+    localStorage.setItem(walletKey, JSON.stringify(walletData));
+  }
+  withdrawableBalance = walletData.withdrawable || 0;
+  dailyWithdrawn = walletData.dailyWithdrawn || 0;
+
+  renderUserBalances();
+  loadHistory();
+  loadActiveInvestments(); 
+}
+
+function updateWalletStorage() {
+  const walletKey = 'nv_wallet_' + currentUserId;
+  const today = new Date().toISOString().split('T')[0];
+  const walletData = { withdrawable: withdrawableBalance, lastDate: today, dailyWithdrawn: dailyWithdrawn };
+  localStorage.setItem(walletKey, JSON.stringify(walletData));
+}
+
+function renderUserBalances() {
+  const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
+  $('totalBalance').textContent = money(total);
+  $('activeInvestment').textContent = money(total);
+  $('demoPerformance').textContent = money(total * 0.047);
+  $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
+  $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
+  $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
+  $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
+  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
+}
+
+window.navigate = function(viewName, btnElement) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  $('view-' + viewName).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  if(btnElement) btnElement.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
+function saveTransaction(type, asset, amount, extra = '') {
+  if (!currentUserId) return;
+  const historyKey = 'nv_history_' + currentUserId;
+  let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  const tx = { type: type, asset: asset, amount: amount, date: new Date().toISOString(), extra: extra };
+  history.unshift(tx);
+  localStorage.setItem(historyKey, JSON.stringify(history));
+  loadHistory();
+}
+
+function loadHistory() {
+  if (!currentUserId) return;
+  const historyKey = 'nv_history_' + currentUserId;
+  const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  const panel = $('activityPanel');
+  
+  if (history.length === 0) {
+    panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
+    return;
+  }
+
+  panel.innerHTML = '';
+  history.forEach(tx => {
+    let icon = '↙', title = 'Depósito', color = 'var(--mint)', sign = '+';
+    if (tx.type === 'withdraw') { icon = '↗'; title = 'Retiro'; color = 'var(--gold)'; sign = '−'; }
+    if (tx.type === 'investment') { icon = '✦'; title = 'Inversión'; color = 'var(--blue)'; sign = '−'; }
+    if (tx.type === 'reward') { icon = '★'; title = 'Ganancia'; color = 'var(--mint)'; sign = '+'; }
+    
+    const dateObj = new Date(tx.date);
+    const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+    const extraTxt = tx.extra ? ` (${tx.extra})` : '';
+    const assetData = ASSET_INFO[tx.asset];
+
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <div class="coin-logo" style="width:36px; height:36px;">${assetData.icon}</div>
+      <div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div>
+      <div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>
+    `;
+    panel.appendChild(item);
+  });
+}
+
+async function saveActiveInvestment(inv) {
+  const endTimeISO = new Date(inv.endTime).toISOString();
+  const { error } = await supabaseClient.from('novavest_investments').insert({
+    user_id: currentUserId,
+    plan_name: inv.planName,
+    asset: inv.asset,
+    amount_usd: inv.amountUsd,
+    profit_usd: inv.profitUsd,
+    end_time: endTimeISO
+  });
+  if (error) { console.error('Error guardando inversión:', error); toast('Error al guardar el plan'); return; }
+  loadActiveInvestments();
+}
+
+async function loadActiveInvestments() {
+  if (!currentUserId) return;
+  
+  const { data: investments, error } = await supabaseClient
+    .from('novavest_investments')
+    .select('*')
+    .eq('user_id', currentUserId);
+  
+  if (error) { console.error('Error cargando inversiones:', error); return; }
+  
+  activeInvestmentsData = investments || [];
+  
+  const container = $('activeInvestmentsSection');
+  const list = $('activeInvestmentsList');
+
+  if (activeInvestmentsData.length === 0) {
+    container.classList.add('hidden');
+    return;
+  }
+
+  container.classList.remove('hidden');
+  list.innerHTML = '';
+
+  activeInvestmentsData.forEach(inv => {
+    const card = document.createElement('div');
+    card.className = 'active-inv-card';
+    card.innerHTML = `
+      <div class="active-inv-info">
+        <b>${inv.plan_name}</b>
+        <span>Inversión: $${inv.amount_usd}</span>
+      </div>
+      <div class="active-inv-timer" id="timer-container-${inv.id}">
+        <strong id="timer-${inv.id}">00:00:00</strong>
+        <span>Tiempo restante</span>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimers, 1000);
+  updateTimers();
+}
+
+function updateTimers() {
+  if (!activeInvestmentsData) return;
+  const now = Date.now();
+
+  activeInvestmentsData.forEach(inv => {
+    const container = $(`timer-container-${inv.id}`);
+    if (!container) return;
+
+    const endTimeMs = new Date(inv.end_time).getTime();
+    const remaining = endTimeMs - now;
+
+    if (remaining <= 0) {
+      if (!container.classList.contains('claimed')) {
+        container.classList.add('claimed');
+        container.innerHTML = `<button class="claim-btn" onclick="claimReward('${inv.id}')">Reclamar $${inv.profit_usd}</button>`;
+      }
+    } else {
+      const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+      const seconds = Math.floor((remaining / 1000) % 60);
+      const el = $(`timer-${inv.id}`);
+      if (el) el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+  });
+}
+
+window.claimReward = async function(invId) {
+  const inv = activeInvestmentsData.find(i => i.id === invId);
+  if (!inv) return;
+
+  if (Date.now() < new Date(inv.end_time).getTime()) {
+    toast('La inversión aún no ha terminado.');
+    return;
+  }
+
+  const cryptoEarned = inv.profit_usd / ASSET_INFO[inv.asset].price;
+  
+  userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
+  await supabaseClient.from('novavest_balances').upsert({
+    user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id,asset' });
+
+  withdrawableBalance += Number(inv.profit_usd);
+  updateWalletStorage();
+  renderUserBalances();
+  
+  await supabaseClient.from('novavest_investments').delete().eq('id', invId);
+  
+  saveTransaction('reward', inv.asset, cryptoEarned, 'Ganancia ' + inv.plan_name);
+  
+  loadActiveInvestments();
+  openModal('¡Felicidades!', `Has reclamado <b>$${inv.profit_usd} USD</b>.<br><br>Este dinero ya está disponible en tu saldo retirable.`);
+  toast(`¡Has ganado $${inv.profit_usd}!`);
+};
+
+window.openPlanModal = function(planType) {
+  const config = PLAN_CONFIG[planType];
+  $('planModalTitle').innerHTML = config.name;
+  $('planModalDesc').textContent = config.desc;
+  const titleColor = planType === 'starter' ? 'var(--blue)' : 'var(--fire)';
+  $('planModalTitle').style.color = titleColor;
+
+  let htmlContent = '';
+  Object.keys(ASSET_INFO).forEach(asset => {
+    const assetData = ASSET_INFO[asset];
+    htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
+    config.amounts.forEach(amt => {
+      const profit = (amt * config.roi).toFixed(2);
+      const profitText = planType === 'starter' ? `Diario: +$${profit}` : `(72h): +$${profit}`;
+      htmlContent += `
+        <button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})">
+          <div class="invest-btn-price">$${amt} <span>USD</span></div>
+          <div class="invest-btn-yield" style="color: ${planType === 'starter' ? 'var(--blue)' : 'var(--fire)'};">${profitText}</div>
+        </button>
+      `;
+    });
+    htmlContent += `</div></div>`;
+  });
+
+  $('planModalContent').innerHTML = htmlContent;
+  $('planModal').classList.add('open');
+};
+
+window.closePlanModal = function() { $('planModal').classList.remove('open'); };
+
+window.checkBalanceForInvestment = function(planType, asset, amountUsd, profit) {
+  const cryptoPrice = ASSET_INFO[asset].price;
+  const cryptoNeeded = amountUsd / cryptoPrice;
+  const userCryptoBalance = userBalances[asset] || 0;
+  const userUsdBalance = userCryptoBalance * cryptoPrice;
+
+  if (userUsdBalance < amountUsd) {
+    const shortfallUsd = amountUsd - userUsdBalance;
+    closePlanModal();
+    
+    const modal = $('mainModal');
+    modal.classList.add('error-shake');
+    setTimeout(() => modal.classList.remove('error-shake'), 500);
+    
+    openModal('Saldo Insuficiente', `No tienes suficiente saldo en <b>${asset}</b>.<br><br>Necesitas <b>$${shortfallUsd.toFixed(2)} USD</b> más.<br><br>Por favor, recarga tu cuenta para continuar.`);
+    return;
+  }
+
+  pendingInvestment = { planType, asset, amountUsd, profit, cryptoNeeded };
+  closePlanModal();
+  $('confirmInvTitle').textContent = 'Confirmar Inversión';
+  $('confirmInvText').innerHTML = `Estás a punto de invertir <b>$${amountUsd} USD</b> en el <b>${PLAN_CONFIG[planType].name}</b> usando tu saldo en <b>${asset}</b>.<br><br>Recibirás <b>$${profit}</b> de ganancia en ${PLAN_CONFIG[planType].hours} horas.<br><br>¿Deseas continuar?`;
+  $('confirmInvBtn').className = `modal-btn-confirm press-effect ${planType === 'starter' ? '' : 'fire'}`;
+  $('confirmInvModal').classList.add('open');
+};
+
+window.closeConfirmInvModal = function() {
+  $('confirmInvModal').classList.remove('open');
+  pendingInvestment = null;
+};
+
+window.executeInvestment = async function() {
+  if (!pendingInvestment) return;
+  const btn = $('confirmInvBtn');
+  btn.disabled = true; btn.textContent = 'Procesando…';
+  const { planType, asset, amountUsd, profit, cryptoNeeded } = pendingInvestment;
+  
+  try {
+    const newAmount = (userBalances[asset] || 0) - cryptoNeeded;
+    const { error } = await supabaseClient.from('novavest_balances').upsert({
+        user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,asset' });
+
+    if (error) throw error;
+
+    userBalances[asset] = newAmount;
+    renderUserBalances();
+    saveTransaction('investment', asset, cryptoNeeded, PLAN_CONFIG[planType].name);
+    
+    const endTime = Date.now() + (PLAN_CONFIG[planType].hours * 60 * 60 * 1000);
+    await saveActiveInvestment({ planName: PLAN_CONFIG[planType].name, asset, amountUsd, profitUsd: profit, endTime });
+
+    closeConfirmInvModal();
+    navigate('home', document.querySelectorAll('.nav button')[0]);
+    toast('¡Inversión realizada con éxito!');
+  } catch (err) {
+    console.error(err);
+    toast('Error: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Confirmar';
+  }
+};
+
+window.simulateDeposit = async function(){
+  if (!currentUserId) { toast('Inicia sesión primero'); return; }
+  const value = Number($('amount').value);
+  if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
+
+  const asset = $('asset').value;
+  const usdValue = value * ASSET_INFO[asset].price;
+  const newAmount = (userBalances[asset] || 0) + value;
+  const btn = $('depositBtn');
+  btn.disabled = true; btn.textContent = 'Procesando…';
+
+  const { error } = await supabaseClient.from('novavest_balances').upsert({
+      user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id,asset' });
+
+  btn.disabled = false; btn.textContent = 'Continuar con depósito →';
+  if (error) { toast('Error: ' + error.message); return; }
+
+  userBalances[asset] = newAmount;
+  renderUserBalances();
+  saveTransaction('deposit', asset, value);
+  openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
+  toast('Depósito agregado');
+};
+
+window.updateWithdrawInfo = function() { $('withdrawUnit').textContent = 'USD'; };
+
+window.simulateWithdraw = async function() {
+  const asset = $('withdrawAsset').value;
+  const amountUsd = Number($('withdrawAmount').value);
+  const address = $('withdrawAddress').value.trim();
+  const password = $('withdrawPassword').value;
+  const btn = $('withdrawBtn');
+
+  if (!amountUsd || amountUsd < 1) { toast('El retiro mínimo es de $1.00 USD'); return; }
+  if (amountUsd > withdrawableBalance) { toast('Saldo retirable insuficiente. Solo puedes retirar tus ganancias.'); return; }
+  if (dailyWithdrawn + amountUsd > 550) { toast('Has superado el límite diario de $550.00 USD.'); return; }
+  
+  const cryptoToWithdraw = amountUsd / ASSET_INFO[asset].price;
+  if (cryptoToWithdraw > (userBalances[asset] || 0)) { toast('No tienes suficiente saldo en esta moneda.'); return; }
+  if (!address) { toast('Introduce una dirección de destino'); return; }
+  if (!password) { toast('Introduce tu contraseña'); return; }
+
+  btn.disabled = true; btn.textContent = 'Verificando…';
+
+  try {
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !userData.user) throw new Error('Sesión no válida');
+
+    const { error: authError } = await supabaseClient.auth.signInWithPassword({ email: userData.user.email, password: password });
+    if (authError) { 
+      const modal = $('mainModal');
+      modal.classList.add('error-shake');
+      setTimeout(() => modal.classList.remove('error-shake'), 500);
+      toast('Contraseña incorrecta.'); 
+      btn.disabled = false; btn.textContent = 'Confirmar retiro →'; return; 
+    }
+
+    const newAmount = (userBalances[asset] || 0) - cryptoToWithdraw;
+    const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({
+        user_id: currentUserId, asset, amount: newAmount, updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,asset' });
+
+    if (updateError) throw updateError;
+
+    userBalances[asset] = newAmount;
+    withdrawableBalance -= amountUsd;
+    dailyWithdrawn += amountUsd;
+    updateWalletStorage();
+    
+    renderUserBalances();
+    saveTransaction('withdraw', asset, cryptoToWithdraw, 'Retiro');
+    
+    $('withdrawAmount').value = ''; $('withdrawAddress').value = ''; $('withdrawPassword').value = '';
+
+    openModal('Retiro Confirmado', `Se han retirado $${amountUsd.toFixed(2)} USD (${cryptoToWithdraw.toFixed(4)} ${asset}) a la dirección proporcionada.<br><br><i>(Simulación).</i>`);
+    toast('Retiro procesado con éxito');
+
+  } catch (err) {
+    console.error('Error en retiro:', err); toast('Error: ' + (err.message || 'No se pudo procesar'));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Confirmar retiro →';
+  }
+};
+
+function showMessage(message, isError=false) {
+  const box=$('authMessage'); box.textContent=message; box.classList.remove('hidden','auth-error');
+  if(isError) box.classList.add('auth-error');
+}
+function clearMessage(){ $('authMessage').classList.add('hidden'); $('authMessage').textContent=''; }
+
+function setAuthView(view) {
+  clearMessage();
+  ['loginForm','registerForm','resetForm'].forEach(id=>$(id).classList.add('hidden'));
+  $(view+'Form').classList.remove('hidden');
+  $('authTitle').textContent = view==='login'?'Bienvenido de nuevo':view==='register'?'Crea tu cuenta':'Recuperar contraseña';
+  $('authSubtitle').textContent = view==='login'?'Inicia sesión para acceder a tu panel personal.':view==='register'?'Regístrate para crear tu cuenta NovaVest.':'Te enviaremos un enlace a tu correo.';
+  $('authSwitch').classList.toggle('hidden',view==='reset');
+  $('authSwitch').innerHTML = view==='register'?'¿Ya tienes cuenta? <button class="link-btn" type="button" id="showLogin">Iniciar sesión</button>':'¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button>';
+  $('showRegister')?.addEventListener('click',()=>setAuthView('register'));
+  $('showLogin')?.addEventListener('click',()=>setAuthView('login'));
+}
+$('showRegister').addEventListener('click',()=>setAuthView('register'));
+$('showReset').addEventListener('click',()=>setAuthView('reset'));
+
+$('loginForm').addEventListener('submit', async e=>{
+  e.preventDefault(); clearMessage(); const btn=$('loginSubmit'); btn.disabled=true; btn.textContent='Entrando…';
+  const {error}=await supabaseClient.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
+  btn.disabled=false; btn.textContent='Iniciar sesión';
+  if(error) showMessage(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message,true);
+});
+
+$('registerForm').addEventListener('submit', async e=>{
+  e.preventDefault(); clearMessage(); const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
+  const {data,error}=await supabaseClient.auth.signUp({
+    email:$('registerEmail').value.trim(),
+    password:$('registerPassword').value,
+    options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname}
+  });
+  btn.disabled=false; btn.textContent='Crear cuenta';
+  if(error){showMessage(error.message,true);return;}
+  if(data.session){showDashboard(data.user);}
+  else showMessage('Cuenta creada. Revisa tu correo para confirmar.');
+});
+
+$('resetForm').addEventListener('submit',async e=>{
+  e.preventDefault();clearMessage();
+  const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
+  if(error) showMessage(error.message,true); else showMessage('Enlace enviado si el correo está registrado.');
+});
+
+function showDashboard(user){
+  $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
+  const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
+  $('welcomeName').textContent=name.split(' ')[0];
+  $('investorName').textContent=name;
+  $('investorEmail').textContent=user?.email||'Cuenta NovaVest';
+  if(user?.created_at) {
+    const date = new Date(user.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+    $('investorDate').textContent = 'Miembro desde: ' + date;
+  }
+  $('avatar').textContent=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase();
+  $('profileInitials').textContent=$('avatar').textContent;
+  loadUserData(user).catch(err => { console.error(err); toast('Error cargando datos.'); });
+}
+
+async function signOut(){
+  const {error}=await supabaseClient.auth.signOut();
+  if(error){toast(error.message);return;}
+  currentUserId=null; withdrawableBalance=0; dailyWithdrawn=0;
+  $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden');
+  setAuthView('login'); toast('Sesión cerrada');
+  navigate('home', document.querySelectorAll('.nav button')[0]);
+  $('activeInvestmentsSection').classList.add('hidden');
+}
+window.signOut=signOut;
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session?.user) showDashboard(session.user);
+  else if(event==='SIGNED_OUT'){ $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden'); }
+});
+supabaseClient.auth.getSession().then(({data})=>{
+  if(data.session?.user) showDashboard(data.session.user);
+});
+
+window.changeAsset = function() {
+  const asset = $('asset').value;
+  const coin = ASSET_INFO[asset];
+  $('coinBadge').innerHTML = coin.icon;
+  $('unit').textContent = asset;
+  updateEstimate();
+};
+
+window.updateEstimate = function() {
+  const value = Math.max(0, Number($('amount').value)||0);
+  const price = ASSET_INFO[$('asset').value].price;
+  $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
+};
+
+window.copyWallet = async function() {
+  try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); }
+  catch(e) { toast('No se pudo copiar'); }
+};
+
+window.openModal=function(title,message){
+  $('modalTitle').textContent=title;
+  $('modalText').innerHTML=message;
+  $('modal').classList.add('open');
+};
+window.closeModal=function(){$('modal').classList.remove('open');};
+window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
