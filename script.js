@@ -26,6 +26,29 @@ const $ = (id) => document.getElementById(id);
 function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
 
+// --- FUNCIÓN PARA RESCATAR LOS PLANES VIEJOS ---
+async function migrateOldInvestments() {
+  const oldKey = 'nv_investments_' + currentUserId;
+  const oldInvs = JSON.parse(localStorage.getItem(oldKey) || '[]');
+  
+  if (oldInvs.length > 0) {
+    console.log("Rescatando planes viejos...", oldInvs);
+    for (const inv of oldInvs) {
+      const endTimeISO = new Date(inv.endTime).toISOString();
+      await supabaseClient.from('novavest_investments').insert({
+        user_id: currentUserId,
+        plan_name: inv.planName,
+        asset: inv.asset,
+        amount_usd: inv.amountUsd,
+        profit_usd: inv.profitUsd,
+        end_time: endTimeISO
+      });
+    }
+    localStorage.removeItem(oldKey);
+    toast('Planes anteriores sincronizados a la nube');
+  }
+}
+
 async function loadUserData(user) {
   currentUserId = user.id;
   const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
@@ -58,6 +81,7 @@ async function loadUserData(user) {
 
   renderUserBalances();
   loadHistory();
+  await migrateOldInvestments(); 
   loadActiveInvestments(); 
 }
 
@@ -130,9 +154,7 @@ function loadHistory() {
     `;
     panel.appendChild(item);
   });
-}
-
-async function saveActiveInvestment(inv) {
+        } async function saveActiveInvestment(inv) {
   const endTimeISO = new Date(inv.endTime).toISOString();
   const { error } = await supabaseClient.from('novavest_investments').insert({
     user_id: currentUserId,
@@ -336,9 +358,7 @@ window.executeInvestment = async function() {
   } finally {
     btn.disabled = false; btn.textContent = 'Confirmar';
   }
-};
-
-window.simulateDeposit = async function(){
+}; window.simulateDeposit = async function(){
   if (!currentUserId) { toast('Inicia sesión primero'); return; }
   const value = Number($('amount').value);
   if (!value || value <= 0) { toast('Introduce una cantidad válida'); return; }
