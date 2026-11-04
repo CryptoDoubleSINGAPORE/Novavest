@@ -180,7 +180,6 @@
     
     .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
     
-    /* NUEVOS ESTILOS PARA EL CALENDARIO Y LISTA DE USUARIOS */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
     .calendar-day { padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text); background: var(--bg); }
     .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; }
@@ -193,6 +192,14 @@
     .user-balances span { font-weight: 700; color: var(--text); }
     .user-status { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--muted); }
     .status-pending { color: var(--fire); font-weight: 800; }
+
+    /* ESTILOS DE REFERIDOS */
+    .ref-box { background: #0f172a; color: #fff; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 15px; }
+    .ref-box h3 { margin: 0 0 10px; font-size: 15px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .ref-code { font-size: 36px; font-weight: 900; color: var(--mint); letter-spacing: 2px; margin-bottom: 15px; }
+    .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px; border-radius: 12px; }
+    .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 12px; outline: none; padding-left: 8px; }
+    .ref-link-wrap button { background: var(--mint); color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 12px; }
     
     @media(min-width:600px) { 
       body { padding-top: 20px; } 
@@ -213,7 +220,7 @@
         </div>
         NovaVest
       </div>
-         <h1 id="authTitle">Bienvenido de nuevo</h1>
+      <h1 id="authTitle">Bienvenido de nuevo</h1>
       <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel financiero.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
       <form id="loginForm" class="auth-form">
@@ -222,8 +229,8 @@
         <label class="field-label" for="loginPassword">Contraseña</label>
         <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
         <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
-      </form>
-      <form id="registerForm" class="auth-form hidden">
+          </form>
+           <form id="registerForm" class="auth-form hidden">
         <label class="field-label" for="fullName">Nombre completo</label>
         <input class="field" id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" maxlength="70" required>
         <label class="field-label" for="registerEmail">Correo electrónico</label>
@@ -231,6 +238,9 @@
         <label class="field-label" for="registerPassword">Crear contraseña (Mín. 8 caracteres, 1 mayúscula, 1 número)</label>
         <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="Ej: Nova2024*" required>
         
+        <label class="field-label" for="referralCode">Código de Referido (Opcional)</label>
+        <input class="field" id="referralCode" type="number" placeholder="Ej: 1450">
+
         <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
           <input type="checkbox" id="termsCheck" required style="width:18px; height:18px; accent-color:#0f172a;">
           <label for="termsCheck" style="font-size:11px; color:#64748b; font-weight: 500;">Acepto los <a href="#" onclick="openTerms(); return false;" style="color:#0f172a; font-weight:800;">Términos y Condiciones</a></label>
@@ -283,6 +293,17 @@
             <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
           </div>
         </section>
+
+        <!-- BANNER DE REFERIDOS EN INICIO -->
+        <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+          <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
+            <div>
+              <h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2>
+              <p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p>
+            </div>
+            <span style="font-size:24px;">👥</span>
+          </div>
+        </div>
 
         <div id="activeInvestmentsSection" class="hidden">
           <div class="section"><h2>Inversiones Activas</h2></div>
@@ -384,9 +405,8 @@
               </b>
             </div>
             <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
-          </div>
-
-          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+            </div>
+                      <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
           <div class="asset-select" style="margin-top:10px">
             <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
               <option value="TRX">TRON (TRX)</option>
@@ -410,6 +430,41 @@
           
           <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 11px; color: #1e40af; text-align: center; line-height: 1.5; font-weight: 600;">
             ⏳ <b>Tiempo de procesamiento:</b><br>Los retiros son procesados de 1 hora a 24 horas.
+          </div>
+        </div>
+      </div>
+
+      <!-- NUEVA VISTA DE REFERIDOS -->
+      <div id="view-referrals" class="view">
+        <div class="section" style="margin-top:0;"><h2>Programa de Referidos</h2></div>
+        
+        <div class="ref-box">
+          <h3>Tu Código de Invitación</h3>
+          <div class="ref-code" id="myRefCode">...</div>
+          <h3>Tu Enlace de Invitación</h3>
+          <div class="ref-link-wrap">
+            <input type="text" id="myRefLink" readonly>
+            <button onclick="copyRefLink()">Copiar</button>
+          </div>
+        </div>
+
+        <div class="panel" style="background: #eff6ff; border-color: #bfdbfe;">
+          <h3 style="margin: 0 0 10px; font-size: 15px; color: #1e40af;">¿Cómo funciona?</h3>
+          <p style="font-size: 12px; color: #1e40af; line-height: 1.5; margin: 0; font-weight: 500;">
+            Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!
+          </p>
+        </div>
+
+        <div class="stats" style="margin-top: 15px;">
+          <div class="stat">
+            <div class="stat-top">Amigos Invitados</div>
+            <strong id="totalInvited">0</strong>
+            <small>Registrados con tu código</small>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Comisiones Ganadas</div>
+            <strong id="totalEarned" style="color: var(--mint);">$0.00</strong>
+            <small>En USDT</small>
           </div>
         </div>
       </div>
@@ -478,12 +533,11 @@
           </div>
         </div>
 
-        <!-- BOTÓN PARA IR AL NUEVO PANEL DE USUARIOS -->
-        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[4])">
+        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
               <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
-              <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad detallada.</p>
+              <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p>
             </div>
             <span style="font-size:24px; color:#3b82f6;">→</span>
           </div>
@@ -495,7 +549,8 @@
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
           </div>
         </div>
-                <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+
+        <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
           <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
           <div id="adminPendingWithdraws" class="activity">
             <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
@@ -510,14 +565,12 @@
         </div>
       </div>
 
-      <!-- NUEVA VISTA: PANEL DE USUARIOS -->
       <div id="view-admin-users" class="view">
         <div class="section" style="margin-top:0;">
           <h2>Panel de Usuarios</h2>
-          <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[4])">← Volver</button>
+          <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button>
         </div>
-        
-        <div class="stats" style="margin-bottom: 15px;">
+              <div class="stats" style="margin-bottom: 15px;">
           <div class="stat">
             <div class="stat-top">Total Registrados</div>
             <strong id="statsTotalUsers">0</strong>
@@ -554,6 +607,7 @@
         <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
         <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
         <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
+        <button onclick="navigate('referrals', this)"><span>👥</span>Referidos</button>
         <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
         <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:#ef4444;"><span>⚙</span>Admin</button>
       </div>
@@ -614,6 +668,7 @@
 
     let currentUserId = null;
     let currentUserEmail = null;
+    let currentUserDisplayId = null;
     let userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
     let withdrawableBalance = 0;
     let dailyWithdrawn = 0;
@@ -634,19 +689,24 @@
       currentUserId = user.id;
       currentUserEmail = user.email; 
       
-      // Actualizar última conexión
       await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
 
       if (user.email === ADMIN_EMAIL) {
         $('adminNavBtn').classList.remove('hidden');
-        $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
+        $('navInner').style.gridTemplateColumns = 'repeat(6, 1fr)';
       } else {
         $('adminNavBtn').classList.add('hidden');
-        $('navInner').style.gridTemplateColumns = 'repeat(4, 1fr)';
+        $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
       }
 
       const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
-      if (profile) $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
+      if (profile) {
+        currentUserDisplayId = profile.display_id;
+        $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
+        $('myRefCode').textContent = profile.display_id;
+        const refLink = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
+        $('myRefLink').value = refLink;
+      }
 
       const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
       if (!existing || existing.length === 0) {
@@ -681,8 +741,25 @@
       renderUserBalances();
       loadHistory();
       loadActiveInvestments(); 
+      loadReferralStats();
     }
-        async function loadAdminData() {
+
+    async function loadReferralStats() {
+      if (!currentUserDisplayId) return;
+      
+      const { count: invitedCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true }).eq('referred_by', currentUserDisplayId);
+      $('totalInvited').textContent = invitedCount || 0;
+
+      const { data: rewards } = await supabaseClient.from('novavest_history').select('amount').eq('user_id', currentUserId).eq('type', 'reward').eq('details', 'Bono por referido');
+      const totalEarned = rewards ? rewards.reduce((sum, r) => sum + Number(r.amount), 0) : 0;
+      $('totalEarned').textContent = '$' + totalEarned.toFixed(2);
+    }
+       window.copyRefLink = function() {
+      const link = $('myRefLink').value;
+      navigator.clipboard.writeText(link).then(() => toast('Enlace copiado al portapapeles'));
+    };
+
+    async function loadAdminData() {
       const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
       $('adminTotalUsers').textContent = userCount || 0;
 
@@ -765,17 +842,14 @@
       }
     }
 
-    // NUEVA FUNCIÓN PARA EL PANEL DE USUARIOS AVANZADO
     async function loadAdminUsersData() {
       const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
-      
       const { data: balances } = await supabaseClient.from('novavest_balances').select('*');
       const { data: wallets } = await supabaseClient.from('novavest_wallets').select('*');
       const { data: pending } = await supabaseClient.from('novavest_pending_actions').select('*');
 
       if (!users) return;
 
-      // Procesar datos
       let totalUsers = users.length;
       let activeUsers = 0;
       let todayUsers = 0;
@@ -795,16 +869,13 @@
         }
       });
 
-      // Renderizar Stats
       $('statsTotalUsers').textContent = totalUsers;
       $('statsActiveUsers').textContent = activeUsers;
       $('statsTodayUsers').textContent = todayUsers;
       $('statsPendingActions').textContent = pendingCount;
 
-      // Renderizar Calendario
       renderCalendar(calendarMap);
 
-      // Renderizar Lista de Usuarios
       const list = $('adminUsersList');
       list.innerHTML = '';
       
@@ -819,7 +890,6 @@
         
         const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
 
-        // Construir balances por moneda
         let balancesHtml = '';
         ['TRX', 'BTC', 'SOL', 'USDT'].forEach(asset => {
           const bal = userBalances.find(b => b.asset === asset);
@@ -854,8 +924,9 @@
         `;
         list.appendChild(item);
       });
-                }
-        function renderCalendar(calendarMap) {
+    }
+
+    function renderCalendar(calendarMap) {
       const grid = $('calendarGrid');
       grid.innerHTML = '';
       const now = new Date();
@@ -863,7 +934,6 @@
       const month = now.getMonth();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       
-      // Cabeceras
       ['D', 'L', 'M', 'M', 'J', 'V', 'S'].forEach(d => {
         const el = document.createElement('div');
         el.className = 'calendar-header';
@@ -871,13 +941,11 @@
         grid.appendChild(el);
       });
 
-      // Primer día del mes
       const firstDay = new Date(year, month, 1).getDay();
       for (let i = 0; i < firstDay; i++) {
         grid.appendChild(document.createElement('div'));
       }
 
-      // Días
       for (let i = 1; i <= daysInMonth; i++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
         const count = calendarMap[dateStr] || 0;
@@ -889,11 +957,37 @@
       }
     }
 
+    // --- LÓGICA DE APROBACIÓN CON REFERIDOS ---
     window.approveAction = async function(id, type, userId, asset, amount) {
       if (type === 'deposit') {
+        // 1. Sumar el saldo al usuario que depositó
         const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).single();
         const newAmount = (currentBal?.amount || 0) + Number(amount);
         await supabaseClient.from('novavest_balances').upsert({ user_id: userId, asset: asset, amount: newAmount });
+
+        // 2. Verificar referido
+        const { data: profile } = await supabaseClient.from('novavest_profiles').select('*').eq('user_id', userId).single();
+        
+        if (profile && profile.referred_by && !profile.referral_paid) {
+          const usdValue = Number(amount) * ASSET_INFO[asset].price;
+          
+          if (usdValue >= 20) {
+            const { data: referrer } = await supabaseClient.from('novavest_profiles').select('user_id').eq('display_id', profile.referred_by).single();
+            
+            if (referrer) {
+              const rewardUsd = usdValue * 0.10;
+              
+              const { data: refBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', referrer.user_id).eq('asset', 'USDT').single();
+              const newRefBal = (refBal?.amount || 0) + rewardUsd;
+              await supabaseClient.from('novavest_balances').upsert({ user_id: referrer.user_id, asset: 'USDT', amount: newRefBal });
+              
+              await supabaseClient.from('novavest_profiles').update({ referral_paid: true }).eq('user_id', userId);
+              
+              await supabaseClient.from('novavest_history').insert({ user_id: referrer.user_id, type: 'reward', asset: 'USDT', amount: rewardUsd, details: 'Bono por referido' });
+            }
+          }
+        }
+
         toast('Depósito acreditado exitosamente');
       } else {
         const { data: historyItem } = await supabaseClient.from('novavest_history').select('id').eq('user_id', userId).eq('type', 'withdraw').eq('details', 'Retiro Solicitado').order('created_at', { ascending: false }).limit(1).single();
@@ -928,8 +1022,7 @@
       const today = new Date().toISOString().split('T')[0];
       await supabaseClient.from('novavest_wallets').upsert({ user_id: currentUserId, withdrawable_balance: withdrawableBalance, daily_withdrawn: dailyWithdrawn, last_withdrawn_date: today });
     }
-
-    function renderUserBalances() {
+        function renderUserBalances() {
       const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
       $('totalBalance').textContent = money(total);
       $('activeInvestment').textContent = money(total);
@@ -948,6 +1041,7 @@
       if(btnElement) btnElement.classList.add('active');
       if (viewName === 'admin') loadAdminData();
       if (viewName === 'admin-users') loadAdminUsersData();
+      if (viewName === 'referrals') loadReferralStats();
       window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
@@ -1075,8 +1169,9 @@
         const nextTime = new Date(Date.now() + (inv.payout_interval_hours * 60 * 60 * 1000)).toISOString();
         const { error } = await supabaseClient.from('novavest_investments').update({ payouts_claimed: newPayoutsClaimed, next_payout_time: nextTime }).eq('id', invId);
         if (error) { toast("Error de servidor."); return; }
-    }
-            userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
+      }
+
+      userBalances[inv.asset] = (userBalances[inv.asset] || 0) + cryptoEarned;
       await supabaseClient.from('novavest_balances').upsert({ user_id: currentUserId, asset: inv.asset, amount: userBalances[inv.asset], updated_at: new Date().toISOString() }, { onConflict: 'user_id,asset' });
       
       withdrawableBalance += Number(inv.profit_per_payout);
@@ -1171,8 +1266,7 @@
       openModal('Depósito en Revisión', `Hemos recibido tu solicitud para depositar <b>${value} ${asset}</b>.<br><br>Tu saldo se acreditará una vez que el sistema verifique la transacción (de 10 min a 1 hora).`);
       toast('Solicitud de depósito enviada');
     };
-
-    window.updateWithdrawInfo = function() {
+        window.updateWithdrawInfo = function() {
       const asset = $('withdrawAsset').value;
       const coin = ASSET_INFO[asset];
       $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
@@ -1269,10 +1363,26 @@
       }
       
       const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creando cuenta…';
+      const refCode = $('referralCode').value.trim();
+      
       const {data,error}=await supabaseClient.auth.signUp({ email:$('registerEmail').value.trim(), password:password, options:{data:{full_name:$('fullName').value.trim()},emailRedirectTo:window.location.origin+window.location.pathname} });
+      
       btn.disabled=false; btn.textContent='Crear cuenta';
       if(error){showMessage(error.message,true);return;}
-      if(data.session){showDashboard(data.user);}
+      
+      if(data.session){
+        showDashboard(data.user);
+        // Guardar referido si existe
+        if (refCode) {
+          setTimeout(async () => {
+            // Validar que el código no sea el mismo del usuario
+            const { data: myProfile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', data.user.id).maybeSingle();
+            if (myProfile && parseInt(refCode) !== myProfile.display_id) {
+              await supabaseClient.from('novavest_profiles').update({ referred_by: parseInt(refCode) }).eq('user_id', data.user.id);
+            }
+          }, 1500);
+        }
+      }
       else showMessage('Cuenta creada. Revisa tu correo para confirmar.');
     });
 
@@ -1281,6 +1391,7 @@
       const {error}=await supabaseClient.auth.resetPasswordForEmail($('resetEmail').value.trim(),{redirectTo:window.location.origin+window.location.pathname});
       if(error) showMessage(error.message,true); else showMessage('Enlace enviado si el correo está registrado.');
     });
+
     function showDashboard(user){
       $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
       const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
@@ -1345,6 +1456,16 @@
     window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
     window.closeModal=function(){$('modal').classList.remove('open');};
     window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
+
+    // AUTO-RELLENAR CÓDIGO DE REFERIDO DESDE EL ENLACE
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refParam = urlParams.get('ref');
+      if (refParam) {
+        $('referralCode').value = refParam;
+        setAuthView('register'); // Abrir directamente el registro
+      }
+    });
   </script>
 </body>
 </html>
