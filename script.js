@@ -184,8 +184,21 @@ window.approveAction = async function(id, type, userId, asset, amount) {
     await supabaseClient.from('novavest_balances').upsert({ user_id: userId, asset: asset, amount: newAmount });
     toast('Depósito acreditado exitosamente');
   } else {
-    // En retiros, el dinero ya se le descontó al usuario.
-    toast('Retiro completado. (El saldo ya fue descontado)');
+    // En retiros, actualizamos el historial para que diga "Completado"
+    const { data: historyItem } = await supabaseClient.from('novavest_history')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('type', 'withdraw')
+      .eq('details', 'Retiro Solicitado')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (historyItem) {
+      await supabaseClient.from('novavest_history').update({ details: 'Retiro Completado' }).eq('id', historyItem.id);
+    }
+    
+    toast('Retiro completado y saldo enviado.');
   }
   
   // Eliminar la acción pendiente
