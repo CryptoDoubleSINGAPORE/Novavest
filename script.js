@@ -2,11 +2,12 @@ const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+// Direcciones oficiales configuradas
 const ASSET_INFO = {
-  TRX: { price: 0.2841, name: 'TRON', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
-  BTC: { price: 67420.8, name: 'Bitcoin', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">' },
-  SOL: { price: 145.50, name: 'Solana', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">' },
-  USDT: { price: 1, name: 'Tether', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">' }
+  TRX: { price: 0.2841, name: 'TRON', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">' },
+  BTC: { price: 67420.8, name: 'Bitcoin', address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">' },
+  SOL: { price: 145.50, name: 'Solana', address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">' },
+  USDT: { price: 1, name: 'Tether (TRC20)', address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">' }
 };
 
 let currentUserId = null;
@@ -29,7 +30,7 @@ function quantity(value, asset) { return Number(value || 0).toLocaleString('en-U
 async function loadUserData(user) {
   currentUserId = user.id;
   
-  // TRAER EL ID DEL INVERSOR
+  // 1. TRAER EL ID DEL INVERSOR
   const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
   if (profile) {
     $('investorId').textContent = 'ID de inversor: #' + profile.display_id;
@@ -37,7 +38,7 @@ async function loadUserData(user) {
     $('investorId').textContent = 'ID de inversor: Pendiente';
   }
 
-  // CARGAR BALANCES
+  // 2. CARGAR BALANCES
   const { data: existing, error: readError } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
   if (readError) { console.error('Error leyendo balances:', readError); return; }
   
@@ -54,7 +55,7 @@ async function loadUserData(user) {
     }
   });
 
-  // CARGAR BILLETERA (SALDO RETIRABLE)
+  // 3. CARGAR BILLETERA (SALDO RETIRABLE)
   let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
   const today = new Date().toISOString().split('T')[0];
   
@@ -75,7 +76,9 @@ async function loadUserData(user) {
   renderUserBalances();
   loadHistory();
   loadActiveInvestments(); 
-} async function updateWalletStorage() {
+}
+
+async function updateWalletStorage() {
   const today = new Date().toISOString().split('T')[0];
   await supabaseClient.from('novavest_wallets').upsert({
     user_id: currentUserId,
@@ -94,7 +97,9 @@ function renderUserBalances() {
   $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
   $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
   $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
-  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
+  
+  // Actualizamos el saldo en dólares y el texto de la moneda en Retiro
+  window.updateWithdrawInfo();
 }
 
 window.navigate = function(viewName, btnElement) {
@@ -174,7 +179,9 @@ async function loadActiveInvestments() {
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(updateTimers, 1000);
   updateTimers();
-} function updateTimers() {
+}
+
+function updateTimers() {
   if (!activeInvestmentsData) return;
   const now = Date.now();
   activeInvestmentsData.forEach(inv => {
@@ -304,7 +311,27 @@ window.simulateDeposit = async function(){
   await saveTransaction('deposit', asset, value);
   openModal('Depósito Confirmado', `Se agregaron ${value} ${asset} (≈ $${usdValue.toFixed(2)} USD) a tu balance.<br><br><i>(Simulación).</i>`);
   toast('Depósito agregado');
-}; window.updateWithdrawInfo = function() { $('withdrawUnit').textContent = 'USD'; };
+};
+
+// --- ACTUALIZAR EL TEXTO DEL SALDO RETIRABLE SEGÚN LA MONEDA ---
+window.updateWithdrawInfo = function() {
+  const asset = $('withdrawAsset').value;
+  const coin = ASSET_INFO[asset];
+  
+  // Mostrar el saldo total en USD
+  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
+  
+  // Calcular y mostrar el equivalente en la moneda seleccionada (BTC, TRX, etc)
+  const cryptoEquivalent = withdrawableBalance / coin.price;
+  const decimals = asset === 'BTC' ? 6 : 2;
+  const cryptoString = cryptoEquivalent.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  
+  // Actualizamos el texto entre paréntesis
+  const el = $('withdrawableCryptoUI');
+  if (el) {
+    el.textContent = `(≈ ${cryptoString} ${asset})`;
+  }
+};
 
 window.simulateWithdraw = async function() {
   const asset = $('withdrawAsset').value;
@@ -423,7 +450,7 @@ supabaseClient.auth.getSession().then(({data})=>{
   if(data.session?.user) showDashboard(data.session.user);
 });
 
-// --- ACTUALIZAR DEPÓSITO AL CAMBIAR MONEDA ---
+// --- ACTUALIZAR DIRECCIÓN Y QR AL CAMBIAR MONEDA EN DEPÓSITO ---
 window.changeAsset = function() {
   const asset = $('asset').value;
   const coin = ASSET_INFO[asset];
@@ -451,18 +478,17 @@ window.changeAsset = function() {
   }
 };
 
-// --- ACTUALIZAR SALDO RETIRABLE AL CAMBIAR MONEDA ---
-window.updateWithdrawInfo = function() {
-  const asset = $('withdrawAsset').value;
-  const coin = ASSET_INFO[asset];
-  
-  // Mostrar el saldo en USD (que ya teníamos)
-  $('withdrawableBalanceUI').textContent = money(withdrawableBalance) + ' USD';
-  
-  // Calcular y mostrar el equivalente en la criptomoneda seleccionada
-  const cryptoEquivalent = withdrawableBalance / coin.price;
-  const decimals = asset === 'BTC' ? 6 : 2;
-  const cryptoString = cryptoEquivalent.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  
-  $('withdrawableCryptoUI').textContent = `(≈ ${cryptoString} ${asset})`;
+window.updateEstimate = function() {
+  const value = Math.max(0, Number($('amount').value)||0);
+  const price = ASSET_INFO[$('asset').value].price;
+  $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
 };
+
+window.copyWallet = async function() {
+  try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); }
+  catch(e) { toast('No se pudo copiar'); }
+};
+
+window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
+window.closeModal=function(){$('modal').classList.remove('open');};
+window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
