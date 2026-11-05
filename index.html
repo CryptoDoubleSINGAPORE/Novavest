@@ -57,124 +57,121 @@
     .ghost { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
         .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
     .section h2 { font-size: 17px; margin: 0; font-weight: 800; }
-    
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-    .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
-    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #0f172a; }
-    .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
-    
-    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
-    .active-inv-info b { display: block; font-size: 14px; color: #0f172a; margin-bottom: 4px; font-weight: 800; }
-    .active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
-    .active-inv-timer { text-align: right; }
-    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #0f172a; font-weight: 800; }
-    .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
-    .claim-btn { background: var(--mint); color: #fff; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 13px; animation: pulse 2s infinite; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-    
-    .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; }
-    .plan-card:active { transform: scale(0.98); }
-    .plan-card.cold-theme { border-top: 4px solid var(--blue); }
-    .plan-card.cold-theme .plan-title { color: var(--blue); }
-    .plan-card.cold-theme .plan-btn { background: var(--blue); color: #fff; }
-    .plan-card.fire-theme { border-top: 4px solid var(--fire); }
-    .plan-card.fire-theme .plan-title { color: var(--fire); }
-    .plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
-    .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; }
-    .plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
-    .plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
-    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: var(--bg); color: var(--text); }
-    .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
-    .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
+.stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
+.stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #0f172a; }
+.stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-    .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .select, .number, .field { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
-    .select:focus, .number:focus, .field:focus { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
-    .amount-wrap { position: relative; }
-    .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
-    .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
-    .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
-    
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); }
-    .wide:active { transform: scale(0.96); opacity: 0.9; }
+.active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
+.active-inv-info b { display: block; font-size: 14px; color: #0f172a; margin-bottom: 4px; font-weight: 800; }
+.active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
+.active-inv-timer { text-align: right; }
+.active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #0f172a; font-weight: 800; }
+.active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
+.claim-btn { background: var(--mint); color: #fff; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 13px; animation: pulse 2s infinite; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-    .info-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
-    .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--text); font-weight: 600; }
-    .info-row:last-child { margin-bottom: 0; }
-    .info-row b { color: var(--mint); }
+.plans { display: grid; gap: 15px; margin-top: 10px; }
+.plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; }
+.plan-card:active { transform: scale(0.98); }
+.plan-card.cold-theme { border-top: 4px solid var(--blue); }
+.plan-card.cold-theme .plan-title { color: var(--blue); }
+.plan-card.cold-theme .plan-btn { background: var(--blue); color: #fff; }
+.plan-card.fire-theme { border-top: 4px solid var(--fire); }
+.plan-card.fire-theme .plan-title { color: var(--fire); }
+.plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
+.plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; }
+.plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+.plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
+.plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
+.plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: var(--bg); color: var(--text); }
+.plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
+.plan-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-    .coins { display: grid; gap: 9px; }
-    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
-    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
-    .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
-    .coin-info { flex: 1; }
-    .coin-info b { display: block; font-size: 14px; font-weight: 700; }
-    .coin-info span { font-size: 11px; color: var(--muted); font-weight: 600; }
-    .coin-value b { font-size: 13px; font-weight: 800; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+.field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.select, .number, .field { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
+.select:focus, .number:focus, .field:focus { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
+.amount-wrap { position: relative; }
+.amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
+.unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
+.hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
 
-    .activity { display: grid; gap: 0; }
-    .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); }
-    .activity-item:last-child { border: 0; }
-    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--bg); color: var(--text); }
-    .activity-info { flex: 1; }
-    .activity-info b { font-size: 13px; display: block; font-weight: 700; }
-    .activity-info span { font-size: 11px; color: var(--muted); font-weight: 500; }
-    .activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
+.wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); }
+.wide:active { transform: scale(0.96); opacity: 0.9; }
 
-    .investor { display: flex; align-items: center; gap: 14px; }
-    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #0f172a; color: #fff; font-weight: 800; font-size: 18px; }
-    .investor-info b { font-size: 16px; display: block; font-weight: 800; }
-    .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
+.info-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
+.info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--text); font-weight: 600; }
+.info-row:last-child { margin-bottom: 0; }
+.info-row b { color: var(--mint); }
+ .coins { display: grid; gap: 9px; }
+.coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
+.coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
+.coin-logo img { width: 100%; height: 100%; object-fit: contain; }
+.coin-info { flex: 1; }
+.coin-info b { display: block; font-size: 14px; font-weight: 700; }
+.coin-info span { font-size: 11px; color: var(--muted); font-weight: 600; }
+.coin-value b { font-size: 13px; font-weight: 800; }
 
-    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
-    .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-    .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
-    .nav button span { font-size: 20px; }
-    .nav button.active { color: #0f172a; background: var(--bg); }
-    .nav button.active span { transform: translateY(-2px); }
-    
-    .toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+.activity { display: grid; gap: 0; }
+.activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.activity-item:last-child { border: 0; }
+.activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--bg); color: var(--text); flex-shrink: 0; }
+.activity-info { flex: 1; }
+.activity-info b { font-size: 13px; display: block; font-weight: 700; }
+.activity-info span { font-size: 11px; color: var(--muted); font-weight: 500; }
+.activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(4px); }
-    .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-    @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-    .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
-    .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
-    .close { float: right; background: var(--bg); border: 0; color: var(--text); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
-    
-    .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: var(--bg); border: none; color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
-    .modal-btn-confirm { flex: 1; background: #0f172a; border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+.investor { display: flex; align-items: center; gap: 14px; }
+.investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #0f172a; color: #fff; font-weight: 800; font-size: 18px; }
+.investor-info b { font-size: 16px; display: block; font-weight: 800; }
+.investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-    .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
-    .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .invest-btn { background: var(--bg); border: 1px solid var(--line); padding: 14px; border-radius: 14px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 3px; transition: 0.2s; }
-    .invest-btn:hover { border-color: #0f172a; }
-    .invest-btn-price { font-weight: 800; font-size: 16px; }
-    .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
-    .invest-btn-yield { font-size: 11px; font-weight: 700; }
+.nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
+.nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
+.nav button span { font-size: 20px; }
+.nav button.active { color: #0f172a; background: var(--bg); }
+.nav button.active span { transform: translateY(-2px); }
 
-    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; }
-    .auth-card { width: 100%; max-width: 430px; background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
-    .auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; margin-bottom: 27px; }
-    .auth-card h1 { font-size: 26px; margin: 0 0 7px; font-weight: 800; }
-    .auth-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 24px; font-weight: 500; }
-    .auth-form { display: grid; gap: 10px; }
-    .auth-btn { border-radius: 14px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 8px; }
-    .auth-switch { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; font-weight: 500; }
-    .link-btn { color: #0f172a; background: none; font-weight: 800; }
-    .auth-message { font-size: 13px; line-height: 1.5; color: #fff; background: #0f172a; border-radius: 12px; padding: 12px; margin: 12px 0; font-weight: 600; }
-    .auth-error { color: #fff; background: var(--fire); }
-    
-    .trust-badges { display: flex; justify-content: center; gap: 15px; margin-top: 20px; opacity: 0.7; }
+.toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(4px); }
+.modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
+.modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
+.close { float: right; background: var(--bg); border: 0; color: var(--text); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
+
+.modal-actions { display: flex; gap: 10px; }
+.modal-btn-cancel { flex: 1; background: var(--bg); border: none; color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+.modal-btn-confirm { flex: 1; background: #0f172a; border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+
+.invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
+.invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.invest-btn { background: var(--bg); border: 1px solid var(--line); padding: 14px; border-radius: 14px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 3px; transition: 0.2s; }
+.invest-btn:hover { border-color: #0f172a; }
+.invest-btn-price { font-weight: 800; font-size: 16px; }
+.invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
+.invest-btn-yield { font-size: 11px; font-weight: 700; }
+
+.auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; }
+.auth-card { width: 100%; max-width: 430px; background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
+.auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; margin-bottom: 27px; }
+.auth-card h1 { font-size: 26px; margin: 0 0 7px; font-weight: 800; }
+.auth-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 24px; font-weight: 500; }
+.auth-form { display: grid; gap: 10px; }
+.auth-btn { border-radius: 14px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 8px; }
+.auth-switch { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; font-weight: 500; }
+.link-btn { color: #0f172a; background: none; font-weight: 800; }
+.auth-message { font-size: 13px; line-height: 1.5; color: #fff; background: #0f172a; border-radius: 12px; padding: 12px; margin: 12px 0; font-weight: 600; }
+.auth-error { color: #fff; background: var(--fire); }
+     .trust-badges { display: flex; justify-content: center; gap: 15px; margin-top: 20px; opacity: 0.7; }
     .trust-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--muted); }
     
     .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
@@ -244,157 +241,155 @@
           <input type="checkbox" id="termsCheck" required style="width:18px; height:18px; accent-color:#0f172a;">
           <label for="termsCheck" style="font-size:11px; color:#64748b; font-weight: 500;">Acepto los <a href="#" onclick="openTerms(); return false;" style="color:#0f172a; font-weight:800;">Términos y Condiciones</a></label>
         </div>
+             <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
+    </form>
+    <form id="resetForm" class="auth-form hidden">
+      <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
+      <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+      <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
+    </form>
+    <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
+    <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
+    
+    <div class="trust-badges">
+      <div class="trust-badge"><span>🔒</span> Conexión SSL</div>
+      <div class="trust-badge"><span>🛡️</span> Fondos Protegidos</div>
+      <div class="trust-badge"><span>⚡</span> Soporte 24/7</div>
+    </div>
+  </div>
+</section>
+<main id="dashboard" class="hidden">
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="brandmark">
+        <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="12" fill="#0f172a"/>
+          <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      NovaVest
+    </div>
+    <div class="avatar" id="avatar">NV</div>
+  </header>
 
-        <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
-      </form>
-      <form id="resetForm" class="auth-form hidden">
-        <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
-        <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
-      </form>
-      <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
-      <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
+  <div id="view-home" class="view active">
+    <div class="eyebrow">Panel personal</div>
+    <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
+    <div class="sub">Tu resumen de activos en tiempo real.</div>
+    
+    <section class="balance">
+      <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
+      <div class="amount" id="totalBalance">$0.00</div>
+      <div class="change">↗ Rendimiento actual</div>
+      <div class="balance-actions">
+        <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
+        <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
+      </div>
+    </section>
+
+    <!-- BANNER DE REFERIDOS EN INICIO -->
+    <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+      <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
+        <div>
+          <h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2>
+          <p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p>
+        </div>
+        <span style="font-size:24px;">👥</span>
+      </div>
+    </div>
+
+    <div id="activeInvestmentsSection" class="hidden">
+      <div class="section"><h2>Inversiones Activas</h2></div>
+      <div id="activeInvestmentsList"></div>
+    </div>
+
+    <div class="section"><h2>Tu resumen</h2></div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div>
+        <strong id="activeInvestment">$0.00</strong>
+        <small>Valor de tus activos</small>
+      </div>
+      <div class="stat">
+        <div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div>
+        <strong id="demoPerformance">$0.00</strong>
+        <small>Rendimiento de planes</small>
+      </div>
+    </div>
+
+    <div class="section"><h2>Planes de Inversión</h2></div>
+    <div class="plans">
+      <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
+        <div class="plan-title">❄️ Plan Starter</div>
+        <div class="plan-yield">9% ROI</div>
+        <div class="plan-freq">Retiros cada 24 horas (7 días)</div>
+        <div class="plan-desc">Ganancias diarias. Reactiva tu plan al finalizar.</div>
+        <button class="plan-btn press-effect">Ver montos de inversión</button>
+      </div>
+          <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
+        <div class="plan-badge">🔥 MÁS POPULAR</div>
+        <div class="plan-title">🔥 Plan Pro</div>
+        <div class="plan-yield">12% ROI</div>
+        <div class="plan-freq">Retiros cada 48 horas (15 días)</div>
+        <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
+        <button class="plan-btn press-effect">Ver montos de inversión</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-deposit" class="view">
+    <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
+    <div class="panel">
+      <div class="eyebrow">Selecciona tu moneda</div>
+      <div class="asset-select" style="margin-top:10px">
+        <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
+        <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
+          <option value="TRX">TRON (TRX)</option>
+          <option value="BTC">Bitcoin (BTC)</option>
+          <option value="SOL">Solana (SOL)</option>
+          <option value="USDT">Tether (USDT TRC20)</option>
+        </select>
+      </div>
+      <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
+      <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
+      <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
       
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> Conexión SSL</div>
-        <div class="trust-badge"><span>🛡️</span> Fondos Protegidos</div>
-        <div class="trust-badge"><span>⚡</span> Soporte 24/7</div>
-      </div>
-    </div>
-  </section>
-  <main id="dashboard" class="hidden">
-  <div class="app">
-    <header class="top">
-      <div class="brand">
-        <div class="brandmark">
-          <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="12" fill="#0f172a"/>
-            <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
+          <span>Dirección de depósito</span>
+          <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
         </div>
-        NovaVest
+        <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
+        
+        <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
+          <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
+          <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;">
+            <b style="color:#0f172a;">Escanear QR</b><br>
+            Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br>
+            <span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span>
+          </div>
+        </div>
       </div>
-      <div class="avatar" id="avatar">NV</div>
-    </header>
-
-    <div id="view-home" class="view active">
-      <div class="eyebrow">Panel personal</div>
-      <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
-      <div class="sub">Tu resumen de activos en tiempo real.</div>
       
-      <section class="balance">
-        <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
-        <div class="amount" id="totalBalance">$0.00</div>
-        <div class="change">↗ Rendimiento actual</div>
-        <div class="balance-actions">
-          <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
-          <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
-        </div>
-      </section>
-
-      <!-- BANNER DE REFERIDOS EN INICIO -->
-      <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
-        <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
-          <div>
-            <h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2>
-            <p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p>
-          </div>
-          <span style="font-size:24px;">👥</span>
-        </div>
+      <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
+        ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
       </div>
 
-      <div id="activeInvestmentsSection" class="hidden">
-        <div class="section"><h2>Inversiones Activas</h2></div>
-        <div id="activeInvestmentsList"></div>
-      </div>
-
-      <div class="section"><h2>Tu resumen</h2></div>
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div>
-          <strong id="activeInvestment">$0.00</strong>
-          <small>Valor de tus activos</small>
-        </div>
-        <div class="stat">
-          <div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div>
-          <strong id="demoPerformance">$0.00</strong>
-          <small>Rendimiento de planes</small>
-        </div>
-      </div>
-
-      <div class="section"><h2>Planes de Inversión</h2></div>
-      <div class="plans">
-        <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
-          <div class="plan-title">❄️ Plan Starter</div>
-          <div class="plan-yield">9% ROI</div>
-          <div class="plan-freq">Retiros cada 24 horas (7 días)</div>
-          <div class="plan-desc">Ganancias diarias. Reactiva tu plan al finalizar.</div>
-          <button class="plan-btn press-effect">Ver montos de inversión</button>
-        </div>
-        
-        <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
-          <div class="plan-badge">🔥 MÁS POPULAR</div>
-          <div class="plan-title">🔥 Plan Pro</div>
-          <div class="plan-yield">12% ROI</div>
-          <div class="plan-freq">Retiros cada 48 horas (15 días)</div>
-          <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
-          <button class="plan-btn press-effect">Ver montos de inversión</button>
-        </div>
+      <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
+      
+      <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">
+        ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
       </div>
     </div>
-
-    <div id="view-deposit" class="view">
-      <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
-      <div class="panel">
-        <div class="eyebrow">Selecciona tu moneda</div>
-        <div class="asset-select" style="margin-top:10px">
-          <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
-          <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
-            <option value="TRX">TRON (TRX)</option>
-            <option value="BTC">Bitcoin (BTC)</option>
-            <option value="SOL">Solana (SOL)</option>
-            <option value="USDT">Tether (USDT TRC20)</option>
-          </select>
-        </div>
-        <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
-        <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
-        <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-        
-        <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
-            <span>Dirección de depósito</span>
-            <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
-          </div>
-          <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
-          
-          <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
-            <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
-            <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;">
-              <b style="color:#0f172a;">Escanear QR</b><br>
-              Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br>
-              <span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span>
-            </div>
-          </div>
-        </div>
-        
-        <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
-          ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
-        </div>
-
-        <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
-        
-        <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">
-          ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
-        </div>
-      </div>
-    </div>
-    <div id="view-withdraw" class="view">
-  <div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
-  <div class="panel">
-    <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
-      <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
-      <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
-      <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
+  </div>
+  <div id="view-withdraw" class="view">
+<div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
+<div class="panel">
+  <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
+    <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
+    <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
+        <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
         <span>Saldo Retirable:</span> 
         <b style="text-align:right;">
           <span id="withdrawableBalanceUI" style="color:#10b981; font-size:16px;">$0.00 USD</span><br>
@@ -496,120 +491,119 @@
           <div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div>
         </div>
       </div>
-
-      <div class="section"><h2>Historial de Movimientos</h2></div>
-      <div class="panel activity" id="activityPanel">
-        <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity">
-          <span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span>
-        </div>
-      </div>
-
-      <button class="wide press-effect" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
-      <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
-      
-      <div class="footer-legal">
-        © 2024 NovaVest. Todos los derechos reservados.<br>
-        Plataforma de gestión de activos digitales.
+          <div class="section"><h2>Historial de Movimientos</h2></div>
+    <div class="panel activity" id="activityPanel">
+      <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity">
+        <span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span>
       </div>
     </div>
 
-    <div id="view-admin" class="view">
-      <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
-      
-      <div class="stats" style="margin-bottom: 15px;">
-        <div class="stat">
-          <div class="stat-top">Usuarios Totales</div>
-          <strong id="adminTotalUsers">0</strong>
-          <small>Cuentas registradas</small>
-        </div>
-        <div class="stat">
-          <div class="stat-top">Volumen Total</div>
-          <strong id="adminTotalVolume">$0.00</strong>
-          <small>En depósitos (Aprox)</small>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
-            <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p>
-          </div>
-          <span style="font-size:24px; color:#3b82f6;">→</span>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
-        <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
-        <div id="adminPendingDeposits" class="activity">
-          <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
-        <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
-        <div id="adminPendingWithdraws" class="activity">
-          <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:15px;">
-        <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
-        <div id="adminInvestmentsList" class="activity">
-          <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
-        </div>
-      </div>
+    <button class="wide press-effect" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
+    <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
+    
+    <div class="footer-legal">
+      © 2024 NovaVest. Todos los derechos reservados.<br>
+      Plataforma de gestión de activos digitales.
     </div>
-
-    <div id="view-admin-users" class="view">
-      <div class="section" style="margin-top:0;">
-        <h2>Panel de Usuarios</h2>
-        <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button>
-      </div>
-      
-      <div class="stats" style="margin-bottom: 15px;">
-        <div class="stat">
-          <div class="stat-top">Total Registrados</div>
-          <strong id="statsTotalUsers">0</strong>
-        </div>
-        <div class="stat">
-          <div class="stat-top">Activos (5 min)</div>
-          <strong id="statsActiveUsers">0</strong>
-        </div>
-        <div class="stat">
-          <div class="stat-top">Nuevos Hoy</div>
-          <strong id="statsTodayUsers">0</strong>
-        </div>
-        <div class="stat">
-          <div class="stat-top">Acciones Pendientes</div>
-          <strong id="statsPendingActions">0</strong>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:0;">
-        <h3 style="margin-bottom: 10px;">Registros del Mes</h3>
-        <div id="calendarGrid" class="calendar-grid"></div>
-      </div>
-
-      <div class="section"><h2>Todos los Usuarios</h2></div>
-      <div id="adminUsersList" class="panel activity">
-        <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
-      </div>
-    </div>
-
   </div>
-  
-  <nav class="nav">
-    <div class="nav-inner" id="navInner">
-      <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
-      <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
-      <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
-      <button onclick="navigate('referrals', this)"><span>👥</span>Referidos</button>
-      <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
-      <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:#ef4444;"><span>⚙</span>Admin</button>
+
+  <div id="view-admin" class="view">
+    <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
+    
+    <div class="stats" style="margin-bottom: 15px;">
+      <div class="stat">
+        <div class="stat-top">Usuarios Totales</div>
+        <strong id="adminTotalUsers">0</strong>
+        <small>Cuentas registradas</small>
+      </div>
+      <div class="stat">
+        <div class="stat-top">Volumen Total</div>
+        <strong id="adminTotalVolume">$0.00</strong>
+        <small>En depósitos (Aprox)</small>
+      </div>
     </div>
-  </nav>
-  </main>
+
+    <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
+          <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p>
+        </div>
+        <span style="font-size:24px; color:#3b82f6;">→</span>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
+      <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
+      <div id="adminPendingDeposits" class="activity">
+        <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+      <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
+      <div id="adminPendingWithdraws" class="activity">
+        <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:15px;">
+      <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
+      <div id="adminInvestmentsList" class="activity">
+        <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-admin-users" class="view">
+    <div class="section" style="margin-top:0;">
+      <h2>Panel de Usuarios</h2>
+      <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button>
+    </div>
+    
+    <div class="stats" style="margin-bottom: 15px;">
+      <div class="stat">
+        <div class="stat-top">Total Registrados</div>
+        <strong id="statsTotalUsers">0</strong>
+      </div>
+      <div class="stat">
+        <div class="stat-top">Activos (5 min)</div>
+        <strong id="statsActiveUsers">0</strong>
+      </div>
+      <div class="stat">
+        <div class="stat-top">Nuevos Hoy</div>
+        <strong id="statsTodayUsers">0</strong>
+      </div>
+      <div class="stat">
+        <div class="stat-top">Acciones Pendientes</div>
+        <strong id="statsPendingActions">0</strong>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:0;">
+      <h3 style="margin-bottom: 10px;">Registros del Mes</h3>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div class="section"><h2>Todos los Usuarios</h2></div>
+    <div id="adminUsersList" class="panel activity">
+      <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
+    </div>
+  </div>
+
+</div>
+
+<nav class="nav">
+  <div class="nav-inner" id="navInner">
+    <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
+    <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
+    <button onclick="navigate('withdraw', this)"><span>↗</span>Retirar</button>
+    <button onclick="navigate('referrals', this)"><span>👥</span>Referidos</button>
+    <button onclick="navigate('profile', this)"><span>◉</span>Perfil</button>
+    <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:#ef4444;"><span>⚙</span>Admin</button>
+  </div>
+</nav>
+</main>
  <div id="toast" class="toast" role="status"></div>
 
 <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
@@ -703,401 +697,401 @@
       const refLink = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
       $('myRefLink').value = refLink;
     }
-
-    const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-    if (!existing || existing.length === 0) {
-      const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
-      await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+       const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  if (!existing || existing.length === 0) {
+    const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
+    await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+  }
+  
+  const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+  userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+  (rows || []).forEach(row => {
+    if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
+      userBalances[row.asset] = Number(row.amount) || 0;
     }
-    
-    const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-    userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
-    (rows || []).forEach(row => {
-      if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) {
-        userBalances[row.asset] = Number(row.amount) || 0;
-      }
-    });
+  });
 
-    let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
-    const today = new Date().toISOString().split('T')[0];
-    
-    if (!wallet) {
-      await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
-      withdrawableBalance = 0; dailyWithdrawn = 0;
+  let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (!wallet) {
+    await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
+    withdrawableBalance = 0; dailyWithdrawn = 0;
+  } else {
+    if (wallet.last_withdrawn_date !== today) {
+      dailyWithdrawn = 0;
+      await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id);
     } else {
-      if (wallet.last_withdrawn_date !== today) {
-        dailyWithdrawn = 0;
-        await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id);
-      } else {
-        dailyWithdrawn = Number(wallet.daily_withdrawn);
-      }
-      withdrawableBalance = Number(wallet.withdrawable_balance);
+      dailyWithdrawn = Number(wallet.daily_withdrawn);
     }
-
-    renderUserBalances();
-    loadHistory();
-    loadActiveInvestments(); 
-    loadReferralStats();
+    withdrawableBalance = Number(wallet.withdrawable_balance);
   }
 
-  async function loadReferralStats() {
-    if (!currentUserDisplayId) return;
+  renderUserBalances();
+  loadHistory();
+  loadActiveInvestments(); 
+  loadReferralStats();
+}
+
+async function loadReferralStats() {
+  if (!currentUserDisplayId) return;
+  
+  const { count: invitedCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true }).eq('referred_by', currentUserDisplayId);
+  $('totalInvited').textContent = invitedCount || 0;
+
+  const { data: rewards } = await supabaseClient.from('novavest_history').select('amount').eq('user_id', currentUserId).eq('type', 'reward').eq('details', 'Bono por referido');
+  const totalEarned = rewards ? rewards.reduce((sum, r) => sum + Number(r.amount), 0) : 0;
+  $('totalEarned').textContent = '$' + totalEarned.toFixed(2);
+}
+
+window.copyRefLink = function() {
+  const link = $('myRefLink').value;
+  navigator.clipboard.writeText(link).then(() => toast('Enlace copiado al portapapeles'));
+};
+  async function loadAdminData() {
+    const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
+    $('adminTotalUsers').textContent = userCount || 0;
+
+    const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
+    const depList = $('adminPendingDeposits');
+    depList.innerHTML = '';
     
-    const { count: invitedCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true }).eq('referred_by', currentUserDisplayId);
-    $('totalInvited').textContent = invitedCount || 0;
-
-    const { data: rewards } = await supabaseClient.from('novavest_history').select('amount').eq('user_id', currentUserId).eq('type', 'reward').eq('details', 'Bono por referido');
-    const totalEarned = rewards ? rewards.reduce((sum, r) => sum + Number(r.amount), 0) : 0;
-    $('totalEarned').textContent = '$' + totalEarned.toFixed(2);
-  }
-
-  window.copyRefLink = function() {
-    const link = $('myRefLink').value;
-    navigator.clipboard.writeText(link).then(() => toast('Enlace copiado al portapapeles'));
-  };
-    async function loadAdminData() {
-      const { count: userCount } = await supabaseClient.from('novavest_profiles').select('*', { count: 'exact', head: true });
-      $('adminTotalUsers').textContent = userCount || 0;
-
-      const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').order('created_at', { ascending: false });
-      const depList = $('adminPendingDeposits');
-      depList.innerHTML = '';
-      
-      if (!deposits || deposits.length === 0) {
-        depList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>';
-      } else {
-        deposits.forEach(dep => {
-          const emailMostrar = dep.user_email || (dep.user_id.substring(0,8) + '...');
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <div class="activity-icon" style="background:#10b981; color:#fff;">$</div>
-            <div class="activity-info">
-              <b>Depósito de ${dep.amount} ${dep.asset}</b>
-              <span style="font-size:10px; color:#0f172a; font-weight:700;">${emailMostrar}</span>
-            </div>
-            <div style="display:flex; gap:5px;">
-              <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
-              <button onclick="rejectAction('${dep.id}')" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
-            </div>
-          `;
-          depList.appendChild(item);
-        });
-      }
-
-      const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').order('created_at', { ascending: false });
-      const withList = $('adminPendingWithdraws');
-      withList.innerHTML = '';
-      
-      if (!withdraws || withdraws.length === 0) {
-        withList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>';
-      } else {
-        withdraws.forEach(wd => {
-          const emailMostrar = wd.user_email || (wd.user_id.substring(0,8) + '...');
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <div class="activity-icon" style="background:#ef4444; color:#fff;">↗</div>
-            <div class="activity-info">
-              <b>Retiro de $${wd.amount} USD (${wd.asset})</b>
-              <span style="font-size:10px; color:#0f172a; font-weight:700;">${emailMostrar}</span><br>
-              <span style="font-size:9px; word-break:break-all; color:#64748b;">Dir: ${wd.address}</span>
-            </div>
-            <div style="display:flex; gap:5px;">
-              <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
-              <button onclick="rejectAction('${wd.id}')" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
-            </div>
-          `;
-          withList.appendChild(item);
-        });
-      }
-
-      const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
-      const invList = $('adminInvestmentsList');
-      let totalVol = 0;
-      invList.innerHTML = '';
-      if (!invs || invs.length === 0) {
-        invList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas.</p>';
-        $('adminTotalVolume').textContent = '$0.00';
-      } else {
-        invs.forEach(inv => {
-          totalVol += Number(inv.amount_usd);
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <div class="activity-icon" style="background:#3b82f6; color:#fff;">$</div>
-            <div class="activity-info">
-              <b>${inv.plan_name} (${inv.asset})</b>
-              <span>Monto: $${inv.amount_usd} | Pagos: ${inv.payouts_claimed}/${inv.total_payouts}</span>
-            </div>
-            <div class="activity-amount" style="color:#10b981">+$${inv.profit_per_payout}/pago</div>
-          `;
-          invList.appendChild(item);
-        });
-        $('adminTotalVolume').textContent = money(totalVol);
-      }
-    }
-
-    async function loadAdminUsersData() {
-      const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
-      const { data: balances } = await supabaseClient.from('novavest_balances').select('*');
-      const { data: wallets } = await supabaseClient.from('novavest_wallets').select('*');
-      const { data: pending } = await supabaseClient.from('novavest_pending_actions').select('*');
-
-      if (!users) return;
-
-      let totalUsers = users.length;
-      let activeUsers = 0;
-      let todayUsers = 0;
-      let pendingCount = pending ? pending.length : 0;
-
-      const now = new Date();
-      const todayStr = now.toISOString().split('T')[0];
-      const fiveMinsAgo = new Date(now.getTime() - 5 * 60000).toISOString();
-      
-      const calendarMap = {};
-      users.forEach(u => {
-        if (u.last_seen && u.last_seen > fiveMinsAgo) activeUsers++;
-        if (u.created_at && u.created_at.startsWith(todayStr)) todayUsers++;
-        if (u.created_at) {
-          const day = u.created_at.split('T')[0];
-          calendarMap[day] = (calendarMap[day] || 0) + 1;
-        }
-      });
-
-      $('statsTotalUsers').textContent = totalUsers;
-      $('statsActiveUsers').textContent = activeUsers;
-      $('statsTodayUsers').textContent = todayUsers;
-      $('statsPendingActions').textContent = pendingCount;
-
-      renderCalendar(calendarMap);
-
-      const list = $('adminUsersList');
-      list.innerHTML = '';
-      
-      users.forEach(u => {
-        const userBalances = balances ? balances.filter(b => b.user_id === u.user_id) : [];
-        const userWallet = wallets ? wallets.find(w => w.user_id === u.user_id) : null;
-        const userPending = pending ? pending.filter(p => p.user_id === u.user_id) : [];
-
-        const withdrawable = userWallet ? Number(userWallet.withdrawable_balance) : 0;
-        const depPendingCount = userPending.filter(p => p.type === 'deposit').length;
-        const withPendingCount = userPending.filter(p => p.type === 'withdraw').length;
-        
-        const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
-
-        let balancesHtml = '';
-        ['TRX', 'BTC', 'SOL', 'USDT'].forEach(asset => {
-          const bal = userBalances.find(b => b.asset === asset);
-          const amount = bal ? Number(bal.amount) : 0;
-          if (amount > 0) {
-            balancesHtml += `<div><span>${asset}:</span> ${quantity(amount, asset)}</div>`;
-          }
-        });
-        if (!balancesHtml) balancesHtml = '<div style="grid-column: span 2; color: var(--muted);">Sin saldo en monedas</div>';
-
-        const item = document.createElement('div');
-        item.className = 'user-card';
-        item.innerHTML = `
-          <div class="user-header">
-            <div>
-              <b>${u.email || 'Sin correo'}</b>
-              <br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span>
-            </div>
-            <span style="font-size:10px; background:#eff6ff; color:#3b82f6; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span>
-          </div>
-          <div class="user-balances">
-            ${balancesHtml}
-          </div>
-          <div class="user-status">
-            <div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div>
-            <div style="text-align:right;">
-              ${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}
-              ${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}
-              <span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span>
-            </div>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function renderCalendar(calendarMap) {
-      const grid = $('calendarGrid');
-      grid.innerHTML = '';
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      
-      ['D', 'L', 'M', 'M', 'J', 'V', 'S'].forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'calendar-header';
-        el.textContent = d;
-        grid.appendChild(el);
-      });
-
-      const firstDay = new Date(year, month, 1).getDay();
-      for (let i = 0; i < firstDay; i++) {
-        grid.appendChild(document.createElement('div'));
-      }
-
-      for (let i = 1; i <= daysInMonth; i++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        const count = calendarMap[dateStr] || 0;
-        const el = document.createElement('div');
-        el.className = `calendar-day ${count > 0 ? 'has-users' : ''}`;
-        el.textContent = i;
-        if (count > 0) el.title = `${count} registros`;
-        grid.appendChild(el);
-      }
-    }
-
-    // --- LÓGICA DE APROBACIÓN CON REFERIDOS (Corregida) ---
-    window.approveAction = async function(id, type, userId, asset, amount) {
-      if (type === 'deposit') {
-        const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).maybeSingle();
-        const newAmount = (currentBal?.amount || 0) + Number(amount);
-        
-        const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({ 
-          user_id: userId, asset: asset, amount: newAmount 
-        }, { onConflict: 'user_id,asset' });
-
-        if (updateError) {
-          console.error('Error al acreditar depósito:', updateError);
-          toast('Error al acreditar saldo. Revisa Supabase.');
-          return;
-        }
-
-        const { data: profile } = await supabaseClient.from('novavest_profiles').select('*').eq('user_id', userId).maybeSingle();
-        
-        if (profile && profile.referred_by && !profile.referral_paid) {
-          const usdValue = Number(amount) * ASSET_INFO[asset].price;
-          
-          if (usdValue >= 20) {
-            const { data: referrer } = await supabaseClient.from('novavest_profiles').select('user_id').eq('display_id', profile.referred_by).maybeSingle();
-            
-            if (referrer) {
-              const rewardUsd = usdValue * 0.10;
-              
-              const { data: refBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', referrer.user_id).eq('asset', 'USDT').maybeSingle();
-              const newRefBal = (refBal?.amount || 0) + rewardUsd;
-              
-              await supabaseClient.from('novavest_balances').upsert({ 
-                user_id: referrer.user_id, asset: 'USDT', amount: newRefBal 
-              }, { onConflict: 'user_id,asset' });
-              
-              await supabaseClient.from('novavest_history').insert({ 
-                user_id: referrer.user_id, type: 'reward', asset: 'USDT', amount: rewardUsd, details: 'Bono por referido' 
-              });
-
-              const { error: paidError } = await supabaseClient.from('novavest_profiles').update({ referral_paid: true }).eq('user_id', userId);
-              
-              if (paidError) {
-                console.error("Error al marcar referido como pagado:", paidError);
-                toast('Aviso: El bono se pagó, pero no se pudo marcar como pagado.');
-              } else {
-                toast('Depósito y bono de referido acreditados.');
-              }
-            }
-          }
-        } else {
-          toast('Depósito acreditado exitosamente');
-        }
-      } else {
-        const { data: historyItem } = await supabaseClient.from('novavest_history').select('id').eq('user_id', userId).eq('type', 'withdraw').eq('details', 'Retiro Solicitado').order('created_at', { ascending: false }).limit(1).maybeSingle();
-        if (historyItem) await supabaseClient.from('novavest_history').update({ details: 'Retiro Completado' }).eq('id', historyItem.id);
-        toast('Retiro completado y saldo enviado.');
-      }
-      
-      await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
-      loadAdminData();
-      if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
-    };
-
-    window.rejectAction = async function(id) {
-      const { data: action } = await supabaseClient.from('novavest_pending_actions').select('*').eq('id', id).single();
-      if (action && action.type === 'withdraw') {
-        const { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', action.user_id).single();
-        if (wallet) {
-          await supabaseClient.from('novavest_wallets').update({ withdrawable_balance: Number(wallet.withdrawable_balance) + Number(action.amount) }).eq('user_id', action.user_id);
-          const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', action.user_id).eq('asset', action.asset).single();
-          const cryptoAmount = Number(action.amount) / ASSET_INFO[action.asset].price;
-          await supabaseClient.from('novavest_balances').upsert({ user_id: action.user_id, asset: action.asset, amount: (currentBal?.amount || 0) + cryptoAmount });
-        }
-        const { data: historyItem } = await supabaseClient.from('novavest_history').select('id').eq('user_id', action.user_id).eq('type', 'withdraw').eq('details', 'Retiro Solicitado').order('created_at', { ascending: false }).limit(1).single();
-        if (historyItem) await supabaseClient.from('novavest_history').update({ details: 'Retiro Rechazado (Fondos devueltos)' }).eq('id', historyItem.id);
-        toast('Retiro rechazado y saldo devuelto');
-      } else { toast('Solicitud rechazada'); }
-      await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
-      loadAdminData();
-      if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
-    };
-
-    async function updateWalletStorage() {
-      const today = new Date().toISOString().split('T')[0];
-      await supabaseClient.from('novavest_wallets').upsert({ user_id: currentUserId, withdrawable_balance: withdrawableBalance, daily_withdrawn: dailyWithdrawn, last_withdrawn_date: today });
-    }
-
-    function renderUserBalances() {
-      const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
-      $('totalBalance').textContent = money(total);
-      $('activeInvestment').textContent = money(total);
-      $('demoPerformance').textContent = money(total * 0.047);
-      $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
-      $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
-      $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
-      $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
-      window.updateWithdrawInfo();
-    }
-
-    window.navigate = function(viewName, btnElement) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      $('view-' + viewName).classList.add('active');
-      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-      if(btnElement) btnElement.classList.add('active');
-      if (viewName === 'admin') loadAdminData();
-      if (viewName === 'admin-users') loadAdminUsersData();
-      if (viewName === 'referrals') loadReferralStats();
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    };
-
-    async function saveTransaction(type, asset, amount, extra = '') {
-      if (!currentUserId) return;
-      await supabaseClient.from('novavest_history').insert({ user_id: currentUserId, type: type, asset: asset, amount: amount, details: extra });
-      loadHistory();
-    }
-
-    async function loadHistory() {
-      if (!currentUserId) return;
-      const { data: history } = await supabaseClient.from('novavest_history').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false });
-      const panel = $('activityPanel');
-      if (!history || history.length === 0) {
-        panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
-        return;
-      }
-      panel.innerHTML = '';
-      history.forEach(tx => {
-        let icon = '↙', title = 'Depósito', color = '#10b981', sign = '+';
-        if (tx.type === 'withdraw') { icon = '↗'; title = 'Retiro'; color = '#ef4444'; sign = '−'; }
-        if (tx.type === 'investment') { icon = '✦'; title = 'Inversión'; color = '#3b82f6'; sign = '−'; }
-        if (tx.type === 'reward') { icon = '★'; title = 'Ganancia'; color = '#10b981'; sign = '+'; }
-        const dateObj = new Date(tx.created_at);
-        const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
-        const extraTxt = tx.details ? ` (${tx.details})` : '';
-        const assetData = ASSET_INFO[tx.asset] || { icon: '' };
+    if (!deposits || deposits.length === 0) {
+      depList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>';
+    } else {
+      deposits.forEach(dep => {
+        const emailMostrar = dep.user_email || (dep.user_id.substring(0,8) + '...');
         const item = document.createElement('div');
         item.className = 'activity-item';
+        // DISEÑO MEJORADO PARA DEPÓSITOS
         item.innerHTML = `
-          <div class="coin-logo" style="width:36px; height:36px;">${assetData.icon}</div>
-          <div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div>
-          <div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>
+          <div class="activity-icon" style="background:#10b981; color:#fff;">$</div>
+          <div class="activity-info" style="line-height: 1.4;">
+            <b style="color: #10b981; font-size: 14px;">$${Number(dep.amount).toFixed(2)} USD</b>
+            <span style="font-size:11px; color:#0f172a; font-weight:700; display: block; margin-top: 2px;">${emailMostrar}</span>
+            <span style="font-size:10px; color:#64748b; font-weight: 600; display: block; margin-top: 2px;">Moneda: <span style="color: #0f172a;">${dep.asset}</span></span>
+          </div>
+          <div style="display:flex; gap:5px;">
+            <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer;">✓</button>
+            <button onclick="rejectAction('${dep.id}')" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer;">✕</button>
+          </div>
         `;
-        panel.appendChild(item);
+        depList.appendChild(item);
       });
     }
 
-    async function saveActiveInvestment(inv) {
+    const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').order('created_at', { ascending: false });
+    const withList = $('adminPendingWithdraws');
+    withList.innerHTML = '';
+    
+    if (!withdraws || withdraws.length === 0) {
+      withList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>';
+    } else {
+      withdraws.forEach(wd => {
+        const emailMostrar = wd.user_email || (wd.user_id.substring(0,8) + '...');
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        // DISEÑO MEJORADO PARA RETIROS (Muestra Monto, Email, Moneda y Dirección)
+        item.innerHTML = `
+          <div class="activity-icon" style="background:#ef4444; color:#fff;">↗</div>
+          <div class="activity-info" style="line-height: 1.5;">
+            <b style="color: #ef4444; font-size: 14px;">$${Number(wd.amount).toFixed(2)} USD</b>
+            <span style="font-size:11px; color:#0f172a; font-weight:700; display: block; margin-top: 2px;">${emailMostrar}</span>
+            <span style="font-size:10px; color:#64748b; font-weight: 600; display: block; margin-top: 2px;">Moneda: <span style="color: #0f172a;">${wd.asset}</span></span>
+            <span style="font-size:10px; color:#64748b; word-break:break-all; display: block; margin-top: 2px;">Dir: <span style="color: #0f172a; font-family: monospace;">${wd.address}</span></span>
+          </div>
+          <div style="display:flex; flex-direction: column; gap:5px;">
+            <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer;">✓</button>
+            <button onclick="rejectAction('${wd.id}')" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:6px 12px; font-weight:bold; cursor:pointer;">✕</button>
+          </div>
+        `;
+        withList.appendChild(item);
+      });
+  }
+    const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
+  const invList = $('adminInvestmentsList');
+  let totalVol = 0;
+  invList.innerHTML = '';
+  if (!invs || invs.length === 0) {
+    invList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas.</p>';
+    $('adminTotalVolume').textContent = '$0.00';
+  } else {
+    invs.forEach(inv => {
+      totalVol += Number(inv.amount_usd);
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <div class="activity-icon" style="background:#3b82f6; color:#fff;">$</div>
+        <div class="activity-info">
+          <b>${inv.plan_name} (${inv.asset})</b>
+          <span>Monto: $${inv.amount_usd} | Pagos: ${inv.payouts_claimed}/${inv.total_payouts}</span>
+        </div>
+        <div class="activity-amount" style="color:#10b981">+$${inv.profit_per_payout}/pago</div>
+      `;
+      invList.appendChild(item);
+    });
+    $('adminTotalVolume').textContent = money(totalVol);
+  }
+}
+
+async function loadAdminUsersData() {
+  const { data: users } = await supabaseClient.from('novavest_profiles').select('*').order('created_at', { ascending: false });
+  const { data: balances } = await supabaseClient.from('novavest_balances').select('*');
+  const { data: wallets } = await supabaseClient.from('novavest_wallets').select('*');
+  const { data: pending } = await supabaseClient.from('novavest_pending_actions').select('*');
+
+  if (!users) return;
+
+  let totalUsers = users.length;
+  let activeUsers = 0;
+  let todayUsers = 0;
+  let pendingCount = pending ? pending.length : 0;
+
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const fiveMinsAgo = new Date(now.getTime() - 5 * 60000).toISOString();
+  
+  const calendarMap = {};
+  users.forEach(u => {
+    if (u.last_seen && u.last_seen > fiveMinsAgo) activeUsers++;
+    if (u.created_at && u.created_at.startsWith(todayStr)) todayUsers++;
+    if (u.created_at) {
+      const day = u.created_at.split('T')[0];
+      calendarMap[day] = (calendarMap[day] || 0) + 1;
+    }
+  });
+
+  $('statsTotalUsers').textContent = totalUsers;
+  $('statsActiveUsers').textContent = activeUsers;
+  $('statsTodayUsers').textContent = todayUsers;
+  $('statsPendingActions').textContent = pendingCount;
+
+  renderCalendar(calendarMap);
+
+  const list = $('adminUsersList');
+  list.innerHTML = '';
+  
+  users.forEach(u => {
+    const userBalances = balances ? balances.filter(b => b.user_id === u.user_id) : [];
+    const userWallet = wallets ? wallets.find(w => w.user_id === u.user_id) : null;
+    const userPending = pending ? pending.filter(p => p.user_id === u.user_id) : [];
+
+    const withdrawable = userWallet ? Number(userWallet.withdrawable_balance) : 0;
+    const depPendingCount = userPending.filter(p => p.type === 'deposit').length;
+    const withPendingCount = userPending.filter(p => p.type === 'withdraw').length;
+    
+    const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
+
+    let balancesHtml = '';
+    ['TRX', 'BTC', 'SOL', 'USDT'].forEach(asset => {
+      const bal = userBalances.find(b => b.asset === asset);
+      const amount = bal ? Number(bal.amount) : 0;
+      if (amount > 0) {
+        balancesHtml += `<div><span>${asset}:</span> ${quantity(amount, asset)}</div>`;
+      }
+    });
+    if (!balancesHtml) balancesHtml = '<div style="grid-column: span 2; color: var(--muted);">Sin saldo en monedas</div>';
+
+    const item = document.createElement('div');
+    item.className = 'user-card';
+    item.innerHTML = `
+      <div class="user-header">
+        <div>
+          <b>${u.email || 'Sin correo'}</b>
+          <br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span>
+        </div>
+        <span style="font-size:10px; background:#eff6ff; color:#3b82f6; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span>
+      </div>
+      <div class="user-balances">
+        ${balancesHtml}
+      </div>
+      <div class="user-status">
+        <div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div>
+        <div style="text-align:right;">
+          ${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}
+          ${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}
+          <span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span>
+        </div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function renderCalendar(calendarMap) {
+  const grid = $('calendarGrid');
+  grid.innerHTML = '';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  ['D', 'L', 'M', 'M', 'J', 'V', 'S'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'calendar-header';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  for (let i = 0; i < firstDay; i++) {
+    grid.appendChild(document.createElement('div'));
+  }
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    const count = calendarMap[dateStr] || 0;
+    const el = document.createElement('div');
+    el.className = `calendar-day ${count > 0 ? 'has-users' : ''}`;
+    el.textContent = i;
+    if (count > 0) el.title = `${count} registros`;
+    grid.appendChild(el);
+  }
+}
+
+window.approveAction = async function(id, type, userId, asset, amount) {
+  if (type === 'deposit') {
+    const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', userId).eq('asset', asset).maybeSingle();
+    const newAmount = (currentBal?.amount || 0) + Number(amount);
+    
+    const { error: updateError } = await supabaseClient.from('novavest_balances').upsert({ 
+      user_id: userId, asset: asset, amount: newAmount 
+    }, { onConflict: 'user_id,asset' });
+
+    if (updateError) {
+      console.error('Error al acreditar depósito:', updateError);
+      toast('Error al acreditar saldo. Revisa Supabase.');
+      return;
+    }
+
+    const { data: profile } = await supabaseClient.from('novavest_profiles').select('*').eq('user_id', userId).maybeSingle();
+    
+    if (profile && profile.referred_by && !profile.referral_paid) {
+      const usdValue = Number(amount) * ASSET_INFO[asset].price;
+      
+      if (usdValue >= 20) {
+        const { data: referrer } = await supabaseClient.from('novavest_profiles').select('user_id').eq('display_id', profile.referred_by).maybeSingle();
+        
+        if (referrer) {
+          const rewardUsd = usdValue * 0.10;
+          
+          const { data: refBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', referrer.user_id).eq('asset', 'USDT').maybeSingle();
+          const newRefBal = (refBal?.amount || 0) + rewardUsd;
+          
+          await supabaseClient.from('novavest_balances').upsert({ 
+            user_id: referrer.user_id, asset: 'USDT', amount: newRefBal 
+          }, { onConflict: 'user_id,asset' });
+          
+          await supabaseClient.from('novavest_history').insert({ 
+            user_id: referrer.user_id, type: 'reward', asset: 'USDT', amount: rewardUsd, details: 'Bono por referido' 
+          });
+
+          const { error: paidError } = await supabaseClient.from('novavest_profiles').update({ referral_paid: true }).eq('user_id', userId);
+          
+          if (paidError) {
+            console.error("Error al marcar referido como pagado:", paidError);
+            toast('Aviso: El bono se pagó, pero no se pudo marcar como pagado.');
+          } else {
+            toast('Depósito y bono de referido acreditados.');
+          }
+        }
+      }
+    } else {
+      toast('Depósito acreditado exitosamente');
+    }
+  } else {
+    const { data: historyItem } = await supabaseClient.from('novavest_history').select('id').eq('user_id', userId).eq('type', 'withdraw').eq('details', 'Retiro Solicitado').order('created_at', { ascending: false }).limit(1).maybeSingle();
+    if (historyItem) await supabaseClient.from('novavest_history').update({ details: 'Retiro Completado' }).eq('id', historyItem.id);
+    toast('Retiro completado y saldo enviado.');
+  }
+  
+  await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
+  loadAdminData();
+  if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
+};
+
+window.rejectAction = async function(id) {
+  const { data: action } = await supabaseClient.from('novavest_pending_actions').select('*').eq('id', id).single();
+  if (action && action.type === 'withdraw') {
+    const { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', action.user_id).single();
+    if (wallet) {
+      await supabaseClient.from('novavest_wallets').update({ withdrawable_balance: Number(wallet.withdrawable_balance) + Number(action.amount) }).eq('user_id', action.user_id);
+      const { data: currentBal } = await supabaseClient.from('novavest_balances').select('amount').eq('user_id', action.user_id).eq('asset', action.asset).single();
+      const cryptoAmount = Number(action.amount) / ASSET_INFO[action.asset].price;
+      await supabaseClient.from('novavest_balances').upsert({ user_id: action.user_id, asset: action.asset, amount: (currentBal?.amount || 0) + cryptoAmount });
+    }
+    const { data: historyItem } = await supabaseClient.from('novavest_history').select('id').eq('user_id', action.user_id).eq('type', 'withdraw').eq('details', 'Retiro Solicitado').order('created_at', { ascending: false }).limit(1).single();
+    if (historyItem) await supabaseClient.from('novavest_history').update({ details: 'Retiro Rechazado (Fondos devueltos)' }).eq('id', historyItem.id);
+    toast('Retiro rechazado y saldo devuelto');
+  } else { toast('Solicitud rechazada'); }
+  await supabaseClient.from('novavest_pending_actions').delete().eq('id', id);
+  loadAdminData();
+  if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
+};
+
+async function updateWalletStorage() {
+  const today = new Date().toISOString().split('T')[0];
+  await supabaseClient.from('novavest_wallets').upsert({ user_id: currentUserId, withdrawable_balance: withdrawableBalance, daily_withdrawn: dailyWithdrawn, last_withdrawn_date: today });
+}
+
+function renderUserBalances() {
+  const total = Object.keys(ASSET_INFO).reduce((sum, asset) => sum + userBalances[asset] * ASSET_INFO[asset].price, 0);
+  $('totalBalance').textContent = money(total);
+  $('activeInvestment').textContent = money(total);
+  $('demoPerformance').textContent = money(total * 0.047);
+  $('holdingTRX').textContent = quantity(userBalances.TRX, 'TRX');
+  $('holdingBTC').textContent = quantity(userBalances.BTC, 'BTC');
+  $('holdingSOL').textContent = quantity(userBalances.SOL, 'SOL');
+  $('holdingUSDT').textContent = quantity(userBalances.USDT, 'USDT');
+  window.updateWithdrawInfo();
+}
+
+window.navigate = function(viewName, btnElement) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  $('view-' + viewName).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  if(btnElement) btnElement.classList.add('active');
+  if (viewName === 'admin') loadAdminData();
+  if (viewName === 'admin-users') loadAdminUsersData();
+  if (viewName === 'referrals') loadReferralStats();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
+async function saveTransaction(type, asset, amount, extra = '') {
+  if (!currentUserId) return;
+  await supabaseClient.from('novavest_history').insert({ user_id: currentUserId, type: type, asset: asset, amount: amount, details: extra });
+  loadHistory();
+}
+
+async function loadHistory() {
+  if (!currentUserId) return;
+  const { data: history } = await supabaseClient.from('novavest_history').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false });
+  const panel = $('activityPanel');
+  if (!history || history.length === 0) {
+    panel.innerHTML = `<div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px;">No hay movimientos registrados</span></div>`;
+    return;
+  }
+  panel.innerHTML = '';
+  history.forEach(tx => {
+    let icon = '↙', title = 'Depósito', color = '#10b981', sign = '+';
+    if (tx.type === 'withdraw') { icon = '↗'; title = 'Retiro'; color = '#ef4444'; sign = '−'; }
+    if (tx.type === 'investment') { icon = '✦'; title = 'Inversión'; color = '#3b82f6'; sign = '−'; }
+    if (tx.type === 'reward') { icon = '★'; title = 'Ganancia'; color = '#10b981'; sign = '+'; }
+    const dateObj = new Date(tx.created_at);
+    const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
+    const extraTxt = tx.details ? ` (${tx.details})` : '';
+    const assetData = ASSET_INFO[tx.asset] || { icon: '' };
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <div class="coin-logo" style="width:36px; height:36px;">${assetData.icon}</div>
+      <div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div>
+      <div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>
+    `;
+    panel.appendChild(item);
+  });
+  }
+      async function saveActiveInvestment(inv) {
       const { error } = await supabaseClient.from('novavest_investments').insert({ 
         user_id: currentUserId, 
         plan_name: inv.planName, 
@@ -1461,7 +1455,7 @@
     window.updateEstimate = function() {
       const value = Math.max(0, Number($('amount').value)||0);
       const price = ASSET_INFO[$('asset').value].price;
-      $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
+            $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
     };
 
     window.copyWallet = async function() {
