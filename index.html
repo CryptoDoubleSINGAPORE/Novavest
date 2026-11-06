@@ -65,7 +65,7 @@
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    /* TARJETA DE BALANCE CON GRAFFITIS */
+    /* TARJETA DE BALANCE */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
       background: #1e293b; color: #fff; position: relative; overflow: hidden; 
@@ -485,6 +485,12 @@
             <div class="investor-info">
               <b id="investorName">Usuario NovaVest</b>
               <span id="investorEmail">Cuenta registrada</span>
+              
+              <!-- INSIGNIA DE GRADO AQUI -->
+              <span id="vipBadge" style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; font-weight:800; font-size:11px; padding:5px 12px; border-radius:20px; margin-top:8px; width:fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.1);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado 0
+              </span>
+              
               <span id="investorDate" style="display:block; margin-top:4px; color:var(--blue); font-weight:700; font-size: 12px;">Cargando fecha...</span>
               <span id="investorId" style="display:block; margin-top:4px; color:var(--muted); font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
             </div>
@@ -715,6 +721,38 @@
         if (wallet.last_withdrawn_date !== today) { dailyWithdrawn = 0; await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id); } 
         else { dailyWithdrawn = Number(wallet.daily_withdrawn); }
         withdrawableBalance = Number(wallet.withdrawable_balance);
+      }
+
+      // Lógica de Grados VIP (Mejorada visualmente)
+      const { data: vipData } = await supabaseClient.from('vista_usuarios_vip').select('vip_level').eq('user_id', user.id).maybeSingle();
+      const vipLevel = vipData ? vipData.vip_level : 0;
+      
+      const vipBadge = $('vipBadge');
+      if (vipBadge) {
+        vipBadge.style.display = 'flex';
+        vipBadge.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado ${vipLevel}`;
+        
+        if (vipLevel === 0) {
+          vipBadge.style.background = 'rgba(255,255,255,0.1)';
+          vipBadge.style.color = 'var(--muted)';
+          vipBadge.style.border = '1px solid var(--line)';
+        } else if (vipLevel === 1) {
+          vipBadge.style.background = 'linear-gradient(135deg, #94a3b8, #cbd5e1)';
+          vipBadge.style.color = '#0f172a';
+          vipBadge.style.border = 'none';
+        } else if (vipLevel === 2) {
+          vipBadge.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+          vipBadge.style.color = '#0f172a';
+          vipBadge.style.border = 'none';
+        } else if (vipLevel === 3) {
+          vipBadge.style.background = 'linear-gradient(135deg, #3b82f6, #8b5cf6)';
+          vipBadge.style.color = '#fff';
+          vipBadge.style.border = 'none';
+        } else if (vipLevel === 4) {
+          vipBadge.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+          vipBadge.style.color = '#000';
+          vipBadge.style.border = 'none';
+        }
       }
 
       renderUserBalances(); loadHistory(); loadActiveInvestments(); loadReferralStats(); loadUserPendingDeposits();
