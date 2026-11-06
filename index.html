@@ -723,9 +723,9 @@
         withdrawableBalance = Number(wallet.withdrawable_balance);
       }
 
-      // Lógica de Grados VIP (Mejorada visualmente)
+      // Lógica de Grados VIP
       const { data: vipData } = await supabaseClient.from('vista_usuarios_vip').select('vip_level').eq('user_id', user.id).maybeSingle();
-      const vipLevel = vipData ? vipData.vip_level : 0;
+      const vipLevel = vipData ? Number(vipData.vip_level) : 0;
       
       const vipBadge = $('vipBadge');
       if (vipBadge) {
