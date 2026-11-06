@@ -60,16 +60,19 @@
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
       border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 20px; padding: 20px; margin-bottom: 20px;
       display: flex; align-items: center; justify-content: space-between; color: #fff;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
     }
     .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #fff; font-weight: 800; }
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    /* TARJETA DE BALANCE */
+    /* TARJETA DE BALANCE CON CONTORNO Y RELIEVE */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
-      background: #1e293b; color: #fff; position: relative; overflow: hidden; 
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); border: 1px solid var(--line); 
+      background: linear-gradient(145deg, #1e293b, #162032); 
+      color: #fff; position: relative; overflow: hidden; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1); 
+      border: 1px solid rgba(255,255,255,0.05); 
     }
     .graffiti-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .graffiti-text {
@@ -88,15 +91,17 @@
     .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
-    .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; }
+    .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; transition: all 0.2s; }
     .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
     .ghost { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); }
+    .primary:hover { box-shadow: 0 6px 20px rgba(255,255,255,0.2); transform: translateY(-1px); }
+    .ghost:hover { background: rgba(255,255,255,0.1); }
     
     .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
     .section h2 { font-size: 17px; margin: 0; font-weight: 800; color: #fff; }
     
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); }
     .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
     .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #fff; }
     .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
@@ -111,7 +116,8 @@
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
     .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.2s; }
+    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.2s, border-color 0.2s; }
+    .plan-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
     .plan-card:active { transform: scale(0.98); }
     .plan-card.cold-theme { border-top: 4px solid var(--blue); }
     .plan-card.cold-theme .plan-title { color: var(--blue); }
@@ -127,7 +133,7 @@
     .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
     .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; z-index: 2; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; z-index: 2; }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .select, .number, .field { width: 100%; background: rgba(15, 23, 42, 0.5); color: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
     .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
@@ -136,7 +142,8 @@
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
     
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; }
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; transition: background 0.2s; }
+    .wide:hover { background: #059669; }
     .wide:active { transform: scale(0.96); opacity: 0.9; }
 
     .info-box { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
@@ -145,7 +152,7 @@
     .info-row b { color: var(--mint); }
 
     .coins { display: grid; gap: 9px; }
-    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
+    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
     .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
     .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
     .coin-info { flex: 1; }
@@ -163,23 +170,24 @@
     .activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
 
     .investor { display: flex; align-items: center; gap: 14px; }
-    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #1e293b; color: #fff; font-weight: 800; font-size: 18px; border: 1px solid var(--line); }
+    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #1e293b; color: #fff; font-weight: 800; font-size: 18px; border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .investor-info b { font-size: 16px; display: block; font-weight: 800; color: #fff; }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
     /* REFERIDOS */
-    .ref-box { background: #0f172a; color: #fff; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 15px; border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+    .ref-box { background: #0f172a; color: #fff; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 15px; border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.3); }
     .ref-box h3 { margin: 0 0 10px; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
     .ref-code { font-size: 40px; font-weight: 900; color: var(--mint); letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3); }
     .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); }
     .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 13px; outline: none; padding-left: 10px; font-weight: 600; width: 100%; text-overflow: ellipsis; }
     .ref-link-wrap button { background: var(--mint); color: #0f172a; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.2s; flex-shrink: 0; }
+    .ref-link-wrap button:hover { background: #059669; color: #fff; }
     .ref-link-wrap button:active { transform: scale(0.95); }
 
     /* CALENDARIO ADMIN */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
     .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); }
-    .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; border-color: var(--mint); }
+    .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; border-color: var(--mint); box-shadow: 0 0 10px rgba(16,185,129,0.3); }
     .calendar-header { font-size: 11px; font-weight: 800; color: var(--muted); padding: 4px; }
     .user-card { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); }
     .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
@@ -208,21 +216,25 @@
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 998; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
     .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: #fff; }
+    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: #fff; }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
     .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
-    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: #fff; border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
+    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: #fff; border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+    .close:hover { background: rgba(255,255,255,0.2); }
+    
     .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
-    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+    .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; }
+    .modal-btn-cancel:hover { background: rgba(255,255,255,0.1); }
+    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; }
+    .modal-btn-confirm:hover { background: #059669; }
 
     /* ARREGLO DE INVERSIONES (MODAL) */
     .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
     .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .invest-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: 0.2s; }
-    .invest-btn:hover { border-color: var(--mint); }
+    .invest-btn:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.05); }
     .invest-btn-price { font-weight: 800; font-size: 15px; color: #fff; }
     .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
     .invest-btn-yield { font-size: 11px; font-weight: 700; }
@@ -238,7 +250,7 @@
       #sidebar-bg { display: block; }
       .nav-inner { display: flex; flex-direction: column; gap: 8px; width: 100%; position: relative; z-index: 2; }
       .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); color: #94a3b8; transition: all 0.2s ease; }
-      .nav button:hover { background: rgba(255, 255, 255, 0.05); color: #fff; border-color: rgba(255, 255, 255, 0.1); }
+      .nav button:hover { background: rgba(255, 255, 255, 0.05); color: #fff; border-color: rgba(255, 255, 255, 0.1); transform: translateX(4px); }
       .nav button span { font-size: 20px; }
       .nav button.active { background: rgba(16, 185, 129, 0.1); color: var(--mint); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05); }
       .nav button.hidden { display: none !important; }
@@ -348,7 +360,7 @@
             </div>
           </section>
 
-          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
             <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
               <div><h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2><p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p></div>
               <span style="font-size:24px;">👥</span>
@@ -390,7 +402,7 @@
             </div>
             <div class="eyebrow" style="margin-top:20px;">Paso 2: Transfiere el monto</div>
             <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
-            <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
+            <div class="amount-wrap"><input class="number" id="amount" type="number" min="0.000001" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
             <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
             <div style="margin-top:15px; padding:15px; border-radius:16px; background:rgba(255,255,255,0.02); border:1px dashed var(--line);">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
@@ -486,12 +498,12 @@
               <b id="investorName">Usuario NovaVest</b>
               <span id="investorEmail">Cuenta registrada</span>
               
-              <!-- INSIGNIA DE GRADO AQUI -->
-              <span id="vipBadge" style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; font-weight:800; font-size:11px; padding:5px 12px; border-radius:20px; margin-top:8px; width:fit-content; box-shadow: 0 2px 10px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.1);">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado 0
+              <!-- INSIGNIA DE GRADO MEJORADA -->
+              <span id="vipBadge" style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; font-weight:900; font-size:13px; padding:7px 16px; border-radius:20px; margin-top:10px; width:fit-content; box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3); border: 1px solid rgba(0,0,0,0.1); text-transform:uppercase; letter-spacing:0.5px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado 0
               </span>
               
-              <span id="investorDate" style="display:block; margin-top:4px; color:var(--blue); font-weight:700; font-size: 12px;">Cargando fecha...</span>
+              <span id="investorDate" style="display:block; margin-top:6px; color:var(--blue); font-weight:700; font-size: 12px;">Cargando fecha...</span>
               <span id="investorId" style="display:block; margin-top:4px; color:var(--muted); font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
             </div>
           </div>
@@ -730,7 +742,7 @@
       const vipBadge = $('vipBadge');
       if (vipBadge) {
         vipBadge.style.display = 'flex';
-        vipBadge.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado ${vipLevel}`;
+        vipBadge.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Grado ${vipLevel}`;
         
         if (vipLevel === 0) {
           vipBadge.style.background = 'rgba(255,255,255,0.1)';
@@ -1096,10 +1108,16 @@
     window.simulateDeposit = async function(){
       if (!currentUserId) return;
       const value = Number($('amount').value); const fileInput = $('receiptFile');
-      if (isNaN(value) || value < 10) { toast('El depósito mínimo es de $10 USD'); return; }
+      const asset = $('asset').value;
+      const usdValue = value * ASSET_INFO[asset].price;
+      
+      if (isNaN(value) || usdValue < 10) { 
+        toast(`El depósito mínimo es de $10 USD (equivale a ${ (10/ASSET_INFO[asset].price).toFixed(4) } ${asset})`); 
+        return; 
+      }
       if (!fileInput.files || fileInput.files.length === 0) { toast('Debes subir una foto del comprobante'); return; }
       
-      const asset = $('asset').value; const btn = $('depositBtn');
+      const btn = $('depositBtn');
       btn.disabled = true; btn.textContent = 'Subiendo comprobante…';
       
       try {
@@ -1217,11 +1235,16 @@
       $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset;
       $('qr-network').style.display = asset === 'USDT' ? 'inline' : 'none';
       $('warning-asset').textContent = asset; $('warning-network').textContent = coin.network; $('networkWarning').style.display = 'block';
+      
+      // Actualizar el mínimo dinámico visual (opcional, pero ayuda al usuario)
+      const minCrypto = (10 / coin.price).toFixed(asset === 'BTC' ? 6 : 2);
+      $('estimate').textContent = `≈ $${(Number($('amount').value) * coin.price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} USD (Mín: ${minCrypto} ${asset})`;
     };
 
     window.updateEstimate = function() {
       const value = Math.max(0, Number($('amount').value)||0); const price = ASSET_INFO[$('asset').value].price;
-      $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD';
+      const minCrypto = (10 / price).toFixed($('asset').value === 'BTC' ? 6 : 2);
+      $('estimate').textContent = `≈ $${(value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} USD (Mín: ${minCrypto} ${$('asset').value})`;
     };
 
     window.copyWallet = async function() { try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); } catch(e) { toast('No se pudo copiar'); } };
