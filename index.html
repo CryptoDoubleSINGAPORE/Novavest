@@ -65,7 +65,7 @@
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    /* TARJETA DE BALANCE */
+    /* TARJETA DE BALANCE CON GRAFFITIS */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
       background: #1e293b; color: #fff; position: relative; overflow: hidden; 
@@ -858,7 +858,7 @@
 
         const item = document.createElement('div'); item.className = 'user-card';
         item.innerHTML = `
-          <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div><span style="font-size:10px; background:rgba(59,130,246,0.2); color:#60a5fa; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span></div>
+          <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div></div>
           <div class="user-balances">${balancesHtml}</div>
           <div class="user-status"><div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div><div style="text-align:right;">${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}<span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span></div></div>
         `;
