@@ -400,11 +400,21 @@
   function showDashboard(user){ $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden'); const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor'; $('welcomeName').textContent=name.split(' ')[0]; $('investorName').textContent=name; $('investorEmail').textContent=user?.email||'Cuenta NovaVest'; if(user?.created_at) { const date = new Date(user.created_at).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }); $('investorDate').textContent = 'Miembro desde: ' + date; } $('avatar').textContent=name.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase(); $('profileInitials').textContent=$('avatar').textContent; loadUserData(user).catch(err => { console.error(err); toast('Error cargando datos.'); }); }
   async function signOut(){ const {error}=await supabaseClient.auth.signOut(); if(error){toast(error.message);return;} currentUserId=null; currentUserEmail=null; withdrawableBalance=0; dailyWithdrawn=0; $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden'); setAuthView('login'); toast('Sesión cerrada'); navigate('home', document.querySelectorAll('.nav button')[0]); $('activeInvestmentsSection').classList.add('hidden'); } window.signOut=signOut;
   supabaseClient.auth.onAuthStateChange((event,session)=>{ if(session?.user) showDashboard(session.user); else if(event==='SIGNED_OUT'){ $('dashboard').classList.add('hidden');$('authScreen').classList.remove('hidden'); } }); supabaseClient.auth.getSession().then(({data})=>{ if(data.session?.user) showDashboard(data.session.user); });
-  window.changeAsset = function() { const asset = $('asset').value; const coin = ASSET_INFO[asset]; $('coinBadge').innerHTML = coin.icon; $('unit').textContent = asset; updateEstimate(); $('wallet').textContent = coin.address; $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${coin.address}`; $('qr-asset-name').textContent = asset === 'USDT' ? 'USDT (TRC20)' : asset; $('qr-network').style.display = asset === 'USDT' ? 'inline' : 'none'; $('warning-asset').textContent = asset; $('warning-network').textContent = coin.network; $('networkWarning').style.display = 'block'; };
-  window.updateEstimate = function() { const value = Math.max(0, Number($('amount').value)||0); const price = ASSET_INFO[$('asset').value].price; $('estimate').textContent = '≈ $' + (value * price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USD'; };
-  window.copyWallet = async function() { try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); } catch(e) { toast('No se pudo copiar'); } };
-  window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); }; window.closeModal=function(){$('modal').classList.remove('open');}; window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
-  window.addEventListener('DOMContentLoaded', () => { const urlParams = new URLSearchParams(window.location.search); const refParam = urlParams.get('ref'); if (refParam) { $('referralCode').value = refParam; setAuthView('register'); } });
-</script>
+  window.changeAsset = function() {
+  const asset = $('asset').value;
+  const coin = ASSET_INFO[asset];
+  
+  // Actualizar imágenes y textos principales
+  $('coinBadge').src = coin.icon.match(/src="([^"]+)"/)[1]; // Extrae la URL de la imagen
+  $('network-name').textContent = (asset === 'USDT' ? 'TRC20' : coin.network.split(' ')[0]) + ' - ' + asset;
+  $('wallet').textContent = coin.address;
+  $('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${coin.address}`;
+  
+  // Actualizar los textos de advertencia e instrucciones
+  $('warning-asset').textContent = asset;
+  $('warning-network').textContent = coin.network;
+  $('warning-network-2').textContent = coin.network;
+};
+<script>
 </body>
 </html>
