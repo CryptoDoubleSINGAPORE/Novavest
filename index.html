@@ -13,18 +13,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    /* PALETA DE COLORES MODO OSCURO */
     :root { 
-      --bg: #0f172a; 
-      --panel: #1e293b; 
-      --muted: #94a3b8; 
-      --text: #f8fafc; 
-      --line: #334155; 
-      --mint: #10b981; 
-      --blue: #3b82f6; 
-      --fire: #ef4444; 
+      --bg: #0f172a; --panel: #1e293b; --muted: #94a3b8; --text: #f8fafc; --line: #334155; 
+      --mint: #10b981; --blue: #3b82f6; --fire: #ef4444; 
     }
-    
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
     
@@ -34,22 +26,13 @@
     }
     
     /* FONDO ANIMADO DE MONEDAS (GENERAL) */
-    #coin-bg {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      pointer-events: none; z-index: 0; overflow: hidden;
-    }
+    #coin-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
     .falling-coin {
-      position: absolute; top: -50px;
-      width: 35px; height: 35px;
+      position: absolute; top: -50px; width: 35px; height: 35px;
       background: url('https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png') no-repeat center center;
-      background-size: contain;
-      opacity: 0.1; 
-      animation: fall linear infinite;
+      background-size: contain; opacity: 0.1; animation: fall linear infinite;
     }
-    @keyframes fall {
-      0% { transform: translateY(-50px) rotate(0deg); }
-      100% { transform: translateY(105vh) rotate(360deg); }
-    }
+    @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); } 100% { transform: translateY(105vh) rotate(360deg); } }
     @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.05; } }
 
     button, input, select { font: inherit; }
@@ -75,22 +58,39 @@
     /* PANEL DE BIENVENIDA */
     .welcome-panel {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 20px; padding: 20px; margin-bottom: 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      color: #fff;
+      border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 20px; padding: 20px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; color: #fff;
     }
     .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #fff; font-weight: 800; }
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    .balance { margin-top: 19px; padding: 22px; border-radius: 24px; background: #1e293b; color: #fff; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); border: 1px solid var(--line); }
-    .balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
-    .balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
+    /* ========================================= */
+    /* TARJETA DE BALANCE CON GRAFFITIS          */
+    /* ========================================= */
+    .balance { 
+      margin-top: 19px; padding: 22px; border-radius: 24px; 
+      background: #1e293b; color: #fff; position: relative; overflow: hidden; 
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); border: 1px solid var(--line); 
+    }
+    
+    .graffiti-bg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .graffiti-text {
+      position: absolute; font-family: monospace; font-weight: 900; font-size: 24px; color: rgba(255, 255, 255, 0.04);
+      white-space: nowrap; animation: floatText 6s ease-in-out infinite alternate;
+    }
+    @keyframes floatText {
+      0% { transform: translateY(0) rotate(var(--rot)); }
+      100% { transform: translateY(-15px) rotate(var(--rot)); }
+    }
+
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
     .balance .eyebrow { color: #94a3b8; }
     .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
-    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; }
+    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
@@ -190,17 +190,14 @@
 
     /* Fondo animado del menú lateral */
     #sidebar-bg {
-      display: none; 
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+      display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       pointer-events: none; overflow: hidden; z-index: 0;
     }
     .falling-logo {
-      position: absolute; top: -50px;
-      width: 30px; height: 30px;
+      position: absolute; top: -50px; width: 30px; height: 30px;
       background-size: contain; background-repeat: no-repeat;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      opacity: 0.15; 
-      animation: fall linear infinite;
+      opacity: 0.15; animation: fall linear infinite;
     }
 
     /* ESTILOS DE MODALES Y TOAST */
@@ -227,13 +224,10 @@
       body { padding-bottom: 0; padding-top: 0; background-color: #0f172a; } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
       
-      /* Fondo Negro para el menú lateral */
       .nav { 
         position: sticky; top: 0; left: 0; width: 260px; height: 100vh; 
         border-top: none; border-right: 1px solid var(--line); padding: 40px 20px; 
-        display: flex; flex-direction: column; 
-        background: #0f172a; /* Fondo Oscuro */
-        z-index: 10; 
+        display: flex; flex-direction: column; background: #0f172a; z-index: 10; 
       }
       
       #sidebar-bg { display: block; }
@@ -243,15 +237,12 @@
       .nav button { 
         display: flex; align-items: center; justify-content: flex-start; 
         gap: 15px; padding: 15px 20px; font-size: 15px; 
-        border-radius: 12px; width: 100%; 
-        color: #94a3b8; 
+        border-radius: 12px; width: 100%; color: #94a3b8; 
       }
       .nav button span { font-size: 22px; }
       
       .nav button.active { 
-        background: #1e293b; 
-        color: #fff; 
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        background: #1e293b; color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
       }
       
       .nav button.hidden { display: none !important; }
@@ -269,7 +260,6 @@
 </head>
 <body>
 
-  <!-- FONDO ANIMADO DE MONEDAS (WEB EN GENERAL) -->
   <div id="coin-bg"></div>
   
   <section id="authScreen" class="auth-wrap" style="position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center;">
@@ -320,7 +310,6 @@
 
   <div class="app-layout">
     <nav class="nav">
-      <!-- CONTENEDOR DE PARTÍCULAS DEL MENÚ LATERAL -->
       <div id="sidebar-bg"></div>
       
       <div class="nav-inner" id="navInner">
@@ -352,7 +341,12 @@
 
           <div class="welcome" style="display:none;">¡Hola, <span id="welcomeName"></span>! 👋</div>
 
+          <!-- TARJETA DE BALANCE CON GRAFFITIS -->
           <section class="balance">
+            <div class="graffiti-bg" id="graffiti-container">
+              <!-- Los textos se inyectan con JS -->
+            </div>
+            
             <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
             <div class="amount" id="totalBalance">$0.00</div>
             <div class="change">↗ Rendimiento actual</div>
@@ -361,6 +355,7 @@
               <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
             </div>
           </section>
+
           <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
             <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
               <div><h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2><p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p></div>
@@ -554,6 +549,37 @@
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(0,0,0,0.5); z-index: 100; text-decoration: none; border:1px solid var(--line);"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
+    // --- SCRIPT PARA LOS GRAFFITIS DEL BALANCE ---
+    document.addEventListener("DOMContentLoaded", function() {
+      const graffitiTexts = ['$BTC', '$ETH', '#HODL', 'To the Moon 🚀', '$USDT', 'Diamond Hands 💎', '#Crypto', 'DeFi', 'Buy The Dip', '$SOL', 'Bull Market 🐂', 'HODL GANG'];
+      const graffitiContainer = document.getElementById('graffiti-container');
+      
+      graffitiTexts.forEach((text, index) => {
+        let el = document.createElement('div');
+        el.className = 'graffiti-text';
+        el.textContent = text;
+        
+        // Posiciones aleatorias para que no se superpongan
+        let topPos = Math.random() * 80 + 10; // Entre 10% y 90%
+        let leftPos = Math.random() * 80 + 10; 
+        let rotate = Math.random() * 60 - 30; // Rotación entre -30 y 30 grados
+        
+        el.style.top = topPos + '%';
+        el.style.left = leftPos + '%';
+        el.style.setProperty('--rot', rotate + 'deg');
+        
+        // Animación con diferentes retardos
+        el.style.animationDelay = (Math.random() * 2) + 's';
+        el.style.animationDuration = (4 + Math.random() * 4) + 's';
+        
+        // Diferentes tamaños
+        let size = 16 + Math.random() * 20;
+        el.style.fontSize = size + 'px';
+
+        graffitiContainer.appendChild(el);
+      });
+    });
+
     // --- SCRIPT PARA EL FONDO ANIMADO DE MONEDAS (GENERAL) ---
     document.addEventListener("DOMContentLoaded", function() {
       const bg = document.getElementById('coin-bg');
