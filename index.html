@@ -211,24 +211,45 @@
         <div class="plan-card fire-theme" onclick="openPlanModal('pro')"><div class="plan-badge">🔥 MÁS POPULAR</div><div class="plan-title">🔥 Plan Pro</div><div class="plan-yield">12% ROI</div><div class="plan-freq">Retiros cada 48 horas (15 días)</div><div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div><button class="plan-btn press-effect">Ver montos de inversión</button></div>
       </div>
     </div>
-    <div id="view-deposit" class="view">
-      <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
-      <div class="panel">
-        <div class="eyebrow">Selecciona tu moneda</div>
-        <div class="asset-select" style="margin-top:10px"><div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div><select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;"><option value="TRX">TRON (TRX)</option><option value="BTC">Bitcoin (BTC)</option><option value="SOL">Solana (SOL)</option><option value="USDT">Tether (USDT TRC20)</option></select></div>
-        <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
-        <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
-        <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-        <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;"><span>Dirección de depósito</span><button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button></div>
-          <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
-          <div style="display:flex; align-items:center; gap:12px; margin-top:15px;"><img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;"><div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;"><b style="color:#0f172a;">Escanear QR</b><br>Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div></div>
-        </div>
-        <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.</div>
-        <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
-        <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.</div>
-      </div>
+   <div id="view-deposit" class="view">
+  <div class="deposit-new-ui">
+    <div class="deposit-header">
+       <span>⬅</span> Depósito
     </div>
+
+    <select class="asset-selector-new" id="asset" onchange="changeAsset()">
+      <option value="TRX">TRON (TRX) - TRC20</option>
+      <option value="BTC">Bitcoin (BTC) - Nativa</option>
+      <option value="SOL">Solana (SOL) - SPL</option>
+      <option value="USDT">Tether (USDT) - TRC20</option>
+    </select>
+
+    <div class="deposit-card">
+      <div class="network-badge">
+        <img id="coinBadge" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="Coin">
+        <span id="network-name">TRC20 - TRX</span>
+      </div>
+
+      <div class="qr-container-new">
+        <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR">
+      </div>
+
+      <div class="address-title">DIRECCIÓN</div>
+      <div class="address-box-new">
+        <span class="address-text-new" id="wallet">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</span>
+        <button class="copy-btn-new" onclick="copyWallet()">Copiar</button>
+      </div>
+
+      <button class="completed-btn-new" onclick="simulateDeposit()">Depósito completado</button>
+    </div>
+
+    <div class="instructions-box-new">
+      <p>1. Copie la dirección anterior o escanee el código QR y seleccione la red <b><span id="warning-network">TRON (TRC20)</span></b> para depositar <b><span id="warning-asset">TRX</span></b>.</p>
+      <p>2. No recargue otras cadenas inteligentes que no sean <b><span id="warning-network-2">TRON (TRC20)</span></b>. Los fondos llegarán a su cuenta en aproximadamente 1 a 10 minutos después de la recarga.</p>
+      <p>3. Si no llega durante mucho tiempo, actualice la página o comuníquese con el servicio de atención al cliente.</p>
+    </div>
+  </div>
+   </div>
     <div id="view-withdraw" class="view">
       <div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
       <div class="panel">
