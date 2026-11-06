@@ -16,7 +16,32 @@
     :root { --bg: #f8fafc; --panel: #ffffff; --muted: #64748b; --text: #0f172a; --line: #e2e8f0; --mint: #10b981; --blue: #3b82f6; --fire: #ef4444; }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
-    body { margin: 0; background-color: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", system-ui, sans-serif; min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; }
+    
+    body { 
+      margin: 0; background-color: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", system-ui, sans-serif; 
+      min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; position: relative;
+    }
+    
+    /* FONDO ANIMADO DE MONEDAS */
+    #coin-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .falling-coin {
+      position: absolute; top: -50px;
+      width: 35px; height: 35px;
+      background: url('https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png') no-repeat center center;
+      background-size: contain;
+      opacity: 0.15; /* Transparencia para que no moleste la lectura */
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0deg); }
+      100% { transform: translateY(105vh) rotate(360deg); }
+    }
+    /* En celular las hacemos más pequeñas y menos visibles */
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
+
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; }
     .hidden { display: none !important; }
@@ -37,6 +62,17 @@
     .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; }
     .sub { font-size: 13px; color: var(--muted); }
     
+    /* PANEL DE BIENVENIDA */
+    .welcome-panel {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 20px; padding: 20px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #0f172a; font-weight: 800; }
+    .welcome-panel p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+    .welcome-icon { font-size: 32px; margin-left: 15px; }
+
     .balance { margin-top: 19px; padding: 22px; border-radius: 24px; background: #0f172a; color: #fff; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2); }
     .balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
     .balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
@@ -86,7 +122,7 @@
     .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
     .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; z-index: 2; }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .select, .number, .field { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
     .select:focus, .number:focus, .field:focus { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
@@ -95,7 +131,7 @@
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
     
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); }
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); position: relative; z-index: 2; }
     .wide:active { transform: scale(0.96); opacity: 0.9; }
 
     .info-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
@@ -158,7 +194,7 @@
     .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
     .invest-btn-yield { font-size: 11px; font-weight: 700; }
 
-    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; }
+    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; position: relative; z-index: 2; }
     .auth-card { width: 100%; max-width: 430px; background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
     .auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; margin-bottom: 27px; }
     .auth-card h1 { font-size: 26px; margin: 0 0 7px; font-weight: 800; }
@@ -197,8 +233,8 @@
 
     @media(min-width: 600px) { 
       body { padding-bottom: 0; padding-top: 0; background-color: #f1f5f9; } 
-      .app-layout { display: flex; min-height: 100vh; }
-      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 40px 20px; display: flex; flex-direction: column; background: var(--panel); }
+      .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
+      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 40px 20px; display: flex; flex-direction: column; background: var(--panel); z-index: 10; }
       .nav-inner { display: flex; flex-direction: column; gap: 10px; width: 100%; }
       .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 15px; padding: 15px 20px; font-size: 15px; border-radius: 12px; width: 100%; }
       .nav button span { font-size: 22px; }
@@ -216,6 +252,9 @@
   </style>
 </head>
 <body>
+
+  <!-- FONDO ANIMADO DE MONEDAS -->
+  <div id="coin-bg"></div>
   
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
@@ -283,9 +322,18 @@
         </header>
 
         <div id="view-home" class="view active">
-          <div class="eyebrow">Panel personal</div>
-          <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
-          <div class="sub">Tu resumen de activos en tiempo real.</div>
+          
+          <!-- NUEVO PANEL DE BIENVENIDA -->
+          <div class="welcome-panel" id="welcomePanel">
+            <div>
+              <h3 id="welcomeTitle">¡Bienvenido a NovaVest! 🚀</h3>
+              <p id="welcomeDesc">Estás a un paso de hacer crecer tus activos. Explora nuestros planes.</p>
+            </div>
+            <div class="welcome-icon">💎</div>
+          </div>
+
+          <div class="welcome" style="display:none;">¡Hola, <span id="welcomeName"></span>! 👋</div>
+
           <section class="balance">
             <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
             <div class="amount" id="totalBalance">$0.00</div>
@@ -488,6 +536,24 @@
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
+    // --- SCRIPT PARA EL FONDO ANIMADO ---
+    document.addEventListener("DOMContentLoaded", function() {
+      const bg = document.getElementById('coin-bg');
+      const numCoins = 25; // Cantidad de monedas en pantalla
+      for (let i = 0; i < numCoins; i++) {
+        let coin = document.createElement('div');
+        coin.classList.add('falling-coin');
+        // Posición horizontal aleatoria
+        coin.style.left = Math.random() * 100 + 'vw';
+        // Duración de la caída (entre 5 y 15 segundos)
+        let duration = 5 + Math.random() * 10;
+        coin.style.animationDuration = duration + 's';
+        // Retraso inicial aleatorio para que no caigan todas juntas
+        coin.style.animationDelay = '-' + (Math.random() * 15) + 's';
+        bg.appendChild(coin);
+      }
+    });
+
     const SUPABASE_URL = 'https://wuanvwxjvpnvlwioorrj.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XOEu8hqTQ7u03Uh9A08HdQ_O4z086C9';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -524,6 +590,19 @@
       } else {
         $('adminNavBtn').classList.add('hidden');
         $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
+      }
+
+      // Lógica del mensaje de bienvenida
+      const createdDate = new Date(user.created_at);
+      const now = new Date();
+      const diffHours = Math.abs(now - createdDate) / 36e5; // Diferencia en horas
+      
+      if (diffHours < 24) {
+        $('welcomeTitle').textContent = '¡Bienvenido a NovaVest! 🚀';
+        $('welcomeDesc').textContent = 'Estás a un paso de hacer crecer tus activos. Explora nuestros planes.';
+      } else {
+        $('welcomeTitle').textContent = '¡Hola de nuevo! 👋';
+        $('welcomeDesc').textContent = 'Nos alegra verte otra vez. Revisa tus ganancias y planes activos.';
       }
 
       const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
