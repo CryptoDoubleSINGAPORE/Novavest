@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0f172a">
   <title>NovaVest | Gestión de Activos</title>
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='12' fill='%230f172a'/><path d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
@@ -13,7 +13,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    :root { --bg: #f8fafc; --panel: #ffffff; --muted: #64748b; --text: #0f172a; --line: #e2e8f0; --mint: #10b981; --blue: #3b82f6; --fire: #ef4444; }
+    /* PALETA DE COLORES MODO OSCURO */
+    :root { 
+      --bg: #0f172a; 
+      --panel: #1e293b; 
+      --muted: #94a3b8; 
+      --text: #f8fafc; 
+      --line: #334155; 
+      --mint: #10b981; 
+      --blue: #3b82f6; 
+      --fire: #ef4444; 
+    }
+    
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
     
@@ -32,14 +43,14 @@
       width: 35px; height: 35px;
       background: url('https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png') no-repeat center center;
       background-size: contain;
-      opacity: 0.15; 
+      opacity: 0.1; 
       animation: fall linear infinite;
     }
     @keyframes fall {
       0% { transform: translateY(-50px) rotate(0deg); }
       100% { transform: translateY(105vh) rotate(360deg); }
     }
-    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.05; } }
 
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; }
@@ -53,59 +64,60 @@
     .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
     
     .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; color: #fff; }
     .brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
-    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, #0f172a, #334155); display: grid; place-items: center; font-weight: 800; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #334155); display: grid; place-items: center; font-weight: 800; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid var(--line); }
     
     .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
-    .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; }
+    .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; color: #fff; }
     .sub { font-size: 13px; color: var(--muted); }
     
     /* PANEL DE BIENVENIDA */
     .welcome-panel {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+      border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: 20px; padding: 20px; margin-bottom: 20px;
       display: flex; align-items: center; justify-content: space-between;
+      color: #fff;
     }
-    .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #0f172a; font-weight: 800; }
-    .welcome-panel p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+    .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #fff; font-weight: 800; }
+    .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    .balance { margin-top: 19px; padding: 22px; border-radius: 24px; background: #0f172a; color: #fff; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2); }
+    .balance { margin-top: 19px; padding: 22px; border-radius: 24px; background: #1e293b; color: #fff; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); border: 1px solid var(--line); }
     .balance:before, .balance:after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; width: 190px; height: 190px; right: -60px; top: -90px; }
     .balance:after { width: 130px; height: 130px; right: -20px; top: -60px; }
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
     .balance .eyebrow { color: #94a3b8; }
-    .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
-    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; }
+    .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
+    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; }
     .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
     .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; }
-    .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); }
-    .ghost { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
+    .ghost { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); }
     
     .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
-    .section h2 { font-size: 17px; margin: 0; font-weight: 800; }
+    .section h2 { font-size: 17px; margin: 0; font-weight: 800; color: #fff; }
     
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
-    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #0f172a; }
+    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #fff; }
     .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
     
-    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
-    .active-inv-info b { display: block; font-size: 14px; color: #0f172a; margin-bottom: 4px; font-weight: 800; }
+    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+    .active-inv-info b { display: block; font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
     .active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
     .active-inv-timer { text-align: right; }
-    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #0f172a; font-weight: 800; }
+    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; font-weight: 800; }
     .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
     .claim-btn { background: var(--mint); color: #fff; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 13px; animation: pulse 2s infinite; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
     .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; }
+    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.2s; }
     .plan-card:active { transform: scale(0.98); }
     .plan-card.cold-theme { border-top: 4px solid var(--blue); }
     .plan-card.cold-theme .plan-title { color: var(--blue); }
@@ -115,50 +127,50 @@
     .plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
     .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; }
     .plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #0f172a; }
+    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #fff; }
     .plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
-    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: var(--bg); color: var(--text); }
+    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid var(--line); }
     .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
     .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; z-index: 2; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; z-index: 2; }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .select, .number, .field { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
-    .select:focus, .number:focus, .field:focus { border-color: #0f172a; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); }
+    .select, .number, .field { width: 100%; background: rgba(15, 23, 42, 0.5); color: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
+    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
     .amount-wrap { position: relative; }
     .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
     
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2); position: relative; z-index: 2; }
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; }
     .wide:active { transform: scale(0.96); opacity: 0.9; }
 
-    .info-box { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
+    .info-box { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
     .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--text); font-weight: 600; }
     .info-row:last-child { margin-bottom: 0; }
     .info-row b { color: var(--mint); }
 
     .coins { display: grid; gap: 9px; }
     .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; }
-    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
+    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
     .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
     .coin-info { flex: 1; }
-    .coin-info b { display: block; font-size: 14px; font-weight: 700; }
+    .coin-info b { display: block; font-size: 14px; font-weight: 700; color: #fff; }
     .coin-info span { font-size: 11px; color: var(--muted); font-weight: 600; }
-    .coin-value b { font-size: 13px; font-weight: 800; }
+    .coin-value b { font-size: 13px; font-weight: 800; color: #fff; }
 
     .activity { display: grid; gap: 0; }
     .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); }
     .activity-item:last-child { border: 0; }
-    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--bg); color: var(--text); }
+    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.05); color: var(--text); }
     .activity-info { flex: 1; }
-    .activity-info b { font-size: 13px; display: block; font-weight: 700; }
+    .activity-info b { font-size: 13px; display: block; font-weight: 700; color: #fff; }
     .activity-info span { font-size: 11px; color: var(--muted); font-weight: 500; }
     .activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
 
     .investor { display: flex; align-items: center; gap: 14px; }
-    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #0f172a; color: #fff; font-weight: 800; font-size: 18px; }
-    .investor-info b { font-size: 16px; display: block; font-weight: 800; }
+    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #1e293b; color: #fff; font-weight: 800; font-size: 18px; border: 1px solid var(--line); }
+    .investor-info b { font-size: 16px; display: block; font-weight: 800; color: #fff; }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
     /* ========================================= */
@@ -167,18 +179,18 @@
     .nav { 
       position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; 
       padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
-      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); 
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); 
       border-top: 1px solid var(--line); 
     }
     .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; position: relative; z-index: 2; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
     .nav button span { font-size: 20px; }
-    .nav button.active { color: #0f172a; background: var(--bg); }
+    .nav button.active { color: #fff; background: rgba(255,255,255,0.05); }
     .nav button.active span { transform: translateY(-2px); }
 
     /* Fondo animado del menú lateral */
     #sidebar-bg {
-      display: none; /* Solo visible en PC */
+      display: none; 
       position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
       pointer-events: none; overflow: hidden; z-index: 0;
     }
@@ -186,48 +198,44 @@
       position: absolute; top: -50px;
       width: 30px; height: 30px;
       background-size: contain; background-repeat: no-repeat;
-      /* SVG del logo de NovaVest en color Blanco */
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       opacity: 0.15; 
       animation: fall linear infinite;
     }
 
-    /* ========================================= */
-    /* ESTILOS DE MODALES Y TOAST (ARREGLADOS)   */
-    /* ========================================= */
-    .toast { position: fixed; z-index: 999; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
+    /* ESTILOS DE MODALES Y TOAST */
+    .toast { position: fixed; z-index: 999; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #fff; color: #0f172a; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 998; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(4px); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 998; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
     .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: #fff; }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
     .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
-    .close { float: right; background: var(--bg); border: 0; color: var(--text); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
+    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: #fff; border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
     
     .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: var(--bg); border: none; color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
-    .modal-btn-confirm { flex: 1; background: #0f172a; border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+    .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+    .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
 
     /* ========================================= */
     /* DISEÑO DE ESCRITORIO (PC)                 */
     /* ========================================= */
     @media(min-width: 600px) { 
-      body { padding-bottom: 0; padding-top: 0; background-color: #f1f5f9; } 
+      body { padding-bottom: 0; padding-top: 0; background-color: #0f172a; } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
       
       /* Fondo Negro para el menú lateral */
       .nav { 
         position: sticky; top: 0; left: 0; width: 260px; height: 100vh; 
-        border-top: none; border-right: none; padding: 40px 20px; 
+        border-top: none; border-right: 1px solid var(--line); padding: 40px 20px; 
         display: flex; flex-direction: column; 
         background: #0f172a; /* Fondo Oscuro */
         z-index: 10; 
       }
       
-      /* Activamos las partículas del menú en PC */
       #sidebar-bg { display: block; }
 
       .nav-inner { display: flex; flex-direction: column; gap: 10px; width: 100%; position: relative; z-index: 2; }
@@ -236,15 +244,14 @@
         display: flex; align-items: center; justify-content: flex-start; 
         gap: 15px; padding: 15px 20px; font-size: 15px; 
         border-radius: 12px; width: 100%; 
-        color: #94a3b8; /* Texto gris claro en el menú oscuro */
+        color: #94a3b8; 
       }
       .nav button span { font-size: 22px; }
       
-      /* Botón activo en el menú oscuro */
       .nav button.active { 
-        background: #1e293b; /* Un gris más claro para resaltar */
+        background: #1e293b; 
         color: #fff; 
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
       }
       
       .nav button.hidden { display: none !important; }
@@ -265,23 +272,23 @@
   <!-- FONDO ANIMADO DE MONEDAS (WEB EN GENERAL) -->
   <div id="coin-bg"></div>
   
-  <section id="authScreen" class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo">
-        <div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#0f172a"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <section id="authScreen" class="auth-wrap" style="position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+    <div class="auth-card" style="width:100%; max-width:430px; background:var(--panel); border:1px solid var(--line); border-radius:28px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="auth-logo" style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; margin-bottom:27px; color:#fff;">
+        <div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         NovaVest
       </div>
-      <h1 id="authTitle">Bienvenido de nuevo</h1>
-      <p class="auth-sub" id="authSubtitle">Inicia sesión para acceder a tu panel financiero.</p>
+      <h1 id="authTitle" style="font-size:26px; margin:0 0 7px; font-weight:800; color:#fff;">Bienvenido de nuevo</h1>
+      <p class="auth-sub" id="authSubtitle" style="font-size:14px; color:var(--muted); line-height:1.5; margin:0 0 24px; font-weight:500;">Inicia sesión para acceder a tu panel financiero.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
-      <form id="loginForm" class="auth-form">
+      <form id="loginForm" class="auth-form" style="display:grid; gap:10px;">
         <label class="field-label" for="loginEmail">Correo electrónico</label>
         <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
         <label class="field-label" for="loginPassword">Contraseña</label>
         <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
-        <button class="auth-btn press-effect" type="submit" id="loginSubmit">Iniciar sesión</button>
+        <button class="auth-btn press-effect" type="submit" id="loginSubmit" style="border-radius:14px; padding:16px; background:var(--mint); color:#fff; font-weight:800; margin-top:8px;">Iniciar sesión</button>
       </form>
-      <form id="registerForm" class="auth-form hidden">
+      <form id="registerForm" class="auth-form hidden" style="display:grid; gap:10px;">
         <label class="field-label" for="fullName">Nombre completo</label>
         <input class="field" id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" maxlength="70" required>
         <label class="field-label" for="registerEmail">Correo electrónico</label>
@@ -291,22 +298,22 @@
         <label class="field-label" for="referralCode">Código de Referido (Opcional)</label>
         <input class="field" id="referralCode" type="number" placeholder="Ej: 1450">
         <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-          <input type="checkbox" id="termsCheck" required style="width:18px; height:18px; accent-color:#0f172a;">
-          <label for="termsCheck" style="font-size:11px; color:#64748b; font-weight: 500;">Acepto los <a href="#" onclick="openTerms(); return false;" style="color:#0f172a; font-weight:800;">Términos y Condiciones</a></label>
+          <input type="checkbox" id="termsCheck" required style="width:18px; height:18px; accent-color:var(--mint);">
+          <label for="termsCheck" style="font-size:11px; color:var(--muted); font-weight: 500;">Acepto los <a href="#" onclick="openTerms(); return false;" style="color:var(--mint); font-weight:800;">Términos y Condiciones</a></label>
         </div>
-        <button class="auth-btn press-effect" type="submit" id="registerSubmit">Crear cuenta</button>
+        <button class="auth-btn press-effect" type="submit" id="registerSubmit" style="border-radius:14px; padding:16px; background:var(--mint); color:#fff; font-weight:800; margin-top:8px;">Crear cuenta</button>
       </form>
-      <form id="resetForm" class="auth-form hidden">
+      <form id="resetForm" class="auth-form hidden" style="display:grid; gap:10px;">
         <label class="field-label" for="resetEmail">Correo electrónico de tu cuenta</label>
         <input class="field" id="resetEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-        <button class="auth-btn press-effect" type="submit">Enviar enlace</button>
+        <button class="auth-btn press-effect" type="submit" style="border-radius:14px; padding:16px; background:var(--mint); color:#fff; font-weight:800; margin-top:8px;">Enviar enlace</button>
       </form>
-      <div class="auth-switch" id="authSwitch">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button></div>
-      <div class="auth-switch"><button class="link-btn" type="button" id="showReset">¿Olvidaste tu contraseña?</button></div>
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> Conexión SSL</div>
-        <div class="trust-badge"><span>🛡️</span> Fondos Protegidos</div>
-        <div class="trust-badge"><span>⚡</span> Soporte 24/7</div>
+      <div class="auth-switch" id="authSwitch" style="color:var(--muted); font-size:13px; text-align:center; margin-top:20px; font-weight:500;">¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister" style="color:var(--mint); background:none; font-weight:800;">Crear cuenta</button></div>
+      <div class="auth-switch" style="color:var(--muted); font-size:13px; text-align:center; margin-top:10px; font-weight:500;"><button class="link-btn" type="button" id="showReset" style="color:var(--mint); background:none; font-weight:800;">¿Olvidaste tu contraseña?</button></div>
+      <div class="trust-badges" style="display:flex; justify-content:center; gap:15px; margin-top:20px; opacity:0.7;">
+        <div class="trust-badge" style="display:flex; align-items:center; gap:4px; font-size:10px; font-weight:700; color:var(--muted);"><span>🔒</span> Conexión SSL</div>
+        <div class="trust-badge" style="display:flex; align-items:center; gap:4px; font-size:10px; font-weight:700; color:var(--muted);"><span>🛡️</span> Fondos Protegidos</div>
+        <div class="trust-badge" style="display:flex; align-items:center; gap:4px; font-size:10px; font-weight:700; color:var(--muted);"><span>⚡</span> Soporte 24/7</div>
       </div>
     </div>
   </section>
@@ -329,7 +336,7 @@
     <main id="dashboard" class="hidden">
       <div class="app">
         <header class="top">
-          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#0f172a"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
+          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
           <div class="avatar" id="avatar">NV</div>
         </header>
 
@@ -354,7 +361,7 @@
               <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
             </div>
           </section>
-          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
             <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
               <div><h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2><p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p></div>
               <span style="font-size:24px;">👥</span>
@@ -363,8 +370,8 @@
           <div id="activeInvestmentsSection" class="hidden"><div class="section"><h2>Inversiones Activas</h2></div><div id="activeInvestmentsList"></div></div>
           <div class="section"><h2>Tu resumen</h2></div>
           <div class="stats">
-            <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor de tus activos</small></div>
-            <div class="stat"><div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small>Rendimiento de planes</small></div>
+            <div class="stat"><div class="stat-top">Inversión activa <span class="stat-icon" style="background:rgba(59,130,246,0.2); color:#60a5fa; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small>Valor de tus activos</small></div>
+            <div class="stat"><div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:rgba(217,70,239,0.2); color:#e879f9; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small>Rendimiento de planes</small></div>
           </div>
           <div class="section"><h2>Planes de Inversión</h2></div>
           <div class="plans">
@@ -385,7 +392,7 @@
           </div>
           <div class="panel" id="depositFormPanel">
             <div class="eyebrow">Paso 1: Selecciona tu moneda</div>
-            <div class="asset-select" style="margin-top:10px">
+            <div class="asset-select" style="margin-top:10px; display:flex; align-items:center;">
               <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
               <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
                 <option value="TRX">TRON (TRX)</option>
@@ -398,19 +405,19 @@
             <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
             <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
             <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-            <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
+            <div style="margin-top:15px; padding:15px; border-radius:16px; background:rgba(255,255,255,0.02); border:1px dashed var(--line);">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
                 <span>Dirección de depósito</span>
-                <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
+                <button class="press-effect" style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
               </div>
-              <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
+              <div id="wallet" style="font-size:11px; color:var(--muted); word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
               <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
-                <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
-                <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;"><b style="color:#0f172a;">Escanear QR</b><br>Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div>
+                <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid var(--line);">
+                <div style="font-size:11px; color:var(--muted); line-height:1.4; font-weight: 500;"><b style="color:#fff;">Escanear QR</b><br>Envía solo <span id="qr-asset-name" style="color:var(--mint); font-weight:800;">TRX</span> a esta dirección.<br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div>
               </div>
             </div>
-            <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
-              ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
+            <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); font-size: 11px; color: #fca5a5; text-align: center; line-height: 1.5; font-weight: 700;">
+              ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900; color:#fff;">TRX</span> por la red <span id="warning-network" style="font-weight: 900; color:#fff;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
             </div>
             <div class="eyebrow" style="margin-top:20px;">Paso 3: Sube tu comprobante</div>
             <label class="field-label" for="receiptFile">Imagen o captura de pantalla de la transacción</label>
@@ -422,14 +429,14 @@
         <div id="view-withdraw" class="view">
           <div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
           <div class="panel">
-            <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
-              <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
-              <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
-              <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
+            <div class="info-box" style="background: rgba(255,255,255,0.02); border-color: var(--line);">
+              <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #fff;">$1.00 USD</b></div>
+              <div class="info-row"><span>Máximo por día:</span> <b style="color: #fff;">$550.00 USD</b></div>
+              <div class="info-row" style="border-top:1px solid var(--line); padding-top:8px; margin-top:8px;">
                 <span>Saldo Retirable:</span> 
-                <b style="text-align:right;"><span id="withdrawableBalanceUI" style="color:#10b981; font-size:16px;">$0.00 USD</span><br><span id="withdrawableCryptoUI" style="color:#64748b; font-size:12px;">(0.00 TRX)</span></b>
+                <b style="text-align:right;"><span id="withdrawableBalanceUI" style="color:var(--mint); font-size:16px;">$0.00 USD</span><br><span id="withdrawableCryptoUI" style="color:var(--muted); font-size:12px;">(0.00 TRX)</span></b>
               </div>
-              <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
+              <div style="font-size:10px; color:var(--muted); margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
             </div>
             <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
             <div class="asset-select" style="margin-top:10px">
@@ -446,21 +453,21 @@
             <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas" required>
             <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
             <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual" required>
-            <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-top: 20px;">Confirmar retiro →</button>
+            <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: transparent; border: 1px solid #fff; color: #fff; margin-top: 20px;">Confirmar retiro →</button>
           </div>
         </div>
 
         <div id="view-referrals" class="view">
           <div class="section" style="margin-top:0;"><h2>Programa de Referidos</h2></div>
-          <div class="ref-box">
+          <div class="ref-box" style="background: #1e293b; border: 1px solid var(--line);">
             <h3>Tu Código de Invitación</h3>
             <div class="ref-code" id="myRefCode">...</div>
             <h3>Tu Enlace de Invitación</h3>
-            <div class="ref-link-wrap"><input type="text" id="myRefLink" readonly><button onclick="copyRefLink()">Copiar</button></div>
+            <div class="ref-link-wrap" style="background: rgba(0,0,0,0.2);"><input type="text" id="myRefLink" readonly><button onclick="copyRefLink()">Copiar</button></div>
           </div>
-          <div class="panel" style="background: #eff6ff; border-color: #bfdbfe;">
-            <h3 style="margin: 0 0 10px; font-size: 15px; color: #1e40af;">¿Cómo funciona?</h3>
-            <p style="font-size: 12px; color: #1e40af; line-height: 1.5; margin: 0; font-weight: 500;">Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!</p>
+          <div class="panel" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
+            <h3 style="margin: 0 0 10px; font-size: 15px; color: #93c5fd;">¿Cómo funciona?</h3>
+            <p style="font-size: 12px; color: #bfdbfe; line-height: 1.5; margin: 0; font-weight: 500;">Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!</p>
           </div>
           <div class="stats" style="margin-top: 15px;">
             <div class="stat"><div class="stat-top">Amigos Invitados</div><strong id="totalInvited">0</strong><small>Registrados con tu código</small></div>
@@ -475,8 +482,8 @@
             <div class="investor-info">
               <b id="investorName">Usuario NovaVest</b>
               <span id="investorEmail">Cuenta registrada</span>
-              <span id="investorDate" style="display:block; margin-top:4px; color:#3b82f6; font-weight:700; font-size: 12px;">Cargando fecha...</span>
-              <span id="investorId" style="display:block; margin-top:4px; color:#64748b; font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
+              <span id="investorDate" style="display:block; margin-top:4px; color:var(--blue); font-weight:700; font-size: 12px;">Cargando fecha...</span>
+              <span id="investorId" style="display:block; margin-top:4px; color:var(--muted); font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
             </div>
           </div>
           <div class="section"><h2>Todos tus saldos</h2></div>
@@ -490,29 +497,29 @@
           <div class="panel activity" id="activityPanel">
             <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span></div>
           </div>
-          <button class="wide press-effect" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
-          <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
+          <button class="wide press-effect" style="background: transparent; border: 1px solid #fff; color: #fff; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
+          <button class="wide press-effect" style="background: rgba(255,255,255,0.05); color: #fff; box-shadow:none; border: 1px solid var(--line);" onclick="signOut()">Cerrar sesión</button>
           <div class="footer-legal">© 2024 NovaVest. Todos los derechos reservados.<br>Plataforma de gestión de activos digitales.</div>
         </div>
 
         <div id="view-admin" class="view">
-          <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
+          <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:var(--mint); color:#fff; border: none;">Dueño</span></div>
           <div class="stats" style="margin-bottom: 15px;">
             <div class="stat"><div class="stat-top">Usuarios Totales</div><strong id="adminTotalUsers">0</strong><small>Cuentas registradas</small></div>
             <div class="stat"><div class="stat-top">Volumen Total</div><strong id="adminTotalVolume">$0.00</strong><small>En depósitos (Aprox)</small></div>
           </div>
           <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div><h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p></div>
-              <span style="font-size:24px; color:#3b82f6;">→</span>
+              <div><h2 style="color:#60a5fa; margin:0; font-size:16px;">Panel de Usuarios</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p></div>
+              <span style="font-size:24px; color:#60a5fa;">→</span>
             </div>
           </div>
           <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
-            <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
+            <div class="section" style="margin-top:0;"><h2 style="color:#34d399;">Depósitos Pendientes</h2></div>
             <div id="adminPendingDeposits" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p></div>
           </div>
           <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
-            <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
+            <div class="section" style="margin-top:0;"><h2 style="color:#f87171;">Retiros Pendientes</h2></div>
             <div id="adminPendingWithdraws" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p></div>
           </div>
           <div class="panel" style="margin-top:15px;">
@@ -522,7 +529,7 @@
         </div>
 
         <div id="view-admin-users" class="view">
-          <div class="section" style="margin-top:0;"><h2>Panel de Usuarios</h2><button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button></div>
+          <div class="section" style="margin-top:0;"><h2>Panel de Usuarios</h2><button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])" style="background:none; color:var(--muted); border:none;">← Volver</button></div>
           <div class="stats" style="margin-bottom: 15px;">
             <div class="stat"><div class="stat-top">Total Registrados</div><strong id="statsTotalUsers">0</strong></div>
             <div class="stat"><div class="stat-top">Activos (5 min)</div><strong id="statsActiveUsers">0</strong></div>
@@ -544,7 +551,7 @@
   <div class="modal-backdrop" id="confirmInvModal"><div class="modal"><h3 id="confirmInvTitle" style="margin-bottom: 10px;">Confirmar Inversión</h3><p id="confirmInvText"></p><div class="modal-actions"><button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()">Cancelar</button><button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()">Confirmar</button></div></div></div>
   <div class="modal-backdrop" id="termsModal"><div class="modal"><button class="close press-effect" onclick="closeTerms()">✕</button><h3 style="margin-bottom: 10px;">Términos y Condiciones</h3><div style="font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;"><p><b>1. Riesgo de Inversión:</b> Las criptomonedas son activos volátiles. Los rendimientos mostrados (9% y 12%) son estimados según el mercado. No garantizamos ganancias futuras.</p><p><b>2. Naturaleza de la Plataforma:</b> NovaVest es una plataforma de gestión de activos digitales. Los depósitos y retiros están sujetos a verificación manual por parte del equipo de administración para prevenir fraudes.</p><p><b>3. Privacidad de Datos:</b> Tu correo electrónico será utilizado únicamente para autenticar tu cuenta y enviarte notificaciones relevantes. No compartimos tus datos con terceros.</p><p><b>4. Responsabilidad del Usuario:</b> Es responsabilidad del usuario mantener segura su contraseña y sus llaves de retiro. NovaVest no se hace responsable por pérdidas derivadas de negligencia del usuario.</p><p><b>5. Modificaciones:</b> Nos reservamos el derecho de modificar los términos de los planes y las tasas de rendimiento en cualquier momento para adaptarnos al mercado.</p></div><button class="wide press-effect" onclick="closeTerms()">Aceptar y Cerrar</button></div></div>
 
-  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(0,0,0,0.5); z-index: 100; text-decoration: none; border:1px solid var(--line);"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
     // --- SCRIPT PARA EL FONDO ANIMADO DE MONEDAS (GENERAL) ---
@@ -707,8 +714,8 @@
             <div class="activity-icon" style="background:#10b981; color:#fff;">$</div>
             <div class="activity-info">
               <b>Depósito de ${dep.amount} ${dep.asset}</b>
-              <span style="font-size:10px; color:#0f172a; font-weight:700;">${emailMostrar}</span><br>
-              ${dep.receipt_url ? `<a href="${dep.receipt_url}" target="_blank" style="font-size:10px; color:#3b82f6; font-weight:bold; text-decoration:underline;">Ver Comprobante</a>` : '<span style="font-size:10px; color:#ef4444;">Sin comprobante</span>'}
+              <span style="font-size:10px; color:#fff; font-weight:700;">${emailMostrar}</span><br>
+              ${dep.receipt_url ? `<a href="${dep.receipt_url}" target="_blank" style="font-size:10px; color:#60a5fa; font-weight:bold; text-decoration:underline;">Ver Comprobante</a>` : '<span style="font-size:10px; color:#ef4444;">Sin comprobante</span>'}
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
@@ -731,8 +738,8 @@
             <div class="activity-icon" style="background:#ef4444; color:#fff;">↗</div>
             <div class="activity-info">
               <b>Retiro de $${wd.amount} USD (${wd.asset})</b>
-              <span style="font-size:10px; color:#0f172a; font-weight:700;">${emailMostrar}</span><br>
-              <span style="font-size:9px; word-break:break-all; color:#64748b;">Dir: ${wd.address}</span>
+              <span style="font-size:10px; color:#fff; font-weight:700;">${emailMostrar}</span><br>
+              <span style="font-size:9px; word-break:break-all; color:#94a3b8;">Dir: ${wd.address}</span>
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
@@ -796,7 +803,7 @@
 
         const item = document.createElement('div'); item.className = 'user-card';
         item.innerHTML = `
-          <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div><span style="font-size:10px; background:#eff6ff; color:#3b82f6; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span></div>
+          <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div><span style="font-size:10px; background:rgba(59,130,246,0.2); color:#60a5fa; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span></div>
           <div class="user-balances">${balancesHtml}</div>
           <div class="user-status"><div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div><div style="text-align:right;">${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}<span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span></div></div>
         `;
@@ -954,14 +961,14 @@
 
     window.openPlanModal = function(planType) {
       const config = PLAN_CONFIG[planType];
-      $('planModalTitle').innerHTML = config.name; $('planModalDesc').textContent = config.desc; $('planModalTitle').style.color = planType === 'starter' ? '#3b82f6' : '#ef4444';
+      $('planModalTitle').innerHTML = config.name; $('planModalDesc').textContent = config.desc; $('planModalTitle').style.color = planType === 'starter' ? '#60a5fa' : '#f87171';
       let htmlContent = '';
       Object.keys(ASSET_INFO).forEach(asset => {
         const assetData = ASSET_INFO[asset];
         htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
         config.amounts.forEach(amt => {
           const profit = (amt * config.roi).toFixed(2);
-          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#3b82f6' : '#ef4444'};">+$${profit} / pago</div></button>`;
+          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})" style="background:rgba(255,255,255,0.05); border-color:var(--line); color:#fff;"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#60a5fa' : '#f87171'};">+$${profit} / pago</div></button>`;
         });
         htmlContent += `</div></div>`;
       });
@@ -1057,7 +1064,7 @@
       $('authTitle').textContent = view==='login'?'Bienvenido de nuevo':view==='register'?'Crea tu cuenta':'Recuperar contraseña';
       $('authSubtitle').textContent = view==='login'?'Inicia sesión para acceder a tu panel financiero.':view==='register'?'Regístrate para comenzar a invertir.':'Te enviaremos un enlace a tu correo.';
       $('authSwitch').classList.toggle('hidden',view==='reset');
-      $('authSwitch').innerHTML = view==='register'?'¿Ya tienes cuenta? <button class="link-btn" type="button" id="showLogin">Iniciar sesión</button>':'¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister">Crear cuenta</button>';
+      $('authSwitch').innerHTML = view==='register'?'¿Ya tienes cuenta? <button class="link-btn" type="button" id="showLogin" style="color:var(--mint); background:none; font-weight:800;">Iniciar sesión</button>':'¿No tienes cuenta? <button class="link-btn" type="button" id="showRegister" style="color:var(--mint); background:none; font-weight:800;">Crear cuenta</button>';
       $('showRegister')?.addEventListener('click',()=>setAuthView('register')); $('showLogin')?.addEventListener('click',()=>setAuthView('login'));
     }
     $('showRegister').addEventListener('click',()=>setAuthView('register')); $('showReset').addEventListener('click',()=>setAuthView('reset'));
