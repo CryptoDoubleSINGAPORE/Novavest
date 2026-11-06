@@ -65,43 +65,21 @@
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; }
 
-    /* ========================================= */
-    /* TARJETA DE BALANCE CON GRAFFITIS MEJORADOS*/
-    /* ========================================= */
+    /* TARJETA DE BALANCE */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
       background: #1e293b; color: #fff; position: relative; overflow: hidden; 
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); border: 1px solid var(--line); 
     }
-    
-    .graffiti-bg { 
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-      pointer-events: none; z-index: 0; overflow: hidden; 
-    }
-    
-    /* NUEVO ESTILO DE GRAFFITI TIPO "PILL" */
+    .graffiti-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .graffiti-text {
-      position: absolute; 
-      font-family: "Plus Jakarta Sans", sans-serif; 
-      font-weight: 800; 
-      font-size: 11px; 
-      padding: 6px 12px; 
-      border-radius: 20px; 
-      border: 1px solid rgba(255, 255, 255, 0.08); 
-      background: rgba(255, 255, 255, 0.03); 
-      color: rgba(255, 255, 255, 0.15); 
-      white-space: nowrap; 
-      animation: floatText 6s ease-in-out infinite alternate;
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      position: absolute; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 11px; 
+      padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); 
+      background: rgba(255, 255, 255, 0.03); color: rgba(255, 255, 255, 0.15); 
+      white-space: nowrap; animation: floatText 6s ease-in-out infinite alternate;
+      backdrop-filter: blur(4px); display: flex; align-items: center; gap: 5px;
     }
-    
-    @keyframes floatText { 
-      0% { transform: translateY(0) rotate(var(--rot)); } 
-      100% { transform: translateY(-12px) rotate(var(--rot)); } 
-    }
+    @keyframes floatText { 0% { transform: translateY(0) rotate(var(--rot)); } 100% { transform: translateY(-12px) rotate(var(--rot)); } }
 
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
     .balance .eyebrow { color: #94a3b8; }
@@ -189,31 +167,39 @@
     .investor-info b { font-size: 16px; display: block; font-weight: 800; color: #fff; }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-    /* ========================================= */
-    /* MENÚ LATERAL ESTILO TARJETA (PC)          */
-    /* ========================================= */
-    .nav { 
-      position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; 
-      padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
-      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); 
-      border-top: 1px solid var(--line); 
-    }
+    /* REFERIDOS */
+    .ref-box { background: #0f172a; color: #fff; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 15px; border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
+    .ref-box h3 { margin: 0 0 10px; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .ref-code { font-size: 40px; font-weight: 900; color: var(--mint); letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3); }
+    .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); }
+    .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 13px; outline: none; padding-left: 10px; font-weight: 600; width: 100%; text-overflow: ellipsis; }
+    .ref-link-wrap button { background: var(--mint); color: #0f172a; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.2s; flex-shrink: 0; }
+    .ref-link-wrap button:active { transform: scale(0.95); }
+
+    /* CALENDARIO ADMIN */
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
+    .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); }
+    .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; border-color: var(--mint); }
+    .calendar-header { font-size: 11px; font-weight: 800; color: var(--muted); padding: 4px; }
+    .user-card { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); }
+    .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+    .user-header b { font-size: 14px; color: #fff; }
+    .user-header span { font-size: 11px; color: var(--muted); }
+    .user-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px; color: var(--muted); }
+    .user-balances span { font-weight: 700; color: #fff; }
+    .user-status { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+    .status-pending { color: var(--fire); font-weight: 800; }
+
+    /* MENÚ LATERAL ESTILO TARJETA (PC) */
+    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
     .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; position: relative; z-index: 2; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
     .nav button span { font-size: 20px; }
     .nav button.active { color: #fff; background: rgba(255,255,255,0.05); }
     .nav button.active span { transform: translateY(-2px); }
 
-    #sidebar-bg {
-      display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-      pointer-events: none; overflow: hidden; z-index: 0;
-    }
-    .falling-logo {
-      position: absolute; top: -50px; width: 30px; height: 30px;
-      background-size: contain; background-repeat: no-repeat;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      opacity: 0.15; animation: fall linear infinite;
-    }
+    #sidebar-bg { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
+    .falling-logo { position: absolute; top: -50px; width: 30px; height: 30px; background-size: contain; background-repeat: no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); opacity: 0.15; animation: fall linear infinite; }
 
     /* ESTILOS DE MODALES Y TOAST */
     .toast { position: fixed; z-index: 999; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #fff; color: #0f172a; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
@@ -227,54 +213,35 @@
     .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
     .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
     .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: #fff; border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
-    
     .modal-actions { display: flex; gap: 10px; }
     .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
     .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
 
-    /* ========================================= */
-    /* DISEÑO DE ESCRITORIO (PC)                 */
-    /* ========================================= */
+    /* ARREGLO DE INVERSIONES (MODAL) */
+    .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
+    .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .invest-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: 0.2s; }
+    .invest-btn:hover { border-color: var(--mint); }
+    .invest-btn-price { font-weight: 800; font-size: 15px; color: #fff; }
+    .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
+    .invest-btn-yield { font-size: 11px; font-weight: 700; }
+
+    /* FOOTER */
+    .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
+
+    /* DISEÑO DE ESCRITORIO (PC) */
     @media(min-width: 600px) { 
       body { padding-bottom: 0; padding-top: 0; background-color: #0f172a; } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
-      
-      .nav { 
-        position: sticky; top: 0; left: 0; width: 260px; height: 100vh; 
-        border-top: none; border-right: 1px solid var(--line); padding: 30px 15px; 
-        display: flex; flex-direction: column; background: #0f172a; z-index: 10; 
-      }
-      
+      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 30px 15px; display: flex; flex-direction: column; background: #0f172a; z-index: 10; }
       #sidebar-bg { display: block; }
-
       .nav-inner { display: flex; flex-direction: column; gap: 8px; width: 100%; position: relative; z-index: 2; }
-      
-      /* RECUADROS DEL MENÚ LATERAL */
-      .nav button { 
-        display: flex; align-items: center; justify-content: flex-start; 
-        gap: 12px; padding: 14px 18px; font-size: 14px; 
-        border-radius: 12px; width: 100%; 
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05); 
-        color: #94a3b8; 
-        transition: all 0.2s ease;
-      }
-      .nav button:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        border-color: rgba(255, 255, 255, 0.1);
-      }
+      .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); color: #94a3b8; transition: all 0.2s ease; }
+      .nav button:hover { background: rgba(255, 255, 255, 0.05); color: #fff; border-color: rgba(255, 255, 255, 0.1); }
       .nav button span { font-size: 20px; }
-      
-      .nav button.active { 
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--mint); 
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05);
-      }
-      
+      .nav button.active { background: rgba(16, 185, 129, 0.1); color: var(--mint); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05); }
       .nav button.hidden { display: none !important; }
-      
       #dashboard { flex: 1; display: flex; justify-content: center; }
       .app { max-width: 900px; width: 100%; padding: 40px; margin: 0; }
       .stats { grid-template-columns: repeat(4, 1fr); } 
@@ -369,11 +336,8 @@
 
           <div class="welcome" style="display:none;">¡Hola, <span id="welcomeName"></span>! 👋</div>
 
-          <!-- TARJETA DE BALANCE CON GRAFFITIS MEJORADOS -->
           <section class="balance">
-            <div class="graffiti-bg" id="graffiti-container">
-              <!-- Los textos se inyectan con JS -->
-            </div>
+            <div class="graffiti-bg" id="graffiti-container"></div>
             
             <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
             <div class="amount" id="totalBalance">$0.00</div>
@@ -482,19 +446,35 @@
 
         <div id="view-referrals" class="view">
           <div class="section" style="margin-top:0;"><h2>Programa de Referidos</h2></div>
-          <div class="ref-box" style="background: #1e293b; border: 1px solid var(--line);">
+          
+          <div class="ref-box">
             <h3>Tu Código de Invitación</h3>
             <div class="ref-code" id="myRefCode">...</div>
             <h3>Tu Enlace de Invitación</h3>
-            <div class="ref-link-wrap" style="background: rgba(0,0,0,0.2);"><input type="text" id="myRefLink" readonly><button onclick="copyRefLink()">Copiar</button></div>
+            <div class="ref-link-wrap">
+              <input type="text" id="myRefLink" readonly>
+              <button onclick="copyRefLink()">Copiar</button>
+            </div>
           </div>
+
           <div class="panel" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
             <h3 style="margin: 0 0 10px; font-size: 15px; color: #93c5fd;">¿Cómo funciona?</h3>
-            <p style="font-size: 12px; color: #bfdbfe; line-height: 1.5; margin: 0; font-weight: 500;">Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!</p>
+            <p style="font-size: 12px; color: #bfdbfe; line-height: 1.5; margin: 0; font-weight: 500;">
+              Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!
+            </p>
           </div>
+
           <div class="stats" style="margin-top: 15px;">
-            <div class="stat"><div class="stat-top">Amigos Invitados</div><strong id="totalInvited">0</strong><small>Registrados con tu código</small></div>
-            <div class="stat"><div class="stat-top">Comisiones Ganadas</div><strong id="totalEarned" style="color: var(--mint);">$0.00</strong><small>En USDT</small></div>
+            <div class="stat">
+              <div class="stat-top">Amigos Invitados</div>
+              <strong id="totalInvited">0</strong>
+              <small>Registrados con tu código</small>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Comisiones Ganadas</div>
+              <strong id="totalEarned" style="color: var(--mint);">$0.00</strong>
+              <small>En USDT</small>
+            </div>
           </div>
         </div>
 
@@ -522,7 +502,7 @@
           </div>
           <button class="wide press-effect" style="background: transparent; border: 1px solid #fff; color: #fff; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
           <button class="wide press-effect" style="background: rgba(255,255,255,0.05); color: #fff; box-shadow:none; border: 1px solid var(--line);" onclick="signOut()">Cerrar sesión</button>
-          <div class="footer-legal">© 2024 NovaVest. Todos los derechos reservados.<br>Plataforma de gestión de activos digitales.</div>
+          <div class="footer-legal">© 2026 NovaVest. Todos los derechos reservados.<br>Plataforma de gestión de activos digitales.</div>
         </div>
 
         <div id="view-admin" class="view">
@@ -577,9 +557,8 @@
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(0,0,0,0.5); z-index: 100; text-decoration: none; border:1px solid var(--line);"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
-    // --- SCRIPT PARA LOS GRAFFITIS MEJORADOS DEL BALANCE ---
+    // --- SCRIPT PARA LOS GRAFFITIS DEL BALANCE ---
     document.addEventListener("DOMContentLoaded", function() {
-      // Textos y emojis para los graffitis
       const graffitiItems = [
         { text: 'Bitcoin', icon: '₿' },
         { text: 'Ethereum', icon: 'Ξ' },
@@ -600,16 +579,13 @@
         el.className = 'graffiti-text';
         el.innerHTML = `<span style="font-size: 14px;">${item.icon}</span> ${item.text}`;
         
-        // Posiciones aleatorias para que no se superpongan
-        let topPos = Math.random() * 80 + 10; // Entre 10% y 90%
+        let topPos = Math.random() * 80 + 10; 
         let leftPos = Math.random() * 80 + 5; 
-        let rotate = Math.random() * 40 - 20; // Rotación entre -20 y 20 grados
+        let rotate = Math.random() * 40 - 20; 
         
         el.style.top = topPos + '%';
         el.style.left = leftPos + '%';
         el.style.setProperty('--rot', rotate + 'deg');
-        
-        // Animación con diferentes retardos y velocidades
         el.style.animationDelay = (Math.random() * 2) + 's';
         el.style.animationDuration = (4 + Math.random() * 4) + 's';
 
@@ -617,12 +593,11 @@
       });
     });
 
-    // --- SCRIPT PARA EL FONDO ANIMADO DE MONEDAS (MÚLTIPLES MONEDAS) ---
+    // --- SCRIPT PARA EL FONDO ANIMADO DE MÚLTIPLES MONEDAS ---
     document.addEventListener("DOMContentLoaded", function() {
       const bg = document.getElementById('coin-bg');
       const numCoins = 30; 
       
-      // URLs de los logos de las 4 monedas
       const coinLogos = [
         'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png',
         'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png',
@@ -634,16 +609,14 @@
         let coin = document.createElement('div');
         coin.classList.add('falling-coin');
         
-        // Elegir un logo aleatorio de la lista
         const randomLogo = coinLogos[Math.floor(Math.random() * coinLogos.length)];
         coin.style.backgroundImage = `url('${randomLogo}')`;
         
         coin.style.left = Math.random() * 100 + 'vw';
-        let duration = 6 + Math.random() * 12; // Velocidad de caída
+        let duration = 6 + Math.random() * 12; 
         coin.style.animationDuration = duration + 's';
         coin.style.animationDelay = '-' + (Math.random() * 20) + 's';
         
-        // Tamaño aleatorio un poco para variar
         let size = 25 + Math.random() * 20;
         coin.style.width = size + 'px';
         coin.style.height = size + 'px';
@@ -703,10 +676,9 @@
         $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
       }
 
-      // Lógica del mensaje de bienvenida
       const createdDate = new Date(user.created_at);
       const now = new Date();
-      const diffHours = Math.abs(now - createdDate) / 36e5; // Diferencia en horas
+      const diffHours = Math.abs(now - createdDate) / 36e5; 
       
       if (diffHours < 24) {
         $('welcomeTitle').textContent = '¡Bienvenido a NovaVest! 🚀';
@@ -1051,7 +1023,7 @@
         htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
         config.amounts.forEach(amt => {
           const profit = (amt * config.roi).toFixed(2);
-          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})" style="background:rgba(255,255,255,0.05); border-color:var(--line); color:#fff;"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#60a5fa' : '#f87171'};">+$${profit} / pago</div></button>`;
+          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#60a5fa' : '#f87171'};">+$${profit} / pago</div></button>`;
         });
         htmlContent += `</div></div>`;
       });
