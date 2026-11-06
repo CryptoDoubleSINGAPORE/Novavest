@@ -22,7 +22,7 @@
       min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; position: relative;
     }
     
-    /* FONDO ANIMADO DE MONEDAS */
+    /* FONDO ANIMADO DE MONEDAS (GENERAL) */
     #coin-bg {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       pointer-events: none; z-index: 0; overflow: hidden;
@@ -32,14 +32,13 @@
       width: 35px; height: 35px;
       background: url('https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png') no-repeat center center;
       background-size: contain;
-      opacity: 0.15; /* Transparencia para que no moleste la lectura */
+      opacity: 0.15; 
       animation: fall linear infinite;
     }
     @keyframes fall {
       0% { transform: translateY(-50px) rotate(0deg); }
       100% { transform: translateY(105vh) rotate(360deg); }
     }
-    /* En celular las hacemos más pequeñas y menos visibles */
     @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
 
     button, input, select { font: inherit; }
@@ -162,84 +161,75 @@
     .investor-info b { font-size: 16px; display: block; font-weight: 800; }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
-    .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    /* ========================================= */
+    /* MENÚ LATERAL (PC) Y MÓVIL BASE            */
+    /* ========================================= */
+    .nav { 
+      position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; 
+      padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); 
+      border-top: 1px solid var(--line); 
+    }
+    .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; position: relative; z-index: 2; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
     .nav button span { font-size: 20px; }
     .nav button.active { color: #0f172a; background: var(--bg); }
     .nav button.active span { transform: translateY(-2px); }
-    
-    .toast { position: fixed; z-index: 30; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 20; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(4px); }
-    .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-    @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-    .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
-    .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
-    .close { float: right; background: var(--bg); border: 0; color: var(--text); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; }
-    
-    .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: var(--bg); border: none; color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
-    .modal-btn-confirm { flex: 1; background: #0f172a; border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+    /* Fondo animado del menú lateral */
+    #sidebar-bg {
+      display: none; /* Solo visible en PC */
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+      pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .falling-logo {
+      position: absolute; top: -50px;
+      width: 30px; height: 30px;
+      background-size: contain; background-repeat: no-repeat;
+      /* SVG del logo de NovaVest en color Blanco */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      opacity: 0.15; 
+      animation: fall linear infinite;
+    }
 
-    .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
-    .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .invest-btn { background: var(--bg); border: 1px solid var(--line); padding: 14px; border-radius: 14px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 3px; transition: 0.2s; }
-    .invest-btn:hover { border-color: #0f172a; }
-    .invest-btn-price { font-weight: 800; font-size: 16px; }
-    .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
-    .invest-btn-yield { font-size: 11px; font-weight: 700; }
-
-    .auth-wrap { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 22px; position: relative; z-index: 2; }
-    .auth-card { width: 100%; max-width: 430px; background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
-    .auth-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; margin-bottom: 27px; }
-    .auth-card h1 { font-size: 26px; margin: 0 0 7px; font-weight: 800; }
-    .auth-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 0 24px; font-weight: 500; }
-    .auth-form { display: grid; gap: 10px; }
-    .auth-btn { border-radius: 14px; padding: 16px; background: #0f172a; color: #fff; font-weight: 800; margin-top: 8px; }
-    .auth-switch { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; font-weight: 500; }
-    .link-btn { color: #0f172a; background: none; font-weight: 800; }
-    .auth-message { font-size: 13px; line-height: 1.5; color: #fff; background: #0f172a; border-radius: 12px; padding: 12px; margin: 12px 0; font-weight: 600; }
-    .auth-error { color: #fff; background: var(--fire); }
-    
-    .trust-badges { display: flex; justify-content: center; gap: 15px; margin-top: 20px; opacity: 0.7; }
-    .trust-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--muted); }
-    
-    .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
-    
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
-    .calendar-day { padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text); background: var(--bg); }
-    .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; }
-    .calendar-header { font-size: 10px; font-weight: 800; color: var(--muted); padding: 4px; }
-    .user-card { background: var(--bg); border-radius: 16px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--line); }
-    .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
-    .user-header b { font-size: 13px; color: #0f172a; }
-    .user-header span { font-size: 11px; color: var(--muted); }
-    .user-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 11px; color: var(--muted); }
-    .user-balances span { font-weight: 700; color: var(--text); }
-    .user-status { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--muted); }
-    .status-pending { color: var(--fire); font-weight: 800; }
-
-    .ref-box { background: #0f172a; color: #fff; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 15px; }
-    .ref-box h3 { margin: 0 0 10px; font-size: 15px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-    .ref-code { font-size: 36px; font-weight: 900; color: var(--mint); letter-spacing: 2px; margin-bottom: 15px; }
-    .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px; border-radius: 12px; }
-    .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 12px; outline: none; padding-left: 8px; }
-    .ref-link-wrap button { background: var(--mint); color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 12px; }
-
+    /* ========================================= */
+    /* DISEÑO DE ESCRITORIO (PC)                 */
+    /* ========================================= */
     @media(min-width: 600px) { 
       body { padding-bottom: 0; padding-top: 0; background-color: #f1f5f9; } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
-      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 40px 20px; display: flex; flex-direction: column; background: var(--panel); z-index: 10; }
-      .nav-inner { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-      .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 15px; padding: 15px 20px; font-size: 15px; border-radius: 12px; width: 100%; }
+      
+      /* Fondo Negro para el menú lateral */
+      .nav { 
+        position: sticky; top: 0; left: 0; width: 260px; height: 100vh; 
+        border-top: none; border-right: none; padding: 40px 20px; 
+        display: flex; flex-direction: column; 
+        background: #0f172a; /* Fondo Oscuro */
+        z-index: 10; 
+      }
+      
+      /* Activamos las partículas del menú en PC */
+      #sidebar-bg { display: block; }
+
+      .nav-inner { display: flex; flex-direction: column; gap: 10px; width: 100%; position: relative; z-index: 2; }
+      
+      .nav button { 
+        display: flex; align-items: center; justify-content: flex-start; 
+        gap: 15px; padding: 15px 20px; font-size: 15px; 
+        border-radius: 12px; width: 100%; 
+        color: #94a3b8; /* Texto gris claro en el menú oscuro */
+      }
       .nav button span { font-size: 22px; }
-      .nav button.active { background: #0f172a; color: #fff; }
+      
+      /* Botón activo en el menú oscuro */
+      .nav button.active { 
+        background: #1e293b; /* Un gris más claro para resaltar */
+        color: #fff; 
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+      }
+      
       .nav button.hidden { display: none !important; }
+      
       #dashboard { flex: 1; display: flex; justify-content: center; }
       .app { max-width: 900px; width: 100%; padding: 40px; margin: 0; }
       .stats { grid-template-columns: repeat(4, 1fr); } 
@@ -253,7 +243,7 @@
 </head>
 <body>
 
-  <!-- FONDO ANIMADO DE MONEDAS -->
+  <!-- FONDO ANIMADO DE MONEDAS (WEB EN GENERAL) -->
   <div id="coin-bg"></div>
   
   <section id="authScreen" class="auth-wrap">
@@ -304,6 +294,9 @@
 
   <div class="app-layout">
     <nav class="nav">
+      <!-- CONTENEDOR DE PARTÍCULAS DEL MENÚ LATERAL -->
+      <div id="sidebar-bg"></div>
+      
       <div class="nav-inner" id="navInner">
         <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
         <button onclick="navigate('deposit', this)"><span>⇧</span>Depositar</button>
@@ -323,7 +316,6 @@
 
         <div id="view-home" class="view active">
           
-          <!-- NUEVO PANEL DE BIENVENIDA -->
           <div class="welcome-panel" id="welcomePanel">
             <div>
               <h3 id="welcomeTitle">¡Bienvenido a NovaVest! 🚀</h3>
@@ -536,21 +528,31 @@
   <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(15,23,42,0.3); z-index: 100; text-decoration: none;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
-    // --- SCRIPT PARA EL FONDO ANIMADO ---
+    // --- SCRIPT PARA EL FONDO ANIMADO DE MONEDAS (GENERAL) ---
     document.addEventListener("DOMContentLoaded", function() {
       const bg = document.getElementById('coin-bg');
-      const numCoins = 25; // Cantidad de monedas en pantalla
+      const numCoins = 25; 
       for (let i = 0; i < numCoins; i++) {
         let coin = document.createElement('div');
         coin.classList.add('falling-coin');
-        // Posición horizontal aleatoria
         coin.style.left = Math.random() * 100 + 'vw';
-        // Duración de la caída (entre 5 y 15 segundos)
         let duration = 5 + Math.random() * 10;
         coin.style.animationDuration = duration + 's';
-        // Retraso inicial aleatorio para que no caigan todas juntas
         coin.style.animationDelay = '-' + (Math.random() * 15) + 's';
         bg.appendChild(coin);
+      }
+
+      // --- SCRIPT PARA EL FONDO ANIMADO DEL MENÚ LATERAL (LOGOS) ---
+      const sidebarBg = document.getElementById('sidebar-bg');
+      const numLogos = 15;
+      for (let i = 0; i < numLogos; i++) {
+        let logo = document.createElement('div');
+        logo.classList.add('falling-logo');
+        logo.style.left = Math.random() * 100 + '%';
+        let duration = 6 + Math.random() * 8;
+        logo.style.animationDuration = duration + 's';
+        logo.style.animationDelay = '-' + (Math.random() * 10) + 's';
+        sidebarBg.appendChild(logo);
       }
     });
 
