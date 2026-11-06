@@ -20,8 +20,9 @@
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
-    body { margin: 0; background-color: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", system-ui, sans-serif; min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; }
     
+    /* ESTILOS BASE MÓVIL */
+    body { margin: 0; background-color: var(--bg); color: var(--text); font-family: "Plus Jakarta Sans", system-ui, sans-serif; min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; }
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; }
     .hidden { display: none !important; }
@@ -131,6 +132,7 @@
     .investor-info b { font-size: 16px; display: block; font-weight: 800; }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
+    /* NAV MÓVIL (Abajo) */
     .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
     .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
@@ -199,15 +201,95 @@
     .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px; border-radius: 12px; }
     .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 12px; outline: none; padding-left: 8px; }
     .ref-link-wrap button { background: var(--mint); color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 12px; }
-    
-    @media(min-width:600px) { 
-      body { padding-top: 20px; } 
-      .nav { position: sticky; bottom: 0; border-radius: 20px; margin: 0 auto 12px; max-width: 520px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.05); } 
-      .modal-backdrop { align-items: center; } 
+
+    /* ========================================= */
+    /* ESTILOS PARA PC (ESCRITORIO) - LAYOUT PRO */
+    /* ========================================= */
+    @media(min-width: 900px) { 
+      body { 
+        padding-bottom: 0; 
+        padding-top: 0;
+        background-color: #f1f5f9; 
+      } 
+      
+      .app-layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Convertir menú inferior en lateral izquierdo */
+      .nav { 
+        position: sticky; 
+        top: 0;
+        left: 0;
+        width: 260px;
+        height: 100vh;
+        border-top: none;
+        border-right: 1px solid var(--line);
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+      }
+      
+      .nav-inner { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 10px; 
+        width: 100%;
+      }
+      
+      .nav button { 
+        display: flex; 
+        align-items: center; 
+        justify-content: flex-start;
+        gap: 15px; 
+        padding: 15px 20px; 
+        font-size: 15px; 
+        border-radius: 12px;
+        width: 100%;
+      }
+      
+      .nav button span { font-size: 22px; }
+      
+      .nav button.active { 
+        background: #0f172a; 
+        color: #fff; 
+      }
+      
+      .nav button.hidden { display: none !important; }
+
+      /* Contenido principal a la derecha */
+      #dashboard {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .app {
+        max-width: 900px; 
+        width: 100%;
+        padding: 40px;
+        margin: 0;
+      }
+
+      /* Grillas más amplias para PC */
+      .stats { grid-template-columns: repeat(4, 1fr); } 
+      .plans { grid-template-columns: repeat(2, 1fr); } 
+      
+      .balance { padding: 35px; }
+      .amount { font-size: 48px; }
+      
+      /* Telegram un poco más escondido */
+      a[href*="t.me"] { right: 40px; bottom: 40px; }
+      
+      .modal-backdrop { align-items: center; }
     }
   </style>
 </head>
 <body>
+  
+  <!-- LOGIN / REGISTRO -->
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
@@ -263,344 +345,11 @@
     </div>
   </section>
 
-  <main id="dashboard" class="hidden">
-    <div class="app">
-      <header class="top">
-        <div class="brand">
-          <div class="brandmark">
-            <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="40" height="40" rx="12" fill="#0f172a"/>
-              <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          NovaVest
-        </div>
-        <div class="avatar" id="avatar">NV</div>
-      </header>
-
-      <div id="view-home" class="view active">
-        <div class="eyebrow">Panel personal</div>
-        <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
-        <div class="sub">Tu resumen de activos en tiempo real.</div>
-        
-        <section class="balance">
-          <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
-          <div class="amount" id="totalBalance">$0.00</div>
-          <div class="change">↗ Rendimiento actual</div>
-          <div class="balance-actions">
-            <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
-            <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
-          </div>
-        </section>
-
-        <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
-          <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
-            <div>
-              <h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2>
-              <p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p>
-            </div>
-            <span style="font-size:24px;">👥</span>
-          </div>
-        </div>
-
-        <div id="activeInvestmentsSection" class="hidden">
-          <div class="section"><h2>Inversiones Activas</h2></div>
-          <div id="activeInvestmentsList"></div>
-        </div>
-
-        <div class="section"><h2>Tu resumen</h2></div>
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div>
-            <strong id="activeInvestment">$0.00</strong>
-            <small>Valor de tus activos</small>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div>
-            <strong id="demoPerformance">$0.00</strong>
-            <small>Rendimiento de planes</small>
-          </div>
-        </div>
-
-        <div class="section"><h2>Planes de Inversión</h2></div>
-        <div class="plans">
-          <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
-            <div class="plan-title">❄️ Plan Starter</div>
-            <div class="plan-yield">9% ROI</div>
-            <div class="plan-freq">Retiros cada 24 horas (7 días)</div>
-            <div class="plan-desc">Ganancias diarias. Reactiva tu plan al finalizar.</div>
-            <button class="plan-btn press-effect">Ver montos de inversión</button>
-          </div>
-          
-          <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
-            <div class="plan-badge">🔥 MÁS POPULAR</div>
-            <div class="plan-title">🔥 Plan Pro</div>
-            <div class="plan-yield">12% ROI</div>
-            <div class="plan-freq">Retiros cada 48 horas (15 días)</div>
-            <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
-            <button class="plan-btn press-effect">Ver montos de inversión</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-deposit" class="view">
-        <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
-        <div class="panel">
-          <div class="eyebrow">Selecciona tu moneda</div>
-          <div class="asset-select" style="margin-top:10px">
-            <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
-            <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
-              <option value="TRX">TRON (TRX)</option>
-              <option value="BTC">Bitcoin (BTC)</option>
-              <option value="SOL">Solana (SOL)</option>
-              <option value="USDT">Tether (USDT TRC20)</option>
-            </select>
-          </div>
-          <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
-          <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
-          <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-          
-          <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
-              <span>Dirección de depósito</span>
-              <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
-            </div>
-            <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
-            
-            <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
-              <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
-              <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;">
-                <b style="color:#0f172a;">Escanear QR</b><br>
-                Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br>
-                <span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span>
-              </div>
-            </div>
-          </div>
-          
-          <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
-            ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
-          </div>
-
-          <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
-          
-          <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">
-            ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
-          </div>
-        </div>
-      </div>
-
-      <div id="view-withdraw" class="view">
-        <div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
-        <div class="panel">
-          <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
-            <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
-            <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
-            <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
-              <span>Saldo Retirable:</span> 
-              <b style="text-align:right;">
-                <span id="withdrawableBalanceUI" style="color:#10b981; font-size:16px;">$0.00 USD</span><br>
-                <span id="withdrawableCryptoUI" style="color:#64748b; font-size:12px;">(0.00 TRX)</span>
-              </b>
-            </div>
-            <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
-          </div>
-
-          <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
-          <div class="asset-select" style="margin-top:10px">
-            <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
-              <option value="TRX">TRON (TRX)</option>
-              <option value="BTC">Bitcoin (BTC)</option>
-              <option value="SOL">Solana (SOL)</option>
-              <option value="USDT">Tether (USDT)</option>
-            </select>
-          </div>
-          
-          <label class="field-label" for="withdrawAmount">Cantidad a retirar (en USD)</label>
-          <div class="amount-wrap">
-            <input class="number" id="withdrawAmount" type="number" min="1" step="any" placeholder="Ej: 5.00" required>
-            <span class="unit">USD</span>
-          </div>
-          <label class="field-label" for="withdrawAddress">Dirección de destino</label>
-          <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas" required>
-          <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
-          <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual" required>
-          
-          <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-top: 20px;">Confirmar retiro →</button>
-          
-          <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 11px; color: #1e40af; text-align: center; line-height: 1.5; font-weight: 600;">
-            ⏳ <b>Tiempo de procesamiento:</b><br>Los retiros son procesados de 1 hora a 24 horas.
-          </div>
-        </div>
-      </div>
-
-      <div id="view-referrals" class="view">
-        <div class="section" style="margin-top:0;"><h2>Programa de Referidos</h2></div>
-        
-        <div class="ref-box">
-          <h3>Tu Código de Invitación</h3>
-          <div class="ref-code" id="myRefCode">...</div>
-          <h3>Tu Enlace de Invitación</h3>
-          <div class="ref-link-wrap">
-            <input type="text" id="myRefLink" readonly>
-            <button onclick="copyRefLink()">Copiar</button>
-          </div>
-        </div>
-
-        <div class="panel" style="background: #eff6ff; border-color: #bfdbfe;">
-          <h3 style="margin: 0 0 10px; font-size: 15px; color: #1e40af;">¿Cómo funciona?</h3>
-          <p style="font-size: 12px; color: #1e40af; line-height: 1.5; margin: 0; font-weight: 500;">
-            Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!
-          </p>
-        </div>
-
-        <div class="stats" style="margin-top: 15px;">
-          <div class="stat">
-            <div class="stat-top">Amigos Invitados</div>
-            <strong id="totalInvited">0</strong>
-            <small>Registrados con tu código</small>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Comisiones Ganadas</div>
-            <strong id="totalEarned" style="color: var(--mint);">$0.00</strong>
-            <small>En USDT</small>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-profile" class="view">
-        <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
-        <div class="panel investor" style="margin-top:0;">
-          <div class="investor-face" id="profileInitials">NV</div>
-          <div class="investor-info">
-            <b id="investorName">Usuario NovaVest</b>
-            <span id="investorEmail">Cuenta registrada</span>
-            <span id="investorDate" style="display:block; margin-top:4px; color:#3b82f6; font-weight:700; font-size: 12px;">Cargando fecha...</span>
-            <span id="investorId" style="display:block; margin-top:4px; color:#64748b; font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
-          </div>
-        </div>
-
-        <div class="section"><h2>Todos tus saldos</h2></div>
-        <div class="coins">
-          <div class="coin">
-            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"></div>
-            <div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div>
-          </div>
-          <div class="coin">
-            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX"></div>
-            <div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div>
-          </div>
-          <div class="coin">
-            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL"></div>
-            <div class="coin-info"><b>Solana</b><span>SOL</span></div><div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div>
-          </div>
-          <div class="coin">
-            <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"></div>
-            <div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div>
-          </div>
-        </div>
-
-        <div class="section"><h2>Historial de Movimientos</h2></div>
-        <div class="panel activity" id="activityPanel">
-          <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity">
-            <span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span>
-          </div>
-        </div>
-
-        <button class="wide press-effect" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
-        <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
-        
-        <div class="footer-legal">
-          © 2024 NovaVest. Todos los derechos reservados.<br>
-          Plataforma de gestión de activos digitales.
-        </div>
-      </div>
-
-      <div id="view-admin" class="view">
-        <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
-        
-        <div class="stats" style="margin-bottom: 15px;">
-          <div class="stat">
-            <div class="stat-top">Usuarios Totales</div>
-            <strong id="adminTotalUsers">0</strong>
-            <small>Cuentas registradas</small>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Volumen Total</div>
-            <strong id="adminTotalVolume">$0.00</strong>
-            <small>En depósitos (Aprox)</small>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
-              <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p>
-            </div>
-            <span style="font-size:24px; color:#3b82f6;">→</span>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
-          <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
-          <div id="adminPendingDeposits" class="activity">
-            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
-          <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
-          <div id="adminPendingWithdraws" class="activity">
-            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:15px;">
-          <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
-          <div id="adminInvestmentsList" class="activity">
-            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-admin-users" class="view">
-        <div class="section" style="margin-top:0;">
-          <h2>Panel de Usuarios</h2>
-          <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button>
-        </div>
-        
-        <div class="stats" style="margin-bottom: 15px;">
-          <div class="stat">
-            <div class="stat-top">Total Registrados</div>
-            <strong id="statsTotalUsers">0</strong>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Activos (5 min)</div>
-            <strong id="statsActiveUsers">0</strong>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Nuevos Hoy</div>
-            <strong id="statsTodayUsers">0</strong>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Acciones Pendientes</div>
-            <strong id="statsPendingActions">0</strong>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:0;">
-          <h3 style="margin-bottom: 10px;">Registros del Mes</h3>
-          <div id="calendarGrid" class="calendar-grid"></div>
-        </div>
-
-        <div class="section"><h2>Todos los Usuarios</h2></div>
-        <div id="adminUsersList" class="panel activity">
-          <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
-        </div>
-      </div>
-
-    </div>
+  <!-- APP (Dashboard) -->
+  <!-- ENVOLVEMOS TODO EN APP-LAYOUT PARA EL DISEÑO DE PC -->
+  <div class="app-layout">
     
+    <!-- EL MENÚ (En PC se va a la izquierda, en celular abajo) -->
     <nav class="nav">
       <div class="nav-inner" id="navInner">
         <button class="active" onclick="navigate('home', this)"><span>⌂</span>Inicio</button>
@@ -611,8 +360,349 @@
         <button id="adminNavBtn" class="hidden" onclick="navigate('admin', this)" style="color:#ef4444;"><span>⚙</span>Admin</button>
       </div>
     </nav>
-  </main>
 
+    <main id="dashboard" class="hidden">
+      <div class="app">
+        <header class="top">
+          <div class="brand">
+            <div class="brandmark">
+              <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="12" fill="#0f172a"/>
+                <path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            NovaVest
+          </div>
+          <div class="avatar" id="avatar">NV</div>
+        </header>
+
+        <div id="view-home" class="view active">
+          <div class="eyebrow">Panel personal</div>
+          <div class="welcome">¡Hola, <span id="welcomeName">inversor</span>! 👋</div>
+          <div class="sub">Tu resumen de activos en tiempo real.</div>
+          
+          <section class="balance">
+            <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;">Balance total estimado</span><span class="pill">● Cuenta Principal</span></div>
+            <div class="amount" id="totalBalance">$0.00</div>
+            <div class="change">↗ Rendimiento actual</div>
+            <div class="balance-actions">
+              <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])">＋ Depositar</button>
+              <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])">↗ Retirar</button>
+            </div>
+          </section>
+
+          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, #10b981, #3b82f6); border: none; cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+            <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
+              <div>
+                <h2 style="margin:0; font-size:16px; color:white;">Invita y Gana 10%</h2>
+                <p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;">Comparte tu enlace y gana comisiones.</p>
+              </div>
+              <span style="font-size:24px;">👥</span>
+            </div>
+          </div>
+
+          <div id="activeInvestmentsSection" class="hidden">
+            <div class="section"><h2>Inversiones Activas</h2></div>
+            <div id="activeInvestmentsList"></div>
+          </div>
+
+          <div class="section"><h2>Tu resumen</h2></div>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-top">Inversión activa <span class="stat-icon" style="background:#eff6ff; color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div>
+              <strong id="activeInvestment">$0.00</strong>
+              <small>Valor de tus activos</small>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Ganancia acumulada <span class="stat-icon" style="background:#fdf4ff; color:#d946ef; border-radius:6px; padding:4px;">✦</span></div>
+              <strong id="demoPerformance">$0.00</strong>
+              <small>Rendimiento de planes</small>
+            </div>
+          </div>
+
+          <div class="section"><h2>Planes de Inversión</h2></div>
+          <div class="plans">
+            <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
+              <div class="plan-title">❄️ Plan Starter</div>
+              <div class="plan-yield">9% ROI</div>
+              <div class="plan-freq">Retiros cada 24 horas (7 días)</div>
+              <div class="plan-desc">Ganancias diarias. Reactiva tu plan al finalizar.</div>
+              <button class="plan-btn press-effect">Ver montos de inversión</button>
+            </div>
+            
+            <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
+              <div class="plan-badge">🔥 MÁS POPULAR</div>
+              <div class="plan-title">🔥 Plan Pro</div>
+              <div class="plan-yield">12% ROI</div>
+              <div class="plan-freq">Retiros cada 48 horas (15 días)</div>
+              <div class="plan-desc">Maximiza tus ganancias a mediano plazo.</div>
+              <button class="plan-btn press-effect">Ver montos de inversión</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISTAS SECUNDARIAS -->
+        <div id="view-deposit" class="view">
+          <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
+          <div class="panel">
+            <div class="eyebrow">Selecciona tu moneda</div>
+            <div class="asset-select" style="margin-top:10px">
+              <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
+              <select class="select" id="asset" onchange="changeAsset()" style="margin-left:10px;">
+                <option value="TRX">TRON (TRX)</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="SOL">Solana (SOL)</option>
+                <option value="USDT">Tether (USDT TRC20)</option>
+              </select>
+            </div>
+            <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
+            <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
+            <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
+            
+            <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
+                <span>Dirección de depósito</span>
+                <button class="press-effect" style="background:#0f172a; border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()">Copiar</button>
+              </div>
+              <div id="wallet" style="font-size:11px; color:#64748b; word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
+              
+              <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
+                <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid #e2e8f0;">
+                <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;">
+                  <b style="color:#0f172a;">Escanear QR</b><br>
+                  Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br>
+                  <span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span>
+                </div>
+              </div>
+            </div>
+            
+            <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
+              ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
+            </div>
+
+            <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Continuar con depósito →</button>
+            
+            <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef3c7; border: 1px solid #fde68a; font-size: 11px; color: #92400e; text-align: center; line-height: 1.5; font-weight: 600;">
+              ⏳ <b>Tiempo de procesamiento:</b><br>Los depósitos son procesados de 10 minutos a 1 hora.
+            </div>
+          </div>
+        </div>
+
+        <div id="view-withdraw" class="view">
+          <div class="section" style="margin-top:0;"><h2>Retirar Ganancias</h2></div>
+          <div class="panel">
+            <div class="info-box" style="background: #f8fafc; border-color: #e2e8f0;">
+              <div class="info-row"><span>Mínimo de retiro:</span> <b style="color: #0f172a;">$1.00 USD</b></div>
+              <div class="info-row"><span>Máximo por día:</span> <b style="color: #0f172a;">$550.00 USD</b></div>
+              <div class="info-row" style="border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
+                <span>Saldo Retirable:</span> 
+                <b style="text-align:right;">
+                  <span id="withdrawableBalanceUI" style="color:#10b981; font-size:16px;">$0.00 USD</span><br>
+                  <span id="withdrawableCryptoUI" style="color:#64748b; font-size:12px;">(0.00 TRX)</span>
+                </b>
+              </div>
+              <div style="font-size:10px; color:#64748b; margin-top:8px; font-weight: 500;">* Solo puedes retirar las ganancias generadas por tus planes, no el capital invertido.</div>
+            </div>
+
+            <div class="eyebrow" style="margin-top:15px;">Selecciona tu moneda</div>
+            <div class="asset-select" style="margin-top:10px">
+              <select class="select" id="withdrawAsset" onchange="updateWithdrawInfo()">
+                <option value="TRX">TRON (TRX)</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="SOL">Solana (SOL)</option>
+                <option value="USDT">Tether (USDT)</option>
+              </select>
+            </div>
+            
+            <label class="field-label" for="withdrawAmount">Cantidad a retirar (en USD)</label>
+            <div class="amount-wrap">
+              <input class="number" id="withdrawAmount" type="number" min="1" step="any" placeholder="Ej: 5.00" required>
+              <span class="unit">USD</span>
+            </div>
+            <label class="field-label" for="withdrawAddress">Dirección de destino</label>
+            <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas" required>
+            <label class="field-label" for="withdrawPassword">Contraseña de inicio de sesión</label>
+            <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual" required>
+            
+            <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-top: 20px;">Confirmar retiro →</button>
+            
+            <div style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #eff6ff; border: 1px solid #bfdbfe; font-size: 11px; color: #1e40af; text-align: center; line-height: 1.5; font-weight: 600;">
+              ⏳ <b>Tiempo de procesamiento:</b><br>Los retiros son procesados de 1 hora a 24 horas.
+            </div>
+          </div>
+        </div>
+
+        <div id="view-referrals" class="view">
+          <div class="section" style="margin-top:0;"><h2>Programa de Referidos</h2></div>
+          
+          <div class="ref-box">
+            <h3>Tu Código de Invitación</h3>
+            <div class="ref-code" id="myRefCode">...</div>
+            <h3>Tu Enlace de Invitación</h3>
+            <div class="ref-link-wrap">
+              <input type="text" id="myRefLink" readonly>
+              <button onclick="copyRefLink()">Copiar</button>
+            </div>
+          </div>
+
+          <div class="panel" style="background: #eff6ff; border-color: #bfdbfe;">
+            <h3 style="margin: 0 0 10px; font-size: 15px; color: #1e40af;">¿Cómo funciona?</h3>
+            <p style="font-size: 12px; color: #1e40af; line-height: 1.5; margin: 0; font-weight: 500;">
+              Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a <b>$20 USD</b>, recibirás un <b>10% de ese depósito</b> directamente en tu balance de USDT. <br><br>¡Es un beneficio único por cada amigo invitado!
+            </p>
+          </div>
+
+          <div class="stats" style="margin-top: 15px;">
+            <div class="stat">
+              <div class="stat-top">Amigos Invitados</div>
+              <strong id="totalInvited">0</strong>
+              <small>Registrados con tu código</small>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Comisiones Ganadas</div>
+              <strong id="totalEarned" style="color: var(--mint);">$0.00</strong>
+              <small>En USDT</small>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-profile" class="view">
+          <div class="section" style="margin-top:0;"><h2>Perfil de inversor</h2></div>
+          <div class="panel investor" style="margin-top:0;">
+            <div class="investor-face" id="profileInitials">NV</div>
+            <div class="investor-info">
+              <b id="investorName">Usuario NovaVest</b>
+              <span id="investorEmail">Cuenta registrada</span>
+              <span id="investorDate" style="display:block; margin-top:4px; color:#3b82f6; font-weight:700; font-size: 12px;">Cargando fecha...</span>
+              <span id="investorId" style="display:block; margin-top:4px; color:#64748b; font-size:12px; font-weight:600;">ID de inversor: Cargando...</span>
+            </div>
+          </div>
+
+          <div class="section"><h2>Todos tus saldos</h2></div>
+          <div class="coins">
+            <div class="coin">
+              <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"></div>
+              <div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div>
+            </div>
+            <div class="coin">
+              <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX"></div>
+              <div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div>
+            </div>
+            <div class="coin">
+              <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL"></div>
+              <div class="coin-info"><b>Solana</b><span>SOL</span></div><div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div>
+            </div>
+            <div class="coin">
+              <div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"></div>
+              <div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div>
+            </div>
+          </div>
+
+          <div class="section"><h2>Historial de Movimientos</h2></div>
+          <div class="panel activity" id="activityPanel">
+            <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity">
+              <span style="color: var(--muted); font-size: 13px; font-weight: 500;">No hay movimientos registrados</span>
+            </div>
+          </div>
+
+          <button class="wide press-effect" style="background: #fff; border: 1px solid #0f172a; color: #0f172a; margin-bottom: 10px;" onclick="openTerms()">Términos y Condiciones</button>
+          <button class="wide press-effect" style="background: #f1f5f9; color: #0f172a; box-shadow:none" onclick="signOut()">Cerrar sesión</button>
+          
+          <div class="footer-legal">
+            © 2024 NovaVest. Todos los derechos reservados.<br>
+            Plataforma de gestión de activos digitales.
+          </div>
+        </div>
+
+        <div id="view-admin" class="view">
+          <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
+          
+          <div class="stats" style="margin-bottom: 15px;">
+            <div class="stat">
+              <div class="stat-top">Usuarios Totales</div>
+              <strong id="adminTotalUsers">0</strong>
+              <small>Cuentas registradas</small>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Volumen Total</div>
+              <strong id="adminTotalVolume">$0.00</strong>
+              <small>En depósitos (Aprox)</small>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2 style="color:#3b82f6; margin:0; font-size:16px;">Panel de Usuarios</h2>
+                <p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Ver estadísticas, balances y actividad.</p>
+              </div>
+              <span style="font-size:24px; color:#3b82f6;">→</span>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
+            <div class="section" style="margin-top:0;"><h2 style="color:#10b981;">Depósitos Pendientes</h2></div>
+            <div id="adminPendingDeposits" class="activity">
+              <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay depósitos pendientes.</p>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+            <div class="section" style="margin-top:0;"><h2 style="color:#ef4444;">Retiros Pendientes</h2></div>
+            <div id="adminPendingWithdraws" class="activity">
+              <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">No hay retiros pendientes.</p>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:15px;">
+            <div class="section" style="margin-top:0;"><h2>Inversiones Activas Globales</h2></div>
+            <div id="adminInvestmentsList" class="activity">
+              <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando datos...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-admin-users" class="view">
+          <div class="section" style="margin-top:0;">
+            <h2>Panel de Usuarios</h2>
+            <button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])">← Volver</button>
+          </div>
+          
+          <div class="stats" style="margin-bottom: 15px;">
+            <div class="stat">
+              <div class="stat-top">Total Registrados</div>
+              <strong id="statsTotalUsers">0</strong>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Activos (5 min)</div>
+              <strong id="statsActiveUsers">0</strong>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Nuevos Hoy</div>
+              <strong id="statsTodayUsers">0</strong>
+            </div>
+            <div class="stat">
+              <div class="stat-top">Acciones Pendientes</div>
+              <strong id="statsPendingActions">0</strong>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:0;">
+            <h3 style="margin-bottom: 10px;">Registros del Mes</h3>
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+
+          <div class="section"><h2>Todos los Usuarios</h2></div>
+          <div id="adminUsersList" class="panel activity">
+            <p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;">Cargando usuarios...</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALES Y TOASTS -->
   <div id="toast" class="toast" role="status"></div>
   
   <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()">Entendido</button></div></div>
@@ -957,8 +1047,6 @@
       }
     }
 
-    // --- CONEXIÓN A EDGE FUNCTIONS (SEGURIDAD) ---
-    
     async function callEdgeFunction(functionName, payload) {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) throw new Error('No hay sesión activa');
@@ -1206,7 +1294,6 @@
       const btn = $('depositBtn');
       btn.disabled = true; btn.textContent = 'Procesando…';
       
-      // Insertar pending action es seguro gracias a RLS
       const { error } = await supabaseClient.from('novavest_pending_actions').insert({ 
         user_id: currentUserId, 
         user_email: currentUserEmail, 
@@ -1306,7 +1393,7 @@
         options:{
           data:{
             full_name:$('fullName').value.trim(),
-            referral_code: refCode || null // Enviamos el código para el trigger de la base de datos
+            referral_code: refCode || null 
           },
           emailRedirectTo:window.location.origin+window.location.pathname
         } 
@@ -1328,7 +1415,8 @@
     });
 
     function showDashboard(user){
-      $('authScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
+      $('authScreen').classList.add('hidden');
+      $('dashboard').classList.remove('hidden');
       const name=user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'inversor';
       $('welcomeName').textContent=name.split(' ')[0];
       $('investorName').textContent=name;
