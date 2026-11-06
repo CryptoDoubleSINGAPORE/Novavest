@@ -195,7 +195,6 @@
     .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 12px; outline: none; padding-left: 8px; }
     .ref-link-wrap button { background: var(--mint); color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 12px; }
 
-    /* ESTILOS PARA PC (ESCRITORIO) - LAYOUT PRO */
     @media(min-width: 600px) { 
       body { padding-bottom: 0; padding-top: 0; background-color: #f1f5f9; } 
       .app-layout { display: flex; min-height: 100vh; }
@@ -218,7 +217,6 @@
 </head>
 <body>
   
-  <!-- LOGIN / REGISTRO -->
   <section id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
@@ -265,7 +263,6 @@
     </div>
   </section>
 
-  <!-- APP (Dashboard) -->
   <div class="app-layout">
     <nav class="nav">
       <div class="nav-inner" id="navInner">
@@ -321,16 +318,12 @@
           </div>
         </div>
 
-        <!-- VISTA DEPÓSITO CON COMPROBANTE -->
         <div id="view-deposit" class="view">
           <div class="section" style="margin-top:0;"><h2>Depositar Fondos</h2></div>
-          
-          <!-- HISTORIAL DE DEPÓSITOS -->
           <div id="userPendingDepositsContainer" class="hidden" style="margin-bottom: 20px;">
             <div class="eyebrow" style="margin-bottom:10px;">Tus Depósitos Recientes</div>
             <div id="userPendingDepositsList"></div>
           </div>
-
           <div class="panel" id="depositFormPanel">
             <div class="eyebrow">Paso 1: Selecciona tu moneda</div>
             <div class="asset-select" style="margin-top:10px">
@@ -342,12 +335,10 @@
                 <option value="USDT">Tether (USDT TRC20)</option>
               </select>
             </div>
-            
             <div class="eyebrow" style="margin-top:20px;">Paso 2: Transfiere el monto</div>
             <label class="field-label" for="amount">Cantidad a depositar (Mínimo $10)</label>
             <div class="amount-wrap"><input class="number" id="amount" type="number" min="10" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
             <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-            
             <div style="margin-top:15px; padding:15px; border-radius:16px; background:#f8fafc; border:1px dashed #cbd5e1;">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
                 <span>Dirección de depósito</span>
@@ -359,15 +350,12 @@
                 <div style="font-size:11px; color:#64748b; line-height:1.4; font-weight: 500;"><b style="color:#0f172a;">Escanear QR</b><br>Envía solo <span id="qr-asset-name" style="color:#0f172a; font-weight:800;">TRX</span> a esta dirección.<br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div>
               </div>
             </div>
-            
             <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; font-size: 11px; color: #991b1b; text-align: center; line-height: 1.5; font-weight: 700;">
               ⚠️ IMPORTANTE: Envía solo <span id="warning-asset" style="font-weight: 900;">TRX</span> por la red <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br>Si envías otra moneda o usas otra red, perderás tus fondos.
             </div>
-
             <div class="eyebrow" style="margin-top:20px;">Paso 3: Sube tu comprobante</div>
             <label class="field-label" for="receiptFile">Imagen o captura de pantalla de la transacción</label>
             <input type="file" id="receiptFile" accept="image/*" class="field" style="padding:10px;" required>
-            
             <button class="wide press-effect" id="depositBtn" onclick="simulateDeposit()">Enviar comprobante y solicitar depósito →</button>
           </div>
         </div>
@@ -448,7 +436,6 @@
           <div class="footer-legal">© 2024 NovaVest. Todos los derechos reservados.<br>Plataforma de gestión de activos digitales.</div>
         </div>
 
-        <!-- PANEL ADMIN -->
         <div id="view-admin" class="view">
           <div class="section" style="margin-top:0;"><h2>Panel de Administrador</h2><span class="pill" style="background:#0f172a; color:#fff; border: none;">Dueño</span></div>
           <div class="stats" style="margin-bottom: 15px;">
@@ -528,8 +515,7 @@
     function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
 
     async function loadUserData(user) {
-      currentUserId = user.id;
-      currentUserEmail = user.email; 
+      currentUserId = user.id; currentUserEmail = user.email; 
       await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
 
       if (user.email === ADMIN_EMAIL) {
@@ -569,36 +555,26 @@
         withdrawableBalance = Number(wallet.withdrawable_balance);
       }
 
-      renderUserBalances();
-      loadHistory();
-      loadActiveInvestments(); 
-      loadReferralStats();
-      loadUserPendingDeposits(); // Cargar depósitos pendientes del usuario
+      renderUserBalances(); loadHistory(); loadActiveInvestments(); loadReferralStats(); loadUserPendingDeposits();
     }
 
     async function loadUserPendingDeposits() {
       if (!currentUserId) return;
       const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('user_id', currentUserId).eq('type', 'deposit').order('created_at', { ascending: false });
-      const container = $('userPendingDepositsContainer');
-      const list = $('userPendingDepositsList');
+      const container = $('userPendingDepositsContainer'); const list = $('userPendingDepositsList');
       
       if (!deposits || deposits.length === 0) { container.classList.add('hidden'); return; }
       
-      container.classList.remove('hidden');
-      list.innerHTML = '';
+      container.classList.remove('hidden'); list.innerHTML = '';
       
       deposits.forEach(dep => {
         let statusColor = dep.status === 'approved' ? 'var(--mint)' : dep.status === 'rejected' ? 'var(--fire)' : '#f59e0b';
         let statusText = dep.status === 'approved' ? 'Aprobado' : dep.status === 'rejected' ? 'Rechazado' : 'Pendiente';
         
-        const item = document.createElement('div');
-        item.className = 'activity-item';
+        const item = document.createElement('div'); item.className = 'activity-item';
         item.innerHTML = `
           <div class="activity-icon" style="background:${statusColor}; color:#fff;">$</div>
-          <div class="activity-info">
-            <b>Depósito de ${dep.amount} ${dep.asset}</b>
-            <span>Estado: <b style="color:${statusColor}">${statusText}</b></span>
-          </div>
+          <div class="activity-info"><b>Depósito de ${dep.amount} ${dep.asset}</b><span>Estado: <b style="color:${statusColor}">${statusText}</b></span></div>
           <div style="font-size:10px; color:var(--muted);">${new Date(dep.created_at).toLocaleDateString()}</div>
         `;
         list.appendChild(item);
@@ -620,16 +596,13 @@
       $('adminTotalUsers').textContent = userCount || 0;
 
       const { data: deposits } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'deposit').eq('status', 'pending').order('created_at', { ascending: false });
-      const depList = $('adminPendingDeposits');
-      depList.innerHTML = '';
+      const depList = $('adminPendingDeposits'); depList.innerHTML = '';
       
-      if (!deposits || deposits.length === 0) {
-        depList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>';
-      } else {
+      if (!deposits || deposits.length === 0) { depList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay depósitos pendientes.</p>'; } 
+      else {
         deposits.forEach(dep => {
           const emailMostrar = dep.user_email || (dep.user_id.substring(0,8) + '...');
-          const item = document.createElement('div');
-          item.className = 'activity-item';
+          const item = document.createElement('div'); item.className = 'activity-item';
           item.innerHTML = `
             <div class="activity-icon" style="background:#10b981; color:#fff;">$</div>
             <div class="activity-info">
@@ -639,7 +612,7 @@
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
-              <button onclick="rejectAction('${dep.id}', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
+              <button onclick="rejectAction('${dep.id}', '${dep.user_id}', '${dep.asset}', ${dep.amount})" data-type="deposit" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
             </div>
           `;
           depList.appendChild(item);
@@ -647,16 +620,13 @@
       }
 
       const { data: withdraws } = await supabaseClient.from('novavest_pending_actions').select('*').eq('type', 'withdraw').eq('status', 'pending').order('created_at', { ascending: false });
-      const withList = $('adminPendingWithdraws');
-      withList.innerHTML = '';
+      const withList = $('adminPendingWithdraws'); withList.innerHTML = '';
       
-      if (!withdraws || withdraws.length === 0) {
-        withList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>';
-      } else {
+      if (!withdraws || withdraws.length === 0) { withList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay retiros pendientes.</p>'; } 
+      else {
         withdraws.forEach(wd => {
           const emailMostrar = wd.user_email || (wd.user_id.substring(0,8) + '...');
-          const item = document.createElement('div');
-          item.className = 'activity-item';
+          const item = document.createElement('div'); item.className = 'activity-item';
           item.innerHTML = `
             <div class="activity-icon" style="background:#ef4444; color:#fff;">↗</div>
             <div class="activity-info">
@@ -666,7 +636,7 @@
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
-              <button onclick="rejectAction('${wd.id}', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
+              <button onclick="rejectAction('${wd.id}', '${wd.user_id}', '${wd.asset}', ${wd.amount})" data-type="withdraw" style="background:#ef4444; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✕</button>
             </div>
           `;
           withList.appendChild(item);
@@ -674,22 +644,15 @@
       }
 
       const { data: invs } = await supabaseClient.from('novavest_investments').select('*');
-      const invList = $('adminInvestmentsList');
-      let totalVol = 0;
-      invList.innerHTML = '';
+      const invList = $('adminInvestmentsList'); let totalVol = 0; invList.innerHTML = '';
       if (!invs || invs.length === 0) {
         invList.innerHTML = '<p style="color:var(--muted); font-size:12px; text-align:center;">No hay inversiones activas.</p>';
         $('adminTotalVolume').textContent = '$0.00';
       } else {
         invs.forEach(inv => {
           totalVol += Number(inv.amount_usd);
-          const item = document.createElement('div');
-          item.className = 'activity-item';
-          item.innerHTML = `
-            <div class="activity-icon" style="background:#3b82f6; color:#fff;">$</div>
-            <div class="activity-info"><b>${inv.plan_name} (${inv.asset})</b><span>Monto: $${inv.amount_usd} | Pagos: ${inv.payouts_claimed}/${inv.total_payouts}</span></div>
-            <div class="activity-amount" style="color:#10b981">+$${inv.profit_per_payout}/pago</div>
-          `;
+          const item = document.createElement('div'); item.className = 'activity-item';
+          item.innerHTML = `<div class="activity-icon" style="background:#3b82f6; color:#fff;">$</div><div class="activity-info"><b>${inv.plan_name} (${inv.asset})</b><span>Monto: $${inv.amount_usd} | Pagos: ${inv.payouts_claimed}/${inv.total_payouts}</span></div><div class="activity-amount" style="color:#10b981">+$${inv.profit_per_payout}/pago</div>`;
           invList.appendChild(item);
         });
         $('adminTotalVolume').textContent = money(totalVol);
@@ -703,7 +666,6 @@
       const { data: pending } = await supabaseClient.from('novavest_pending_actions').select('*').eq('status', 'pending');
 
       if (!users) return;
-
       let totalUsers = users.length, activeUsers = 0, todayUsers = 0, pendingCount = pending ? pending.length : 0;
       const now = new Date(), todayStr = now.toISOString().split('T')[0], fiveMinsAgo = new Date(now.getTime() - 5 * 60000).toISOString();
       const calendarMap = {};
@@ -713,14 +675,10 @@
         if (u.created_at) { const day = u.created_at.split('T')[0]; calendarMap[day] = (calendarMap[day] || 0) + 1; }
       });
 
-      $('statsTotalUsers').textContent = totalUsers;
-      $('statsActiveUsers').textContent = activeUsers;
-      $('statsTodayUsers').textContent = todayUsers;
-      $('statsPendingActions').textContent = pendingCount;
+      $('statsTotalUsers').textContent = totalUsers; $('statsActiveUsers').textContent = activeUsers; $('statsTodayUsers').textContent = todayUsers; $('statsPendingActions').textContent = pendingCount;
       renderCalendar(calendarMap);
 
-      const list = $('adminUsersList');
-      list.innerHTML = '';
+      const list = $('adminUsersList'); list.innerHTML = '';
       users.forEach(u => {
         const userBalances = balances ? balances.filter(b => b.user_id === u.user_id) : [];
         const userWallet = wallets ? wallets.find(w => w.user_id === u.user_id) : null;
@@ -731,14 +689,12 @@
         const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
         let balancesHtml = '';
         ['TRX', 'BTC', 'SOL', 'USDT'].forEach(asset => {
-          const bal = userBalances.find(b => b.asset === asset);
-          const amount = bal ? Number(bal.amount) : 0;
+          const bal = userBalances.find(b => b.asset === asset); const amount = bal ? Number(bal.amount) : 0;
           if (amount > 0) balancesHtml += `<div><span>${asset}:</span> ${quantity(amount, asset)}</div>`;
         });
         if (!balancesHtml) balancesHtml = '<div style="grid-column: span 2; color: var(--muted);">Sin saldo en monedas</div>';
 
-        const item = document.createElement('div');
-        item.className = 'user-card';
+        const item = document.createElement('div'); item.className = 'user-card';
         item.innerHTML = `
           <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div><span style="font-size:10px; background:#eff6ff; color:#3b82f6; padding:4px 8px; border-radius:10px; font-weight:800;">Ver</span></div>
           <div class="user-balances">${balancesHtml}</div>
@@ -755,11 +711,9 @@
       const firstDay = new Date(year, month, 1).getDay();
       for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
       for (let i = 1; i <= daysInMonth; i++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        const count = calendarMap[dateStr] || 0;
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`; const count = calendarMap[dateStr] || 0;
         const el = document.createElement('div'); el.className = `calendar-day ${count > 0 ? 'has-users' : ''}`; el.textContent = i;
-        if (count > 0) el.title = `${count} registros`;
-        grid.appendChild(el);
+        if (count > 0) el.title = `${count} registros`; grid.appendChild(el);
       }
     }
 
@@ -785,12 +739,15 @@
       const btn = event.target;
       btn.disabled = true; btn.textContent = '...';
       
-      const { error } = await supabaseClient.from('novavest_pending_actions').update({ status: 'rejected' }).eq('id', id);
-      
-      if (error) { toast('Error al rechazar'); btn.disabled = false; btn.textContent = '✕'; return; }
-      toast('Solicitud rechazada');
-      loadAdminData();
-      if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
+      try {
+        await callEdgeFunction('reject-action', { actionId: id, type: event.target.dataset.type, userId, asset, amount });
+        toast('Solicitud rechazada correctamente');
+        loadAdminData();
+        if ($('view-admin-users').classList.contains('active')) loadAdminUsersData();
+      } catch (err) {
+        toast(err.message);
+        btn.disabled = false; btn.textContent = '✕';
+      }
     };
 
     async function updateWalletStorage() {
@@ -842,8 +799,7 @@
         const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
         const extraTxt = tx.details ? ` (${tx.details})` : '';
         const assetData = ASSET_INFO[tx.asset] || { icon: '' };
-        const item = document.createElement('div');
-        item.className = 'activity-item';
+        const item = document.createElement('div'); item.className = 'activity-item';
         item.innerHTML = `<div class="coin-logo" style="width:36px; height:36px;">${assetData.icon}</div><div class="activity-info"><b>${title} de ${tx.asset}${extraTxt}</b><span>${dateStr}</span></div><div class="activity-amount" style="color:${color}">${sign}${quantity(tx.amount, tx.asset)}</div>`;
         panel.appendChild(item);
       });
@@ -854,11 +810,9 @@
       const { data: investments, error } = await supabaseClient.from('novavest_investments').select('*').eq('user_id', currentUserId);
       if (error) { console.error('Error cargando inversiones:', error); return; }
       activeInvestmentsData = investments || [];
-      const container = $('activeInvestmentsSection');
-      const list = $('activeInvestmentsList');
+      const container = $('activeInvestmentsSection'); const list = $('activeInvestmentsList');
       if (activeInvestmentsData.length === 0) { container.classList.add('hidden'); return; }
-      container.classList.remove('hidden');
-      list.innerHTML = '';
+      container.classList.remove('hidden'); list.innerHTML = '';
       activeInvestmentsData.forEach(inv => {
         const card = document.createElement('div'); card.className = 'active-inv-card';
         card.innerHTML = `<div class="active-inv-info"><b>${inv.plan_name}</b><span>Inversión: $${inv.amount_usd} | Pago ${inv.payouts_claimed + 1} de ${inv.total_payouts}</span><span style="color: #10b981; font-weight: 700;">Ganancia: +$${inv.profit_per_payout}</span></div><div class="active-inv-timer" id="timer-container-${inv.id}"><strong id="timer-${inv.id}">00:00:00</strong><span>Próximo pago</span></div>`;
@@ -939,46 +893,28 @@
       } catch (err) { toast(err.message); } finally { btn.disabled = false; btn.textContent = 'Confirmar'; }
     };
 
-    // DEPÓSITO CON SUBIDA DE COMPROBANTE
     window.simulateDeposit = async function(){
       if (!currentUserId) return;
-      const value = Number($('amount').value);
-      const fileInput = $('receiptFile');
+      const value = Number($('amount').value); const fileInput = $('receiptFile');
       if (isNaN(value) || value < 10) { toast('El depósito mínimo es de $10 USD'); return; }
       if (!fileInput.files || fileInput.files.length === 0) { toast('Debes subir una foto del comprobante'); return; }
       
-      const asset = $('asset').value;
-      const btn = $('depositBtn');
+      const asset = $('asset').value; const btn = $('depositBtn');
       btn.disabled = true; btn.textContent = 'Subiendo comprobante…';
       
       try {
-        const file = fileInput.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${currentUserId}_${Date.now()}.${fileExt}`;
-
-        // 1. Subir imagen al Storage
+        const file = fileInput.files[0]; const fileExt = file.name.split('.').pop(); const fileName = `${currentUserId}_${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabaseClient.storage.from('receipts').upload(fileName, file);
         if (uploadError) throw new Error('Error al subir la imagen: ' + uploadError.message);
 
-        // 2. Obtener URL pública
-        const { data: urlData } = supabaseClient.storage.from('receipts').getPublicUrl(fileName);
-        const receiptUrl = urlData.publicUrl;
+        const { data: urlData } = supabaseClient.storage.from('receipts').getPublicUrl(fileName); const receiptUrl = urlData.publicUrl;
 
-        // 3. Guardar solicitud en Base de Datos
-        const { error } = await supabaseClient.from('novavest_pending_actions').insert({ 
-          user_id: currentUserId, user_email: currentUserEmail, type: 'deposit', asset: asset, amount: value, receipt_url: receiptUrl, status: 'pending'
-        });
+        const { error } = await supabaseClient.from('novavest_pending_actions').insert({ user_id: currentUserId, user_email: currentUserEmail, type: 'deposit', asset: asset, amount: value, receipt_url: receiptUrl, status: 'pending' });
         if (error) throw error;
 
         openModal('Comprobante Recibido', `Hemos recibido tu solicitud para depositar <b>${value} ${asset}</b>.<br><br>Tu saldo se acreditará una vez que verifiquemos el comprobante.`);
-        toast('Solicitud enviada');
-        fileInput.value = ''; // Limpiar input
-        await loadUserPendingDeposits(); // Recargar historial
-      } catch (err) { 
-        toast(err.message); 
-      } finally { 
-        btn.disabled = false; btn.textContent = 'Enviar comprobante y solicitar depósito →'; 
-      }
+        toast('Solicitud enviada'); fileInput.value = ''; await loadUserPendingDeposits(); 
+      } catch (err) { toast(err.message); } finally { btn.disabled = false; btn.textContent = 'Enviar comprobante y solicitar depósito →'; }
     };
 
     window.updateWithdrawInfo = function() {
