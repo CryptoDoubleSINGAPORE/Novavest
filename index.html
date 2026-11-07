@@ -992,20 +992,43 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- OBTENER ID DE REFERIDO DESDE SUPABASE ---
-        const { data: profileData, error: rpcError } = await supabaseClient.rpc('get_or_create_profile');
+               // --- LECTURA DIRECTA DEL ID DESDE LA TABLA (100% SEGURO) ---
+        let refCodeFinal = null;
         
+        // Buscamos en la tabla 'novavest_profiles' usando el ID del usuario logueado
+        const { data: profileData, error: profileError } = await supabaseClient
+            .from('novavest_profiles')
+            .select('display_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
         if (profileData && profileData.display_id) {
-          currentUserDisplayId = profileData.display_id;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profileData.display_id}`;
-          $('myRefCode').textContent = profileData.display_id;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profileData.display_id;
+            refCodeFinal = profileData.display_id;
         } else {
-          console.error("Error obteniendo ID:", rpcError);
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Cargando...`;
-          $('myRefCode').textContent = '...';
+            // Si por alguna razón el 'user_id' no lo encuentra, intentamos buscar por el 'id' principal
+            const { data: profileData2 } = await supabaseClient
+                .from('novavest_profiles')
+                .select('display_id')
+                .eq('id', user.id)
+                .maybeSingle();
+                
+            if (profileData2 && profileData2.display_id) {
+                refCodeFinal = profileData2.display_id;
+            }
         }
 
+        // Mostramos el resultado en pantalla
+        if (refCodeFinal) {
+          currentUserDisplayId = refCodeFinal;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
+          $('myRefCode').textContent = refCodeFinal;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
+        } else {
+          console.error("No se encontró ID en la base de datos", profileError);
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Error`;
+          $('myRefCode').textContent = 'Error';
+          $('myRefLink').value = 'No disponible';
+        }
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
         if (!existing || existing.length === 0) {
           const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
