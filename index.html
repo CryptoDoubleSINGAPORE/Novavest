@@ -992,22 +992,21 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- LÓGICA MEJORADA PARA EL CÓDIGO DE REFERIDO ---
+        // --- LÓGICA DEFINITIVA PARA EL CÓDIGO DE REFERIDO ---
         const { data: profile, error: profileError } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
         
         if (profile && profile.display_id) {
+          // Si existe en la BD, lo usamos. Es ÚNICO E INCAMBIABLE.
           currentUserDisplayId = profile.display_id;
           $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profile.display_id}`;
           $('myRefCode').textContent = profile.display_id;
           $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
         } else {
-          // Si no tiene código en la base de datos, generamos uno temporal y lo mostramos
+          // Si no existe, mostramos un error y NO inventamos un número aleatorio.
           console.error("No se encontró display_id", profileError);
-          const tempCode = Math.floor(Math.random() * 9000 + 1000).toString();
-          currentUserDisplayId = tempCode;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${tempCode}`;
-          $('myRefCode').textContent = tempCode;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + tempCode;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Error`;
+          $('myRefCode').textContent = 'Error';
+          $('myRefLink').value = 'Por favor, contacta a soporte.';
         }
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
