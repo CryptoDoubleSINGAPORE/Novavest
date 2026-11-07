@@ -25,24 +25,34 @@
       min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; position: relative;
     }
     
-    /* FONDO ANIMADO DE MONEDAS (GENERAL) */
+    /* FONDO ANIMADO DE MONEDAS (MÁS DINÁMICO) */
     #coin-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
     .falling-coin {
       position: absolute; top: -50px; width: 35px; height: 35px;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      opacity: 0.12; animation: fall linear infinite;
+      opacity: 0.2; animation: fall linear infinite, sway 3s ease-in-out infinite alternate;
     }
     @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); } 100% { transform: translateY(105vh) rotate(360deg); } }
-    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.06; } }
+    @keyframes sway { 0% { margin-left: -20px; } 100% { margin-left: 20px; } }
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
 
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; }
     .hidden { display: none !important; }
     .app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; position: relative; z-index: 1; }
     
+    /* ANIMACIONES DE ENTRADA */
     .view { display: none; }
-    .view.active { display: block; animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-    @keyframes slideInBlur { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    .view.active { display: block; animation: fadeIn 0.5s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Animación para tarjetas individuales */
+    .animate-in { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
     .press-effect { transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s; }
     .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
     
@@ -79,15 +89,21 @@
     }
     .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #fff; font-weight: 800; }
     .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
-    .welcome-icon { font-size: 32px; margin-left: 15px; }
+    .welcome-icon { font-size: 32px; margin-left: 15px; animation: floatIcon 3s ease-in-out infinite; }
+    @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-    /* TARJETA DE BALANCE CON CONTORNO Y RELIEVE */
+    /* TARJETA DE BALANCE CON RESPLANDOR */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
       background: linear-gradient(145deg, #1e293b, #162032); 
       color: #fff; position: relative; overflow: hidden; 
       box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1); 
       border: 1px solid rgba(255,255,255,0.05); 
+    }
+    .balance::after {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%);
+      pointer-events: none; z-index: 0;
     }
     .graffiti-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .graffiti-text {
@@ -109,19 +125,21 @@
     .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; transition: all 0.2s; }
     .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
     .ghost { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); }
-    .primary:hover { box-shadow: 0 6px 20px rgba(255,255,255,0.2); transform: translateY(-1px); }
-    .ghost:hover { background: rgba(255,255,255,0.1); }
+    .primary:hover { box-shadow: 0 6px 20px rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
     
     .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
     .section h2 { font-size: 17px; margin: 0; font-weight: 800; color: #fff; }
     
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); }
+    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.2s; }
+    .stat:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.1); }
     .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
     .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #fff; }
     .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
     
-    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: border-color 0.2s; }
+    .active-inv-card:hover { border-color: var(--blue); }
     .active-inv-info b { display: block; font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
     .active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
     .active-inv-timer { text-align: right; }
@@ -131,8 +149,8 @@
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
     .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.2s, border-color 0.2s; }
-    .plan-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+    .plan-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
     .plan-card:active { transform: scale(0.98); }
     .plan-card.cold-theme { border-top: 4px solid var(--blue); }
     .plan-card.cold-theme .plan-title { color: var(--blue); }
@@ -140,25 +158,27 @@
     .plan-card.fire-theme { border-top: 4px solid var(--fire); }
     .plan-card.fire-theme .plan-title { color: var(--fire); }
     .plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
-    .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; }
+    .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); }
     .plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
     .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #fff; }
     .plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
     .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid var(--line); }
     .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
-    .plan-btn:active { transform: scale(0.96); opacity: 0.9; }
+    .plan-btn:hover { opacity: 0.9; transform: scale(1.02); }
+    .plan-btn:active { transform: scale(0.96); }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; z-index: 2; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; z-index: 2; transition: border-color 0.3s; }
+    .panel:focus-within { border-color: rgba(16, 185, 129, 0.4); }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .select, .number, .field { width: 100%; background: rgba(15, 23, 42, 0.5); color: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
-    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); background: rgba(15, 23, 42, 0.8); }
     .amount-wrap { position: relative; }
     .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
     
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; transition: background 0.2s; }
-    .wide:hover { background: #059669; }
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; }
+    .wide:hover { background: #059669; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); transform: translateY(-2px); }
     .wide:active { transform: scale(0.96); opacity: 0.9; }
 
     .info-box { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
@@ -167,7 +187,8 @@
     .info-row b { color: var(--mint); }
 
     .coins { display: grid; gap: 9px; }
-    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, border-color 0.2s; }
+    .coin:hover { transform: translateX(4px); border-color: rgba(255,255,255,0.1); }
     .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
     .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
     .coin-info { flex: 1; }
@@ -176,7 +197,8 @@
     .coin-value b { font-size: 13px; font-weight: 800; color: #fff; }
 
     .activity { display: grid; gap: 0; }
-    .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); transition: background 0.2s; }
+    .activity-item:hover { background: rgba(255,255,255,0.02); }
     .activity-item:last-child { border: 0; }
     .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.05); color: var(--text); }
     .activity-info { flex: 1; }
@@ -196,15 +218,17 @@
     .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); }
     .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 13px; outline: none; padding-left: 10px; font-weight: 600; width: 100%; text-overflow: ellipsis; }
     .ref-link-wrap button { background: var(--mint); color: #0f172a; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.2s; flex-shrink: 0; }
-    .ref-link-wrap button:hover { background: #059669; color: #fff; }
+    .ref-link-wrap button:hover { background: #059669; color: #fff; transform: scale(1.05); }
     .ref-link-wrap button:active { transform: scale(0.95); }
 
     /* CALENDARIO ADMIN */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
-    .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); }
+    .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); transition: 0.2s; }
+    .calendar-day:hover { background: rgba(255,255,255,0.1); }
     .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; border-color: var(--mint); box-shadow: 0 0 10px rgba(16,185,129,0.3); }
     .calendar-header { font-size: 11px; font-weight: 800; color: var(--muted); padding: 4px; }
-    .user-card { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); }
+    .user-card { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); transition: background 0.2s; }
+    .user-card:hover { background: rgba(255,255,255,0.04); }
     .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
     .user-header b { font-size: 14px; color: #fff; }
     .user-header span { font-size: 11px; color: var(--muted); }
@@ -249,7 +273,7 @@
     .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .invest-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: 0.2s; }
-    .invest-btn:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.05); }
+    .invest-btn:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.05); transform: scale(1.02); }
     .invest-btn-price { font-weight: 800; font-size: 15px; color: #fff; }
     .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
     .invest-btn-yield { font-size: 11px; font-weight: 700; }
@@ -346,10 +370,9 @@
 
     <main id="dashboard" class="hidden">
       <div class="app">
-        <header class="top">
-          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
+        <header class="top animate-in">
+          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
           <div style="display:flex; align-items:center;">
-            <!-- SELECTOR DE IDIOMA -->
             <select id="langSelector" class="lang-selector" onchange="changeLanguage(this.value)">
               <option value="es">🇪🇸 ES</option>
               <option value="en">🇺🇸 EN</option>
@@ -363,7 +386,7 @@
 
         <div id="view-home" class="view active">
           
-          <div class="welcome-panel" id="welcomePanel">
+          <div class="welcome-panel animate-in delay-1" id="welcomePanel">
             <div>
               <h3 id="welcomeTitle" data-i18n="welcome_title">¡Bienvenido a NovaVest! 🚀</h3>
               <p id="welcomeDesc" data-i18n="welcome_desc">Estás a un paso de hacer crecer tus activos. Explora nuestros planes.</p>
@@ -373,7 +396,7 @@
 
           <div class="welcome" style="display:none;">¡Hola, <span id="welcomeName"></span>! 👋</div>
 
-          <section class="balance">
+          <section class="balance animate-in delay-2">
             <div class="graffiti-bg" id="graffiti-container"></div>
             
             <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;" data-i18n="total_balance">Balance total estimado</span><span class="pill" data-i18n="main_account">● Cuenta Principal</span></div>
@@ -385,7 +408,7 @@
             </div>
           </section>
 
-          <div class="panel" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+          <div class="panel animate-in delay-3" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
             <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
               <div><h2 style="margin:0; font-size:16px; color:white;" data-i18n="invite_earn">Invita y Gana 10%</h2><p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="invite_desc">Comparte tu enlace y gana comisiones.</p></div>
               <span style="font-size:24px;">👥</span>
@@ -394,15 +417,15 @@
           <div id="activeInvestmentsSection" class="hidden"><div class="section"><h2 data-i18n="active_inv">Inversiones Activas</h2></div><div id="activeInvestmentsList"></div></div>
           <div class="section"><h2 data-i18n="your_summary">Tu resumen</h2></div>
           <div class="stats">
-            <div class="stat"><div class="stat-top" data-i18n="active_inv_stat">Inversión activa <span class="stat-icon" style="background:rgba(59,130,246,0.2); color:#60a5fa; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small data-i18n="asset_value">Valor de tus activos</small></div>
-            <div class="stat"><div class="stat-top" data-i18n="accumulated_earnings">Ganancia acumulada <span class="stat-icon" style="background:rgba(217,70,239,0.2); color:#e879f9; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small data-i18n="plan_yield">Rendimiento de planes</small></div>
+            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="active_inv_stat">Inversión activa <span class="stat-icon" style="background:rgba(59,130,246,0.2); color:#60a5fa; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small data-i18n="asset_value">Valor de tus activos</small></div>
+            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="accumulated_earnings">Ganancia acumulada <span class="stat-icon" style="background:rgba(217,70,239,0.2); color:#e879f9; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small data-i18n="plan_yield">Rendimiento de planes</small></div>
           </div>
           <div class="section"><h2 data-i18n="investment_plans">Planes de Inversión</h2></div>
           <div class="plans">
-            <div class="plan-card cold-theme" onclick="openPlanModal('starter')">
+            <div class="plan-card cold-theme animate-in delay-3" onclick="openPlanModal('starter')">
               <div class="plan-title" data-i18n="starter_plan">❄️ Plan Starter</div><div class="plan-yield">9% ROI</div><div class="plan-freq" data-i18n="starter_freq">Retiros cada 24 horas (7 días)</div><div class="plan-desc" data-i18n="starter_desc">Ganancias diarias. Reactiva tu plan al finalizar.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
             </div>
-            <div class="plan-card fire-theme" onclick="openPlanModal('pro')">
+            <div class="plan-card fire-theme animate-in delay-3" onclick="openPlanModal('pro')">
               <div class="plan-badge" data-i18n="most_popular">🔥 MÁS POPULAR</div><div class="plan-title" data-i18n="pro_plan">🔥 Plan Pro</div><div class="plan-yield">12% ROI</div><div class="plan-freq" data-i18n="pro_freq">Retiros cada 48 horas (15 días)</div><div class="plan-desc" data-i18n="pro_desc">Maximiza tus ganancias a mediano plazo.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
             </div>
           </div>
@@ -414,7 +437,7 @@
             <div class="eyebrow" style="margin-bottom:10px;" data-i18n="recent_deposits">Tus Depósitos Recientes</div>
             <div id="userPendingDepositsList"></div>
           </div>
-          <div class="panel" id="depositFormPanel">
+          <div class="panel animate-in" id="depositFormPanel">
             <div class="eyebrow" data-i18n="step1_coin">Paso 1: Selecciona tu moneda</div>
             <div class="asset-select" style="margin-top:10px; display:flex; align-items:center;">
               <div id="coinBadge" class="coin-logo" style="width:42px;height:42px;"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" style="width:100%;height:100%;object-fit:contain;"></div>
@@ -452,7 +475,7 @@
 
         <div id="view-withdraw" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="withdraw_earnings">Retirar Ganancias</h2></div>
-          <div class="panel">
+          <div class="panel animate-in">
             <div class="info-box" style="background: rgba(255,255,255,0.02); border-color: var(--line);">
               <div class="info-row"><span data-i18n="min_withdraw">Mínimo de retiro:</span> <b style="color: #fff;">$1.00 USD</b></div>
               <div class="info-row"><span data-i18n="max_withdraw">Máximo por día:</span> <b style="color: #fff;">$550.00 USD</b></div>
@@ -484,7 +507,7 @@
         <div id="view-referrals" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="referral_program">Programa de Referidos</h2></div>
           
-          <div class="ref-box">
+          <div class="ref-box animate-in">
             <h3 data-i18n="invite_code">Tu Código de Invitación</h3>
             <div class="ref-code" id="myRefCode">...</div>
             <h3 data-i18n="invite_link">Tu Enlace de Invitación</h3>
@@ -494,7 +517,7 @@
             </div>
           </div>
 
-          <div class="panel" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
+          <div class="panel animate-in delay-1" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
             <h3 style="margin: 0 0 10px; font-size: 15px; color: #93c5fd;" data-i18n="how_it_works">¿Cómo funciona?</h3>
             <p style="font-size: 12px; color: #bfdbfe; line-height: 1.5; margin: 0; font-weight: 500;" data-i18n="referral_desc">
               Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a $20 USD, recibirás un 10% de ese depósito directamente en tu balance de USDT. ¡Es un beneficio único por cada amigo invitado!
@@ -502,12 +525,12 @@
           </div>
 
           <div class="stats" style="margin-top: 15px;">
-            <div class="stat">
+            <div class="stat animate-in delay-2">
               <div class="stat-top" data-i18n="friends_invited">Amigos Invitados</div>
               <strong id="totalInvited">0</strong>
               <small data-i18n="registered_code">Registrados con tu código</small>
             </div>
-            <div class="stat">
+            <div class="stat animate-in delay-2">
               <div class="stat-top" data-i18n="earned_commissions">Comisiones Ganadas</div>
               <strong id="totalEarned" style="color: var(--mint);">$0.00</strong>
               <small data-i18n="in_usdt">En USDT</small>
@@ -517,7 +540,7 @@
 
         <div id="view-profile" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="investor_profile">Perfil de inversor</h2></div>
-          <div class="panel investor" style="margin-top:0;">
+          <div class="panel investor animate-in" style="margin-top:0;">
             <div class="investor-face" id="profileInitials">NV</div>
             <div class="investor-info">
               <b id="investorName">Usuario NovaVest</b>
@@ -534,13 +557,13 @@
           </div>
           <div class="section"><h2 data-i18n="all_balances">Todos tus saldos</h2></div>
           <div class="coins">
-            <div class="coin"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"></div><div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div></div>
-            <div class="coin"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX"></div><div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div></div>
-            <div class="coin"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL"></div><div class="coin-info"><b>Solana</b><span>SOL</span></div><div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div></div>
-            <div class="coin"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"></div><div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div></div>
+            <div class="coin animate-in delay-1"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC"></div><div class="coin-info"><b>Bitcoin</b><span>BTC</span></div><div class="coin-value"><b id="holdingBTC">0.00 BTC</b></div></div>
+            <div class="coin animate-in delay-1"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX"></div><div class="coin-info"><b>TRON</b><span>TRX</span></div><div class="coin-value"><b id="holdingTRX">0.00 TRX</b></div></div>
+            <div class="coin animate-in delay-2"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL"></div><div class="coin-info"><b>Solana</b><span>SOL</span></div><div class="coin-value"><b id="holdingSOL">0.00 SOL</b></div></div>
+            <div class="coin animate-in delay-2"><div class="coin-logo"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT"></div><div class="coin-info"><b>Tether</b><span>USDT</span></div><div class="coin-value"><b id="holdingUSDT">0.00 USDT</b></div></div>
           </div>
           <div class="section"><h2 data-i18n="movement_history">Historial de Movimientos</h2></div>
-          <div class="panel activity" id="activityPanel">
+          <div class="panel activity animate-in delay-3" id="activityPanel">
             <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px; font-weight: 500;" data-i18n="no_movements">No hay movimientos registrados</span></div>
           </div>
           <button class="wide press-effect" style="background: transparent; border: 1px solid #fff; color: #fff; margin-bottom: 10px;" onclick="openTerms()" data-i18n="terms_btn">Términos y Condiciones</button>
@@ -551,24 +574,24 @@
         <div id="view-admin" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="admin_panel">Panel de Administrador</h2><span class="pill" style="background:var(--mint); color:#fff; border: none;">Dueño</span></div>
           <div class="stats" style="margin-bottom: 15px;">
-            <div class="stat"><div class="stat-top" data-i18n="total_users">Usuarios Totales</div><strong id="adminTotalUsers">0</strong><small data-i18n="registered_accounts">Cuentas registradas</small></div>
-            <div class="stat"><div class="stat-top" data-i18n="total_volume">Volumen Total</div><strong id="adminTotalVolume">$0.00</strong><small data-i18n="in_deposits">En depósitos (Aprox)</small></div>
+            <div class="stat animate-in delay-1"><div class="stat-top" data-i18n="total_users">Usuarios Totales</div><strong id="adminTotalUsers">0</strong><small data-i18n="registered_accounts">Cuentas registradas</small></div>
+            <div class="stat animate-in delay-1"><div class="stat-top" data-i18n="total_volume">Volumen Total</div><strong id="adminTotalVolume">$0.00</strong><small data-i18n="in_deposits">En depósitos (Aprox)</small></div>
           </div>
-          <div class="panel" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
+          <div class="panel animate-in delay-2" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <div><h2 style="color:#60a5fa; margin:0; font-size:16px;" data-i18n="user_panel">Panel de Usuarios</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="user_panel_desc">Ver estadísticas, balances y actividad.</p></div>
               <span style="font-size:24px; color:#60a5fa;">→</span>
             </div>
           </div>
-          <div class="panel" style="margin-top:15px; border-left: 4px solid #10b981;">
+          <div class="panel animate-in delay-3" style="margin-top:15px; border-left: 4px solid #10b981;">
             <div class="section" style="margin-top:0;"><h2 style="color:#34d399;" data-i18n="pending_deposits">Depósitos Pendientes</h2></div>
             <div id="adminPendingDeposits" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="no_pending_deposits">No hay depósitos pendientes.</p></div>
           </div>
-          <div class="panel" style="margin-top:15px; border-left: 4px solid #ef4444;">
+          <div class="panel animate-in delay-3" style="margin-top:15px; border-left: 4px solid #ef4444;">
             <div class="section" style="margin-top:0;"><h2 style="color:#f87171;" data-i18n="pending_withdrawals">Retiros Pendientes</h2></div>
             <div id="adminPendingWithdraws" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="no_pending_withdrawals">No hay retiros pendientes.</p></div>
           </div>
-          <div class="panel" style="margin-top:15px;">
+          <div class="panel animate-in delay-3" style="margin-top:15px;">
             <div class="section" style="margin-top:0;"><h2 data-i18n="global_investments">Inversiones Activas Globales</h2></div>
             <div id="adminInvestmentsList" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="loading_data">Cargando datos...</p></div>
           </div>
@@ -577,14 +600,14 @@
         <div id="view-admin-users" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="user_panel">Panel de Usuarios</h2><button class="small-link" onclick="navigate('admin', document.querySelectorAll('.nav button')[5])" style="background:none; color:var(--muted); border:none;" data-i18n="back">← Volver</button></div>
           <div class="stats" style="margin-bottom: 15px;">
-            <div class="stat"><div class="stat-top" data-i18n="total_registered">Total Registrados</div><strong id="statsTotalUsers">0</strong></div>
-            <div class="stat"><div class="stat-top" data-i18n="active_5min">Activos (5 min)</div><strong id="statsActiveUsers">0</strong></div>
-            <div class="stat"><div class="stat-top" data-i18n="new_today">Nuevos Hoy</div><strong id="statsTodayUsers">0</strong></div>
-            <div class="stat"><div class="stat-top" data-i18n="pending_actions">Acciones Pendientes</div><strong id="statsPendingActions">0</strong></div>
+            <div class="stat animate-in delay-1"><div class="stat-top" data-i18n="total_registered">Total Registrados</div><strong id="statsTotalUsers">0</strong></div>
+            <div class="stat animate-in delay-1"><div class="stat-top" data-i18n="active_5min">Activos (5 min)</div><strong id="statsActiveUsers">0</strong></div>
+            <div class="stat animate-in delay-2"><div class="stat-top" data-i18n="new_today">Nuevos Hoy</div><strong id="statsTodayUsers">0</strong></div>
+            <div class="stat animate-in delay-2"><div class="stat-top" data-i18n="pending_actions">Acciones Pendientes</div><strong id="statsPendingActions">0</strong></div>
           </div>
-          <div class="panel" style="margin-top:0;"><h3 style="margin-bottom: 10px;" data-i18n="monthly_registrations">Registros del Mes</h3><div id="calendarGrid" class="calendar-grid"></div></div>
+          <div class="panel animate-in delay-3" style="margin-top:0;"><h3 style="margin-bottom: 10px;" data-i18n="monthly_registrations">Registros del Mes</h3><div id="calendarGrid" class="calendar-grid"></div></div>
           <div class="section"><h2 data-i18n="all_users">Todos los Usuarios</h2></div>
-          <div id="adminUsersList" class="panel activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="loading_users">Cargando usuarios...</p></div>
+          <div id="adminUsersList" class="panel activity animate-in delay-3"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="loading_users">Cargando usuarios...</p></div>
         </div>
       </div>
     </main>
