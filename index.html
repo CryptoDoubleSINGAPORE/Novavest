@@ -25,37 +25,44 @@
       min-height: 100vh; padding-bottom: 92px; overflow-x: hidden; position: relative;
     }
     
-    /* FONDO ANIMADO DE MONEDAS (MÁS DINÁMICO) */
+    /* FONDO ANIMADO DE MONEDAS (GENERAL) */
     #coin-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
     .falling-coin {
       position: absolute; top: -50px; width: 35px; height: 35px;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      opacity: 0.2; animation: fall linear infinite, sway 3s ease-in-out infinite alternate;
+      opacity: 0.15; animation: fall linear infinite;
     }
     @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); } 100% { transform: translateY(105vh) rotate(360deg); } }
-    @keyframes sway { 0% { margin-left: -20px; } 100% { margin-left: 20px; } }
-    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.08; } }
 
     button, input, select { font: inherit; }
-    button { cursor: pointer; border: none; outline: none; }
+    button { cursor: pointer; border: none; outline: none; position: relative; overflow: hidden; }
     .hidden { display: none !important; }
     .app { max-width: 520px; margin: auto; padding: env(safe-area-inset-top) 17px 25px; position: relative; z-index: 1; }
     
     /* ANIMACIONES DE ENTRADA */
     .view { display: none; }
-    .view.active { display: block; animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .view.active { display: block; animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    @keyframes slideInBlur { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    .press-effect { transition: transform 0.1s, box-shadow 0.1s; }
+    .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
     
-    /* Animación para tarjetas individuales */
-    .animate-in { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
+    /* RIPPLE EFFECT (EFECTO ONDA AL TOCAR) */
+    .ripple {
+      position: absolute; border-radius: 50%; transform: scale(0);
+      animation: ripple-anim 0.6s linear; background-color: rgba(255,255,255,0.4);
+      pointer-events: none; z-index: 10;
+    }
+    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-    .press-effect { transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s; }
-    .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
-    
+    /* RESPIRACIÓN DEL SALDO (DOPAMINA) */
+    .amount { 
+      font-size: 42px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; 
+      text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe { 0%, 100% { text-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 20px rgba(16, 185, 129, 0.1); } 50% { text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 30px rgba(16, 185, 129, 0.3); } }
+
     .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; color: #fff; }
     .brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
@@ -92,7 +99,7 @@
     .welcome-icon { font-size: 32px; margin-left: 15px; animation: floatIcon 3s ease-in-out infinite; }
     @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-    /* TARJETA DE BALANCE CON RESPLANDOR */
+    /* TARJETA DE BALANCE CON CONTORNO Y RELIEVE */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
       background: linear-gradient(145deg, #1e293b, #162032); 
@@ -102,7 +109,7 @@
     }
     .balance::after {
       content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.1), transparent 70%);
       pointer-events: none; z-index: 0;
     }
     .graffiti-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
@@ -118,7 +125,6 @@
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
     .balance .eyebrow { color: #94a3b8; }
     .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
-    .amount { font-size: 38px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
@@ -797,7 +803,6 @@
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
-          // Si el elemento tiene un innerHTML complejo (como los terminos), lo actualizamos
           if (translations[lang][key].includes('<')) {
              el.innerHTML = translations[lang][key];
           } else {
@@ -806,14 +811,12 @@
         }
       });
       
-      // Actualizar el título de la pestaña
       if (lang === 'es') document.title = "NovaVest | Gestión de Activos";
       else if (lang === 'en' || lang === 'sg') document.title = "NovaVest | Asset Management";
       else if (lang === 'fr') document.title = "NovaVest | Gestion d'Actifs";
       else if (lang === 'zh') document.title = "NovaVest | 资产管理";
     }
 
-    // Inicializar idioma guardado
     document.addEventListener('DOMContentLoaded', () => {
       const savedLang = localStorage.getItem('novavest_lang') || 'es';
       const selector = document.getElementById('langSelector');
@@ -821,6 +824,27 @@
         selector.value = savedLang;
         changeLanguage(savedLang);
       }
+    });
+
+    // --- EFECTO RIPPLE EN BOTONES ---
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      
+      const circle = document.createElement('span');
+      const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+      const radius = diameter / 2;
+      
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - btn.getBoundingClientRect().left - radius}px`;
+      circle.style.top = `${e.clientY - btn.getBoundingClientRect().top - radius}px`;
+      circle.classList.add('ripple');
+      
+      const ripple = btn.getElementsByClassName('ripple')[0];
+      if (ripple) {
+        ripple.remove();
+      }
+      btn.appendChild(circle);
     });
 
     // --- SCRIPT PARA LOS GRAFFITIS DEL BALANCE ---
@@ -890,7 +914,6 @@
         bg.appendChild(coin);
       }
 
-      // --- SCRIPT PARA EL FONDO ANIMADO DEL MENÚ LATERAL (LOGOS) ---
       const sidebarBg = document.getElementById('sidebar-bg');
       const numLogos = 15;
       for (let i = 0; i < numLogos; i++) {
@@ -954,7 +977,6 @@
         $('welcomeDesc').setAttribute('data-i18n', 'welcome_back_desc');
       }
       
-      // Re-aplicar traducción tras el cambio dinámico
       changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
       const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
@@ -986,7 +1008,6 @@
         withdrawableBalance = Number(wallet.withdrawable_balance);
       }
 
-      // Lógica de Grados VIP
       const { data: vipData } = await supabaseClient.from('vista_usuarios_vip').select('vip_level').eq('user_id', user.id).maybeSingle();
       const vipLevel = vipData ? Number(vipData.vip_level) : 0;
       
@@ -1034,8 +1055,6 @@
       deposits.forEach(dep => {
         let statusColor = dep.status === 'approved' ? 'var(--mint)' : dep.status === 'rejected' ? 'var(--fire)' : '#f59e0b';
         let statusText = dep.status === 'approved' ? 'Aprobado' : dep.status === 'rejected' ? 'Rechazado' : 'Pendiente';
-        // Nota: Los textos dinámicos de estado (Aprobado/Rechazado) se dejan en español para no complicar la lógica, 
-        // pero podrías agregarlos al diccionario si lo deseas.
         
         const item = document.createElement('div'); item.className = 'activity-item';
         item.innerHTML = `
@@ -1312,6 +1331,15 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
       try {
         const result = await callEdgeFunction('claim-reward', { investmentId: invId });
+        
+        // Animación de confeti al reclamar
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#10b981', '#3b82f6', '#f59e0b']
+        });
+
         if (result.completed) openModal('¡Plan Completado!', `Has reclamado el último pago de <b>$${result.earned} USD</b>.<br><br>El plan ha finalizado.`);
         else openModal('¡Pago Reclamado!', `Has recibido <b>$${result.earned} USD</b>.<br><br>Tu próximo pago estará disponible pronto.`);
         toast(`¡Has ganado $${result.earned}!`);
@@ -1491,7 +1519,6 @@
       $('qr-network').style.display = asset === 'USDT' ? 'inline' : 'none';
       $('warning-asset').textContent = asset; $('warning-network').textContent = coin.network; $('networkWarning').style.display = 'block';
       
-      // Actualizar el mínimo dinámico visual
       const minCrypto = (10 / coin.price).toFixed(asset === 'BTC' ? 6 : 2);
       $('estimate').textContent = `≈ $${(Number($('amount').value) * coin.price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} USD (Mín: ${minCrypto} ${asset})`;
     };
@@ -1505,12 +1532,22 @@
     window.copyWallet = async function() { try { await navigator.clipboard.writeText($('wallet').textContent); toast('Dirección copiada'); } catch(e) { toast('No se pudo copiar'); } };
     window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
     window.closeModal=function(){$('modal').classList.remove('open');};
-    window.toast=function(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);};
+    window.toast=function(message){
+      // Vibrar en móvil para feedback háptico
+      if (navigator.vibrate) navigator.vibrate(50);
+      
+      const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+    };
 
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search); const refParam = urlParams.get('ref');
       if (refParam) { $('referralCode').value = refParam; setAuthView('register'); }
     });
+
+    // --- CARGA DE LIBRERÍA DE CONFETI (Solo para celebraciones) ---
+    const confettiScript = document.createElement('script');
+    confettiScript.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+    document.head.appendChild(confettiScript);
   </script>
 </body>
 </html>
