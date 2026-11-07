@@ -992,14 +992,22 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        // --- LÓGICA MEJORADA PARA EL CÓDIGO DE REFERIDO ---
+        const { data: profile, error: profileError } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        
         if (profile && profile.display_id) {
           currentUserDisplayId = profile.display_id;
           $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profile.display_id}`;
           $('myRefCode').textContent = profile.display_id;
           $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
         } else {
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
+          // Si no tiene código en la base de datos, generamos uno temporal y lo mostramos
+          console.error("No se encontró display_id", profileError);
+          const tempCode = Math.floor(Math.random() * 9000 + 1000).toString();
+          currentUserDisplayId = tempCode;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${tempCode}`;
+          $('myRefCode').textContent = tempCode;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + tempCode;
         }
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
@@ -1059,7 +1067,6 @@
       } catch (err) {
         console.error('Fallo en loadUserData:', err);
         toast('Error cargando datos. Revisa tu conexión.');
-        // Si falla, devolvemos al login para evitar pantalla en negro
         $('dashboard').classList.add('hidden');
         $('appLayout').classList.add('hidden');
         $('authScreen').classList.remove('hidden');
@@ -1078,8 +1085,6 @@
       deposits.forEach(dep => {
         let statusColor = dep.status === 'approved' ? 'var(--mint)' : dep.status === 'rejected' ? 'var(--fire)' : '#f59e0b';
         let statusText = dep.status === 'approved' ? 'Aprobado' : dep.status === 'rejected' ? 'Rechazado' : 'Pendiente';
-        // Nota: Los textos dinámicos de estado (Aprobado/Rechazado) se dejan en español para no complicar la lógica, 
-        // pero podrías agregarlos al diccionario si lo deseas.
         
         const item = document.createElement('div'); item.className = 'activity-item';
         item.innerHTML = `
