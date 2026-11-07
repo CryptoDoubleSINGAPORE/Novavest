@@ -992,21 +992,31 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- LÓGICA DEFINITIVA PARA EL CÓDIGO DE REFERIDO ---
-        const { data: profile, error: profileError } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        // --- LECTURA CORREGIDA DEL ID DE INVERSOR ---
+        let refCodeFinal = null;
         
-        if (profile && profile.display_id) {
-          // Si existe en la BD, lo usamos. Es ÚNICO E INCAMBIABLE.
-          currentUserDisplayId = profile.display_id;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profile.display_id}`;
-          $('myRefCode').textContent = profile.display_id;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
+        // Intentamos buscar por user_id (como lo hace tu código original)
+        const { data: profile1 } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        if (profile1 && profile1.display_id) {
+            refCodeFinal = profile1.display_id;
         } else {
-          // Si no existe, mostramos un error y NO inventamos un número aleatorio.
-          console.error("No se encontró display_id", profileError);
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Error`;
+            // Si falla, intentamos buscar por el ID de autenticación (id)
+            const { data: profile2 } = await supabaseClient.from('novavest_profiles').select('display_id').eq('id', user.id).maybeSingle();
+            if (profile2 && profile2.display_id) {
+                refCodeFinal = profile2.display_id;
+            }
+        }
+
+        // Asignamos los valores a la pantalla
+        if (refCodeFinal) {
+          currentUserDisplayId = refCodeFinal;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
+          $('myRefCode').textContent = refCodeFinal;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
+        } else {
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
           $('myRefCode').textContent = 'Error';
-          $('myRefLink').value = 'Por favor, contacta a soporte.';
+          $('myRefLink').value = 'No disponible';
         }
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
