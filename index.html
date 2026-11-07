@@ -992,7 +992,10 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-          // Buscamos en la tabla por el ID de auth
+        // --- LECTURA DEL ID (FORZADA) ---
+        let refCodeFinal = null;
+        
+        // Buscamos en la tabla por el ID de auth
         const { data: profileData } = await supabaseClient
             .from('novavest_profiles')
             .select('display_id')
@@ -1015,30 +1018,7 @@
           $('myRefCode').textContent = '---';
           $('myRefLink').value = 'Recarga la página';
         }
-            // Si por alguna razón el 'user_id' no lo encuentra, intentamos buscar por el 'id' principal
-            const { data: profileData2 } = await supabaseClient
-                .from('novavest_profiles')
-                .select('display_id')
-                .eq('id', user.id)
-                .maybeSingle();
-                
-            if (profileData2 && profileData2.display_id) {
-                refCodeFinal = profileData2.display_id;
-            }
-        }
 
-        // Mostramos el resultado en pantalla
-        if (refCodeFinal) {
-          currentUserDisplayId = refCodeFinal;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
-          $('myRefCode').textContent = refCodeFinal;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
-        } else {
-          console.error("No se encontró ID en la base de datos", profileError);
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Error`;
-          $('myRefCode').textContent = 'Error';
-          $('myRefLink').value = 'No disponible';
-        }
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
         if (!existing || existing.length === 0) {
           const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
