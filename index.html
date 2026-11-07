@@ -992,19 +992,29 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-               // --- LECTURA DIRECTA DEL ID DESDE LA TABLA (100% SEGURO) ---
-        let refCodeFinal = null;
-        
-        // Buscamos en la tabla 'novavest_profiles' usando el ID del usuario logueado
-        const { data: profileData, error: profileError } = await supabaseClient
+          // Buscamos en la tabla por el ID de auth
+        const { data: profileData } = await supabaseClient
             .from('novavest_profiles')
             .select('display_id')
-            .eq('user_id', user.id)
+            .eq('id', user.id)
             .maybeSingle();
 
         if (profileData && profileData.display_id) {
             refCodeFinal = profileData.display_id;
+        }
+
+        // Si lo encontramos, lo mostramos
+        if (refCodeFinal) {
+          currentUserDisplayId = refCodeFinal;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
+          $('myRefCode').textContent = refCodeFinal;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
         } else {
+          // Si aún así falla, ponemos un texto para que no se vea "Error"
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
+          $('myRefCode').textContent = '---';
+          $('myRefLink').value = 'Recarga la página';
+        }
             // Si por alguna razón el 'user_id' no lo encuentra, intentamos buscar por el 'id' principal
             const { data: profileData2 } = await supabaseClient
                 .from('novavest_profiles')
