@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f172a">
-  <title>NovaVest | Inversiones</title>
+  <title>NovaVest | Gestión de Activos</title>
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='12' fill='%230f172a'/><path d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -992,10 +992,10 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- LECTURA DEL ID (FORZADA) ---
+        // --- LECTURA Y CREACIÓN AUTOMÁTICA DEL ID ---
         let refCodeFinal = null;
         
-        // Buscamos en la tabla por el ID de auth
+        // 1. Intentamos buscar el perfil
         const { data: profileData } = await supabaseClient
             .from('novavest_profiles')
             .select('display_id')
@@ -1004,16 +1004,34 @@
 
         if (profileData && profileData.display_id) {
             refCodeFinal = profileData.display_id;
+        } else {
+            // 2. Si el usuario es nuevo y no tiene perfil, SE LO CREAMOS DESDE AQUÍ
+            const nuevoId = Math.floor(Math.random() * 9000 + 1000).toString();
+            
+            const { error: insertError } = await supabaseClient
+                .from('novavest_profiles')
+                .insert({ 
+                    id: user.id, 
+                    user_id: user.id, 
+                    email: user.email, 
+                    full_name: user.user_metadata?.full_name || 'Nuevo Usuario',
+                    display_id: nuevoId 
+                });
+                
+            if (!insertError) {
+                refCodeFinal = nuevoId;
+            } else {
+                console.error("Error creando perfil:", insertError);
+            }
         }
 
-        // Si lo encontramos, lo mostramos
+        // 3. Mostramos el resultado en pantalla
         if (refCodeFinal) {
           currentUserDisplayId = refCodeFinal;
           $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
           $('myRefCode').textContent = refCodeFinal;
           $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
         } else {
-          // Si aún así falla, ponemos un texto para que no se vea "Error"
           $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
           $('myRefCode').textContent = '---';
           $('myRefLink').value = 'Recarga la página';
