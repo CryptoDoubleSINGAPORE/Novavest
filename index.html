@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
     :root { 
@@ -30,10 +31,11 @@
     .falling-coin {
       position: absolute; top: -50px; width: 35px; height: 35px;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      opacity: 0.15; animation: fall linear infinite;
+      opacity: 0.15; animation: fall linear infinite, sway 3s ease-in-out infinite alternate;
     }
     @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); } 100% { transform: translateY(105vh) rotate(360deg); } }
-    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.08; } }
+    @keyframes sway { 0% { margin-left: -20px; } 100% { margin-left: 20px; } }
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
 
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; position: relative; overflow: hidden; }
@@ -634,6 +636,7 @@
       es: {
         nav_home: "Inicio", nav_deposit: "Depositar", nav_withdraw: "Retirar", nav_referrals: "Referidos", nav_profile: "Perfil", nav_admin: "Admin",
         welcome_title: "¡Bienvenido a NovaVest! 🚀", welcome_desc: "Estás a un paso de hacer crecer tus activos. Explora nuestros planes.",
+        welcome_back_title: "¡Hola de nuevo! 👋", welcome_back_desc: "Nos alegra verte otra vez. Revisa tus ganancias y planes activos.",
         total_balance: "Balance total estimado", main_account: "● Cuenta Principal", current_yield: "↗ Rendimiento actual",
         btn_deposit: "＋ Depositar", btn_withdraw: "↗ Retirar", invite_earn: "Invita y Gana 10%", invite_desc: "Comparte tu enlace y gana comisiones.",
         active_inv: "Inversiones Activas", your_summary: "Tu resumen", active_inv_stat: "Inversión activa", asset_value: "Valor de tus activos",
@@ -649,7 +652,7 @@
         referral_program: "Programa de Referidos", invite_code: "Tu Código de Invitación", invite_link: "Tu Enlace de Invitación", how_it_works: "¿Cómo funciona?",
         referral_desc: "Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a $20 USD, recibirás un 10% de ese depósito directamente en tu balance de USDT. ¡Es un beneficio único por cada amigo invitado!",
         friends_invited: "Amigos Invitados", registered_code: "Registrados con tu código", earned_commissions: "Comisiones Ganadas", in_usdt: "En USDT",
-        investor_profile: "Perfil de inversor", grade: "Grado", loading_date: "Cargando fecha...", loading_id: "ID de inversor: Cargando...",
+        investor_profile: "Perfil de inversor", grade: "Grado", loading_date: "Cargando fecha...", investor_id: "ID de inversor:", loading_id: "ID de inversor: Cargando...",
         all_balances: "Todos tus saldos", movement_history: "Historial de Movimientos", no_movements: "No hay movimientos registrados", terms_btn: "Términos y Condiciones", logout_btn: "Cerrar sesión", footer: "© 2026 NovaVest. Todos los derechos reservados. Plataforma de gestión de activos digitales.",
         admin_panel: "Panel de Administrador", total_users: "Usuarios Totales", registered_accounts: "Cuentas registradas", total_volume: "Volumen Total", in_deposits: "En depósitos (Aprox)",
         user_panel: "Panel de Usuarios", user_panel_desc: "Ver estadísticas, balances y actividad.", pending_deposits: "Depósitos Pendientes", no_pending_deposits: "No hay depósitos pendientes.",
@@ -667,6 +670,7 @@
       en: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
         welcome_title: "Welcome to NovaVest! 🚀", welcome_desc: "You are one step away from growing your assets. Explore our plans.",
+        welcome_back_title: "Welcome back! 👋", welcome_back_desc: "Glad to see you again. Check your earnings and active plans.",
         total_balance: "Estimated total balance", main_account: "● Main Account", current_yield: "↗ Current yield",
         btn_deposit: "＋ Deposit", btn_withdraw: "↗ Withdraw", invite_earn: "Invite & Earn 10%", invite_desc: "Share your link and earn commissions.",
         active_inv: "Active Investments", your_summary: "Your summary", active_inv_stat: "Active investment", asset_value: "Value of your assets",
@@ -682,7 +686,7 @@
         referral_program: "Referral Program", invite_code: "Your Invitation Code", invite_link: "Your Invitation Link", how_it_works: "How does it work?",
         referral_desc: "Share your link. When a friend registers and makes a deposit of $20 USD or more, you will receive 10% of that deposit directly in your USDT balance. It's a unique benefit for each invited friend!",
         friends_invited: "Friends Invited", registered_code: "Registered with your code", earned_commissions: "Earned Commissions", in_usdt: "In USDT",
-        investor_profile: "Investor Profile", grade: "Grade", loading_date: "Loading date...", loading_id: "Investor ID: Loading...",
+        investor_profile: "Investor Profile", grade: "Grade", loading_date: "Loading date...", investor_id: "Investor ID:", loading_id: "Investor ID: Loading...",
         all_balances: "All your balances", movement_history: "Movement History", no_movements: "No movements recorded", terms_btn: "Terms and Conditions", logout_btn: "Log out", footer: "© 2026 NovaVest. All rights reserved. Digital asset management platform.",
         admin_panel: "Admin Panel", total_users: "Total Users", registered_accounts: "Registered accounts", total_volume: "Total Volume", in_deposits: "In deposits (Approx)",
         user_panel: "User Panel", user_panel_desc: "View statistics, balances, and activity.", pending_deposits: "Pending Deposits", no_pending_deposits: "No pending deposits.",
@@ -700,6 +704,7 @@
       fr: {
         nav_home: "Accueil", nav_deposit: "Dépôt", nav_withdraw: "Retrait", nav_referrals: "Parrainages", nav_profile: "Profil", nav_admin: "Admin",
         welcome_title: "Bienvenue sur NovaVest ! 🚀", welcome_desc: "Vous êtes à un pas de faire croître vos actifs. Explorez nos plans.",
+        welcome_back_title: "Bon retour ! 👋", welcome_back_desc: "Ravi de vous revoir. Vérifiez vos gains et vos plans actifs.",
         total_balance: "Solde total estimé", main_account: "● Compte Principal", current_yield: "↗ Rendement actuel",
         btn_deposit: "＋ Déposer", btn_withdraw: "↗ Retirer", invite_earn: "Invitez et Gagnez 10%", invite_desc: "Partagez votre lien et gagnez des commissions.",
         active_inv: "Investissements Actifs", your_summary: "Votre résumé", active_inv_stat: "Investissement actif", asset_value: "Valeur de vos actifs",
@@ -715,7 +720,7 @@
         referral_program: "Programme de Parrainage", invite_code: "Votre Code d'Invitation", invite_link: "Votre Lien d'Invitation", how_it_works: "Comment ça marche ?",
         referral_desc: "Partagez votre lien. Lorsqu'un ami s'inscrit et effectue un dépôt de 20$ USD ou plus, vous recevrez 10% de ce dépôt directement sur votre solde USDT. C'est un avantage unique pour chaque ami invité !",
         friends_invited: "Amis Invités", registered_code: "Inscrits avec votre code", earned_commissions: "Commissions Gagnées", in_usdt: "En USDT",
-        investor_profile: "Profil d'Investisseur", grade: "Grade", loading_date: "Chargement de la date...", loading_id: "ID d'investisseur : Chargement...",
+        investor_profile: "Profil d'Investisseur", grade: "Grade", loading_date: "Chargement de la date...", investor_id: "ID d'investisseur :", loading_id: "ID d'investisseur : Chargement...",
         all_balances: "Tous vos soldes", movement_history: "Historique des Mouvements", no_movements: "Aucun mouvement enregistré", terms_btn: "Termes et Conditions", logout_btn: "Se déconnecter", footer: "© 2026 NovaVest. Tous droits réservés. Plateforme de gestion d'actifs numériques.",
         admin_panel: "Panneau d'Administration", total_users: "Utilisateurs Totaux", registered_accounts: "Comptes enregistrés", total_volume: "Volume Total", in_deposits: "En dépôts (Approx)",
         user_panel: "Panneau Utilisateur", user_panel_desc: "Voir les statistiques, les soldes et l'activité.", pending_deposits: "Dépôts en Attente", no_pending_deposits: "Aucun dépôt en attente.",
@@ -733,6 +738,7 @@
       zh: {
         nav_home: "首页", nav_deposit: "存款", nav_withdraw: "提款", nav_referrals: "推荐", nav_profile: "个人资料", nav_admin: "管理员",
         welcome_title: "欢迎来到 NovaVest！🚀", welcome_desc: "您距离资产增值仅一步之遥。探索我们的计划。",
+        welcome_back_title: "欢迎回来！👋", welcome_back_desc: "很高兴再次见到您。检查您的收益和活跃计划。",
         total_balance: "预计总余额", main_account: "● 主账户", current_yield: "↗ 当前收益",
         btn_deposit: "＋ 存款", btn_withdraw: "↗ 提款", invite_earn: "邀请赚取 10%", invite_desc: "分享您的链接并赚取佣金。",
         active_inv: "活跃投资", your_summary: "您的摘要", active_inv_stat: "活跃投资", asset_value: "您的资产价值",
@@ -748,7 +754,7 @@
         referral_program: "推荐计划", invite_code: "您的邀请码", invite_link: "您的邀请链接", how_it_works: "它是如何工作的？",
         referral_desc: "分享您的链接。当朋友注册并存入 $20 USD 或以上时，您将直接获得该存款的 10% 到您的 USDT 余额中。这是每位受邀朋友的独特福利！",
         friends_invited: "受邀朋友", registered_code: "使用您的代码注册", earned_commissions: "赚取的佣金", in_usdt: "以 USDT 计",
-        investor_profile: "投资者资料", grade: "等级", loading_date: "正在加载日期...", loading_id: "投资者 ID：加载中...",
+        investor_profile: "投资者资料", grade: "等级", loading_date: "正在加载日期...", investor_id: "投资者 ID：", loading_id: "投资者 ID：加载中...",
         all_balances: "您的所有余额", movement_history: "交易记录", no_movements: "没有记录交易", terms_btn: "条款和条件", logout_btn: "登出", footer: "© 2026 NovaVest。保留所有权利。数字资产管理平台。",
         admin_panel: "管理员面板", total_users: "总用户数", registered_accounts: "注册账户", total_volume: "总交易量", in_deposits: "存款（约）",
         user_panel: "用户面板", user_panel_desc: "查看统计数据、余额和活动。", pending_deposits: "待处理存款", no_pending_deposits: "没有待处理的存款。",
@@ -766,6 +772,7 @@
       sg: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
         welcome_title: "Welcome to NovaVest lah! 🚀", welcome_desc: "You are one step away from growing your assets. Explore our plans.",
+        welcome_back_title: "Welcome back lah! 👋", welcome_back_desc: "Glad to see you again. Check your earnings and active plans.",
         total_balance: "Estimated total balance", main_account: "● Main Account", current_yield: "↗ Current yield",
         btn_deposit: "＋ Deposit", btn_withdraw: "↗ Withdraw", invite_earn: "Invite & Earn 10%", invite_desc: "Share your link and earn commissions.",
         active_inv: "Active Investments", your_summary: "Your summary", active_inv_stat: "Active investment", asset_value: "Value of your assets",
@@ -781,7 +788,7 @@
         referral_program: "Referral Program", invite_code: "Your Invitation Code", invite_link: "Your Invitation Link", how_it_works: "How does it work?",
         referral_desc: "Share your link. When a friend registers and makes a deposit of $20 USD or more, you will receive 10% of that deposit directly in your USDT balance. It's a unique benefit for each invited friend!",
         friends_invited: "Friends Invited", registered_code: "Registered with your code", earned_commissions: "Earned Commissions", in_usdt: "In USDT",
-        investor_profile: "Investor Profile", grade: "Grade", loading_date: "Loading date...", loading_id: "Investor ID: Loading...",
+        investor_profile: "Investor Profile", grade: "Grade", loading_date: "Loading date...", investor_id: "Investor ID:", loading_id: "Investor ID: Loading...",
         all_balances: "All your balances", movement_history: "Movement History", no_movements: "No movements recorded", terms_btn: "Terms and Conditions", logout_btn: "Log out", footer: "© 2026 NovaVest. All rights reserved. Digital asset management platform.",
         admin_panel: "Admin Panel", total_users: "Total Users", registered_accounts: "Registered accounts", total_volume: "Total Volume", in_deposits: "In deposits (Approx)",
         user_panel: "User Panel", user_panel_desc: "View statistics, balances, and activity.", pending_deposits: "Pending Deposits", no_pending_deposits: "No pending deposits.",
@@ -799,7 +806,11 @@
     };
 
     function changeLanguage(lang) {
+      const validLangs = ['es', 'en', 'fr', 'zh', 'sg'];
+      if (!validLangs.includes(lang)) lang = 'es';
+      
       localStorage.setItem('novavest_lang', lang);
+      
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
@@ -954,93 +965,103 @@
     function quantity(value, asset) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: asset === 'BTC' ? 6 : 2, maximumFractionDigits: asset === 'BTC' ? 6 : 2 }) + ' ' + asset; }
 
     async function loadUserData(user) {
-      currentUserId = user.id; currentUserEmail = user.email; 
-      await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
+      try {
+        currentUserId = user.id; currentUserEmail = user.email; 
+        await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
 
-      if (user.email === ADMIN_EMAIL) {
-        $('adminNavBtn').classList.remove('hidden');
-        $('navInner').style.gridTemplateColumns = 'repeat(6, 1fr)';
-      } else {
-        $('adminNavBtn').classList.add('hidden');
-        $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
-      }
-
-      const createdDate = new Date(user.created_at);
-      const now = new Date();
-      const diffHours = Math.abs(now - createdDate) / 36e5; 
-      
-      if (diffHours < 24) {
-        $('welcomeTitle').setAttribute('data-i18n', 'welcome_title');
-        $('welcomeDesc').setAttribute('data-i18n', 'welcome_desc');
-      } else {
-        $('welcomeTitle').setAttribute('data-i18n', 'welcome_back_title');
-        $('welcomeDesc').setAttribute('data-i18n', 'welcome_back_desc');
-      }
-      
-      changeLanguage(localStorage.getItem('novavest_lang') || 'es');
-
-      const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
-      if (profile) {
-        currentUserDisplayId = profile.display_id;
-        $('investorId').textContent = 'ID: #' + profile.display_id;
-        $('myRefCode').textContent = profile.display_id;
-        $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
-      }
-
-      const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-      if (!existing || existing.length === 0) {
-        const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
-        await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
-      }
-      
-      const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
-      userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
-      (rows || []).forEach(row => { if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) userBalances[row.asset] = Number(row.amount) || 0; });
-
-      let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
-      const today = new Date().toISOString().split('T')[0];
-      if (!wallet) {
-        await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
-        withdrawableBalance = 0; dailyWithdrawn = 0;
-      } else {
-        if (wallet.last_withdrawn_date !== today) { dailyWithdrawn = 0; await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id); } 
-        else { dailyWithdrawn = Number(wallet.daily_withdrawn); }
-        withdrawableBalance = Number(wallet.withdrawable_balance);
-      }
-
-      const { data: vipData } = await supabaseClient.from('vista_usuarios_vip').select('vip_level').eq('user_id', user.id).maybeSingle();
-      const vipLevel = vipData ? Number(vipData.vip_level) : 0;
-      
-      const vipBadge = $('vipBadge');
-      if (vipBadge) {
-        vipBadge.style.display = 'flex';
-        vipBadge.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> <span data-i18n="grade">Grado</span> ${vipLevel}`;
-        
-        if (vipLevel === 0) {
-          vipBadge.style.background = 'rgba(255,255,255,0.1)';
-          vipBadge.style.color = 'var(--muted)';
-          vipBadge.style.border = '1px solid var(--line)';
-        } else if (vipLevel === 1) {
-          vipBadge.style.background = 'linear-gradient(135deg, #94a3b8, #cbd5e1)';
-          vipBadge.style.color = '#0f172a';
-          vipBadge.style.border = 'none';
-        } else if (vipLevel === 2) {
-          vipBadge.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
-          vipBadge.style.color = '#0f172a';
-          vipBadge.style.border = 'none';
-        } else if (vipLevel === 3) {
-          vipBadge.style.background = 'linear-gradient(135deg, #3b82f6, #8b5cf6)';
-          vipBadge.style.color = '#fff';
-          vipBadge.style.border = 'none';
-        } else if (vipLevel === 4) {
-          vipBadge.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
-          vipBadge.style.color = '#000';
-          vipBadge.style.border = 'none';
+        if (user.email === ADMIN_EMAIL) {
+          $('adminNavBtn').classList.remove('hidden');
+          $('navInner').style.gridTemplateColumns = 'repeat(6, 1fr)';
+        } else {
+          $('adminNavBtn').classList.add('hidden');
+          $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
         }
-        changeLanguage(localStorage.getItem('novavest_lang') || 'es');
-      }
 
-      renderUserBalances(); loadHistory(); loadActiveInvestments(); loadReferralStats(); loadUserPendingDeposits();
+        const createdDate = new Date(user.created_at);
+        const now = new Date();
+        const diffHours = Math.abs(now - createdDate) / 36e5; 
+        
+        if (diffHours < 24) {
+          $('welcomeTitle').setAttribute('data-i18n', 'welcome_title');
+          $('welcomeDesc').setAttribute('data-i18n', 'welcome_desc');
+        } else {
+          $('welcomeTitle').setAttribute('data-i18n', 'welcome_back_title');
+          $('welcomeDesc').setAttribute('data-i18n', 'welcome_back_desc');
+        }
+        
+        changeLanguage(localStorage.getItem('novavest_lang') || 'es');
+
+        const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        if (profile && profile.display_id) {
+          currentUserDisplayId = profile.display_id;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profile.display_id}`;
+          $('myRefCode').textContent = profile.display_id;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
+        } else {
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
+        }
+
+        const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+        if (!existing || existing.length === 0) {
+          const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
+          await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+        }
+        
+        const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
+        userBalances = { TRX: 0, BTC: 0, SOL: 0, USDT: 0 };
+        (rows || []).forEach(row => { if (Object.prototype.hasOwnProperty.call(userBalances, row.asset)) userBalances[row.asset] = Number(row.amount) || 0; });
+
+        let { data: wallet } = await supabaseClient.from('novavest_wallets').select('*').eq('user_id', user.id).single();
+        const today = new Date().toISOString().split('T')[0];
+        if (!wallet) {
+          await supabaseClient.from('novavest_wallets').insert({ user_id: user.id, withdrawable_balance: 0, daily_withdrawn: 0, last_withdrawn_date: today });
+          withdrawableBalance = 0; dailyWithdrawn = 0;
+        } else {
+          if (wallet.last_withdrawn_date !== today) { dailyWithdrawn = 0; await supabaseClient.from('novavest_wallets').update({ daily_withdrawn: 0, last_withdrawn_date: today }).eq('user_id', user.id); } 
+          else { dailyWithdrawn = Number(wallet.daily_withdrawn); }
+          withdrawableBalance = Number(wallet.withdrawable_balance);
+        }
+
+        const { data: vipData } = await supabaseClient.from('vista_usuarios_vip').select('vip_level').eq('user_id', user.id).maybeSingle();
+        const vipLevel = vipData ? Number(vipData.vip_level) : 0;
+        
+        const vipBadge = $('vipBadge');
+        if (vipBadge) {
+          vipBadge.style.display = 'flex';
+          vipBadge.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> <span data-i18n="grade">Grado</span> ${vipLevel}`;
+          
+          if (vipLevel === 0) {
+            vipBadge.style.background = 'rgba(255,255,255,0.1)';
+            vipBadge.style.color = 'var(--muted)';
+            vipBadge.style.border = '1px solid var(--line)';
+          } else if (vipLevel === 1) {
+            vipBadge.style.background = 'linear-gradient(135deg, #94a3b8, #cbd5e1)';
+            vipBadge.style.color = '#0f172a';
+            vipBadge.style.border = 'none';
+          } else if (vipLevel === 2) {
+            vipBadge.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            vipBadge.style.color = '#0f172a';
+            vipBadge.style.border = 'none';
+          } else if (vipLevel === 3) {
+            vipBadge.style.background = 'linear-gradient(135deg, #3b82f6, #8b5cf6)';
+            vipBadge.style.color = '#fff';
+            vipBadge.style.border = 'none';
+          } else if (vipLevel === 4) {
+            vipBadge.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+            vipBadge.style.color = '#000';
+            vipBadge.style.border = 'none';
+          }
+          changeLanguage(localStorage.getItem('novavest_lang') || 'es');
+        }
+
+        renderUserBalances(); loadHistory(); loadActiveInvestments(); loadReferralStats(); loadUserPendingDeposits();
+      } catch (err) {
+        console.error('Fallo en loadUserData:', err);
+        toast('Error cargando datos. Revisa tu conexión.');
+        // Si falla, devolvemos al login para evitar pantalla en negro
+        $('dashboard').classList.add('hidden');
+        $('authScreen').classList.remove('hidden');
+      }
     }
 
     async function loadUserPendingDeposits() {
@@ -1333,12 +1354,14 @@
         const result = await callEdgeFunction('claim-reward', { investmentId: invId });
         
         // Animación de confeti al reclamar
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#10b981', '#3b82f6', '#f59e0b']
-        });
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#10b981', '#3b82f6', '#f59e0b']
+          });
+        }
 
         if (result.completed) openModal('¡Plan Completado!', `Has reclamado el último pago de <b>$${result.earned} USD</b>.<br><br>El plan ha finalizado.`);
         else openModal('¡Pago Reclamado!', `Has recibido <b>$${result.earned} USD</b>.<br><br>Tu próximo pago estará disponible pronto.`);
@@ -1533,9 +1556,7 @@
     window.openModal=function(title,message){ $('modalTitle').textContent=title; $('modalText').innerHTML=message; $('modal').classList.add('open'); };
     window.closeModal=function(){$('modal').classList.remove('open');};
     window.toast=function(message){
-      // Vibrar en móvil para feedback háptico
       if (navigator.vibrate) navigator.vibrate(50);
-      
       const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
     };
 
@@ -1543,11 +1564,6 @@
       const urlParams = new URLSearchParams(window.location.search); const refParam = urlParams.get('ref');
       if (refParam) { $('referralCode').value = refParam; setAuthView('register'); }
     });
-
-    // --- CARGA DE LIBRERÍA DE CONFETI (Solo para celebraciones) ---
-    const confettiScript = document.createElement('script');
-    confettiScript.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
-    document.head.appendChild(confettiScript);
   </script>
 </body>
 </html>
