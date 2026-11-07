@@ -992,31 +992,18 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- LECTURA CORREGIDA DEL ID DE INVERSOR ---
-        let refCodeFinal = null;
+        // --- OBTENER ID DE REFERIDO DESDE SUPABASE ---
+        const { data: profileData, error: rpcError } = await supabaseClient.rpc('get_or_create_profile');
         
-        // Intentamos buscar por user_id (como lo hace tu código original)
-        const { data: profile1 } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
-        if (profile1 && profile1.display_id) {
-            refCodeFinal = profile1.display_id;
+        if (profileData && profileData.display_id) {
+          currentUserDisplayId = profileData.display_id;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profileData.display_id}`;
+          $('myRefCode').textContent = profileData.display_id;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profileData.display_id;
         } else {
-            // Si falla, intentamos buscar por el ID de autenticación (id)
-            const { data: profile2 } = await supabaseClient.from('novavest_profiles').select('display_id').eq('id', user.id).maybeSingle();
-            if (profile2 && profile2.display_id) {
-                refCodeFinal = profile2.display_id;
-            }
-        }
-
-        // Asignamos los valores a la pantalla
-        if (refCodeFinal) {
-          currentUserDisplayId = refCodeFinal;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
-          $('myRefCode').textContent = refCodeFinal;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
-        } else {
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
-          $('myRefCode').textContent = 'Error';
-          $('myRefLink').value = 'No disponible';
+          console.error("Error obteniendo ID:", rpcError);
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #Cargando...`;
+          $('myRefCode').textContent = '...';
         }
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
