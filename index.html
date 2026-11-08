@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#ffffff">
   <title>NovaVest | Gestión de Activos</title>
   
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='12' fill='%230f172a'/><path d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='12' fill='%2310b981'/><path d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,8 +15,8 @@
   
   <style>
     :root { 
-      --bg: #0f172a; --panel: #1e293b; --muted: #94a3b8; --text: #f8fafc; --line: #334155; 
-      --mint: #10b981; --blue: #3b82f6; --fire: #ef4444; 
+      --bg: #f8fafc; --panel: #ffffff; --muted: #64748b; --text: #0f172a; --line: #e2e8f0; 
+      --mint: #10b981; --blue: #3b82f6; --fire: #ef4444; --soft: #f1f5f9;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     html { scroll-behavior: smooth; }
@@ -31,11 +31,11 @@
     .falling-coin {
       position: absolute; top: -50px; width: 35px; height: 35px;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      opacity: 0.15; animation: fall linear infinite, sway 3s ease-in-out infinite alternate;
+      opacity: 0.08; animation: fall linear infinite, sway 3s ease-in-out infinite alternate;
     }
     @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); } 100% { transform: translateY(105vh) rotate(360deg); } }
     @keyframes sway { 0% { margin-left: -20px; } 100% { margin-left: 20px; } }
-    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.1; } }
+    @media (max-width: 600px) { .falling-coin { width: 25px; height: 25px; opacity: 0.06; } }
 
     button, input, select { font: inherit; }
     button { cursor: pointer; border: none; outline: none; position: relative; overflow: hidden; }
@@ -47,34 +47,34 @@
     .view.active { display: block; animation: slideInBlur 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     @keyframes slideInBlur { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
     .press-effect { transition: transform 0.1s, box-shadow 0.1s; }
-    .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+    .press-effect:active { transform: scale(0.96); box-shadow: inset 0 2px 5px rgba(0,0,0,0.08); }
     
-    /* RIPPLE EFFECT (EFECTO ONDA AL TOCAR) */
+    /* RIPPLE EFFECT */
     .ripple {
       position: absolute; border-radius: 50%; transform: scale(0);
-      animation: ripple-anim 0.6s linear; background-color: rgba(255,255,255,0.4);
+      animation: ripple-anim 0.6s linear; background-color: rgba(16,185,129,0.3);
       pointer-events: none; z-index: 10;
     }
     @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-    /* RESPIRACIÓN DEL SALDO (DOPAMINA) */
+    /* RESPIRACIÓN DEL SALDO */
     .amount { 
       font-size: 42px; letter-spacing: -1.5px; font-weight: 800; margin: 17px 0 4px; position: relative; z-index: 1; color: #fff; 
-      text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      text-shadow: 0 4px 10px rgba(0,0,0,0.15);
       animation: breathe 3s ease-in-out infinite;
     }
-    @keyframes breathe { 0%, 100% { text-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 20px rgba(16, 185, 129, 0.1); } 50% { text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 30px rgba(16, 185, 129, 0.3); } }
+    @keyframes breathe { 0%, 100% { text-shadow: 0 4px 10px rgba(0,0,0,0.15), 0 0 20px rgba(16, 185, 129, 0.15); } 50% { text-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 30px rgba(16, 185, 129, 0.35); } }
 
     .top { display: flex; align-items: center; justify-content: space-between; padding: 17px 2px 20px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; color: #fff; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.5px; font-size: 21px; color: var(--text); }
     .brandmark { width: 38px; height: 38px; display: grid; place-items: center; }
-    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #334155); display: grid; place-items: center; font-weight: 800; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid var(--line); }
+    .avatar { width: 39px; height: 39px; border-radius: 50%; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); display: grid; place-items: center; font-weight: 800; color: #0f172a; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 1px solid var(--line); }
     
     /* SELECTOR DE IDIOMA */
     .lang-selector {
-      background: rgba(255,255,255,0.05);
+      background: #fff;
       border: 1px solid var(--line);
-      color: #fff;
+      color: var(--text);
       padding: 6px 10px;
       border-radius: 10px;
       font-size: 12px;
@@ -82,83 +82,84 @@
       outline: none;
       cursor: pointer;
       margin-right: 15px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-    .lang-selector option { background: var(--panel); color: #fff; }
+    .lang-selector option { background: #fff; color: var(--text); }
 
     .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; font-weight: 800; }
-    .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; color: #fff; }
+    .welcome { font-size: 24px; font-weight: 800; letter-spacing: -0.8px; margin: 5px 0 3px; color: var(--text); }
     .sub { font-size: 13px; color: var(--muted); }
     
     /* PANEL DE BIENVENIDA */
     .welcome-panel {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
-      border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 20px; padding: 20px; margin-bottom: 20px;
-      display: flex; align-items: center; justify-content: space-between; color: #fff;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.12));
+      border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 20px; padding: 20px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; color: var(--text);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
     }
-    .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: #fff; font-weight: 800; }
-    .welcome-panel p { margin: 0; font-size: 13px; color: #cbd5e1; font-weight: 500; }
+    .welcome-panel h3 { margin: 0 0 5px; font-size: 16px; color: var(--text); font-weight: 800; }
+    .welcome-panel p { margin: 0; font-size: 13px; color: #475569; font-weight: 500; }
     .welcome-icon { font-size: 32px; margin-left: 15px; animation: floatIcon 3s ease-in-out infinite; }
     @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-    /* TARJETA DE BALANCE CON CONTORNO Y RELIEVE */
+    /* TARJETA DE BALANCE */
     .balance { 
       margin-top: 19px; padding: 22px; border-radius: 24px; 
-      background: linear-gradient(145deg, #1e293b, #162032); 
+      background: linear-gradient(145deg, #10b981, #059669); 
       color: #fff; position: relative; overflow: hidden; 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1); 
-      border: 1px solid rgba(255,255,255,0.05); 
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.25), inset 0 1px 1px rgba(255,255,255,0.3); 
+      border: 1px solid rgba(255,255,255,0.15); 
     }
     .balance::after {
       content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.1), transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.2), transparent 70%);
       pointer-events: none; z-index: 0;
     }
     .graffiti-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .graffiti-text {
       position: absolute; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 11px; 
-      padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); 
-      background: rgba(255, 255, 255, 0.03); color: rgba(255, 255, 255, 0.15); 
+      padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); 
+      background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.85); 
       white-space: nowrap; animation: floatText 6s ease-in-out infinite alternate;
       backdrop-filter: blur(4px); display: flex; align-items: center; gap: 5px;
     }
     @keyframes floatText { 0% { transform: translateY(0) rotate(var(--rot)); } 100% { transform: translateY(-12px) rotate(var(--rot)); } }
 
     .balance-head { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
-    .balance .eyebrow { color: #94a3b8; }
-    .pill { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
-    .change { font-size: 12px; color: var(--mint); position: relative; z-index: 1; font-weight: 600; }
+    .balance .eyebrow { color: rgba(255,255,255,0.85); }
+    .pill { border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.15); border-radius: 30px; padding: 7px 10px; font-size: 11px; color: #fff; font-weight: 600; }
+    .change { font-size: 12px; color: #fff; position: relative; z-index: 1; font-weight: 600; opacity: 0.9; }
     
     .balance-actions { display: flex; gap: 10px; margin-top: 20px; position: relative; z-index: 1; }
     .action { border-radius: 14px; padding: 12px 16px; font-weight: 700; font-size: 13px; flex: 1; transition: all 0.2s; }
-    .primary { background: #fff; color: #0f172a; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); }
-    .ghost { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.1); }
-    .primary:hover { box-shadow: 0 6px 20px rgba(255,255,255,0.2); transform: translateY(-2px); }
-    .ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .primary { background: #fff; color: #059669; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+    .ghost { background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); }
+    .primary:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.15); transform: translateY(-2px); }
+    .ghost:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
     
     .section { display: flex; justify-content: space-between; align-items: center; margin: 25px 2px 12px; }
-    .section h2 { font-size: 17px; margin: 0; font-weight: 800; color: #fff; }
+    .section h2 { font-size: 17px; margin: 0; font-weight: 800; color: var(--text); }
     
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 8px 25px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.2s; }
-    .stat:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.1); }
+    .stat { padding: 18px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 15px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1); transition: transform 0.2s; }
+    .stat:hover { transform: translateY(-2px); border-color: #cbd5e1; }
     .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px; font-weight: 600; }
-    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: #fff; }
+    .stat strong { display: block; font-size: 20px; margin-top: 12px; font-weight: 800; color: var(--text); }
     .stat small { color: var(--mint); font-size: 11px; font-weight: 600; }
     
-    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: border-color 0.2s; }
+    .active-inv-card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: border-color 0.2s; }
     .active-inv-card:hover { border-color: var(--blue); }
-    .active-inv-info b { display: block; font-size: 14px; color: #fff; margin-bottom: 4px; font-weight: 800; }
+    .active-inv-info b { display: block; font-size: 14px; color: var(--text); margin-bottom: 4px; font-weight: 800; }
     .active-inv-info span { font-size: 12px; color: var(--muted); display: block; font-weight: 500; }
     .active-inv-timer { text-align: right; }
-    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: #fff; font-weight: 800; }
+    .active-inv-timer strong { display: block; font-size: 18px; font-family: monospace; color: var(--text); font-weight: 800; }
     .active-inv-timer span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
     .claim-btn { background: var(--mint); color: #fff; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 13px; animation: pulse 2s infinite; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
     .plans { display: grid; gap: 15px; margin-top: 10px; }
-    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
-    .plan-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+    .plan-card { padding: 22px; border-radius: 24px; background: var(--panel); position: relative; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+    .plan-card:hover { border-color: #cbd5e1; transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
     .plan-card:active { transform: scale(0.98); }
     .plan-card.cold-theme { border-top: 4px solid var(--blue); }
     .plan-card.cold-theme .plan-title { color: var(--blue); }
@@ -168,136 +169,136 @@
     .plan-card.fire-theme .plan-btn { background: var(--fire); color: #fff; }
     .plan-badge { position: absolute; top: 0; right: 0; background: var(--fire); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 12px; border-bottom-left-radius: 12px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); }
     .plan-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: #fff; }
+    .plan-yield { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: var(--text); }
     .plan-desc { font-size: 12px; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
-    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid var(--line); }
+    .plan-freq { font-size: 11px; font-weight: 700; margin-bottom: 15px; padding: 6px 10px; border-radius: 8px; display: inline-block; background: var(--soft); color: #475569; border: 1px solid var(--line); }
     .plan-btn { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 13px; transition: 0.2s; }
     .plan-btn:hover { opacity: 0.9; transform: scale(1.02); }
     .plan-btn:active { transform: scale(0.96); }
 
-    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05); position: relative; z-index: 2; transition: border-color 0.3s; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 20px; margin-top: 13px; box-shadow: 0 4px 15px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1); position: relative; z-index: 2; transition: border-color 0.3s; }
     .panel:focus-within { border-color: rgba(16, 185, 129, 0.4); }
     .field-label { display: block; font-size: 11px; color: var(--muted); margin: 14px 0 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .select, .number, .field { width: 100%; background: rgba(15, 23, 42, 0.5); color: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
-    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); background: rgba(15, 23, 42, 0.8); }
+    .select, .number, .field { width: 100%; background: var(--soft); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 14px; outline: none; transition: 0.2s; font-weight: 600; }
+    .select:focus, .number:focus, .field:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); background: #fff; }
     .amount-wrap { position: relative; }
     .amount-wrap .number { padding-right: 70px; font-size: 18px; font-weight: 800; }
     .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); font-weight: 700; }
     .hint { color: var(--muted); font-size: 11px; margin-top: 7px; font-weight: 500; }
     
-    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); position: relative; z-index: 2; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; }
+    .wide { width: 100%; border-radius: 16px; padding: 16px; background: var(--mint); color: #fff; font-weight: 800; margin-top: 14px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25); position: relative; z-index: 2; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; }
     .wide:hover { background: #059669; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); transform: translateY(-2px); }
     .wide:active { transform: scale(0.96); opacity: 0.9; }
 
-    .info-box { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
+    .info-box { background: var(--soft); border: 1px solid var(--line); border-radius: 16px; padding: 15px; margin-top: 15px; }
     .info-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: var(--text); font-weight: 600; }
     .info-row:last-child { margin-bottom: 0; }
     .info-row b { color: var(--mint); }
 
     .coins { display: grid; gap: 9px; }
-    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, border-color 0.2s; }
-    .coin:hover { transform: translateX(4px); border-color: rgba(255,255,255,0.1); }
-    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; padding: 4px; }
+    .coin { display: flex; align-items: center; padding: 14px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); gap: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s, border-color 0.2s; }
+    .coin:hover { transform: translateX(4px); border-color: #cbd5e1; }
+    .coin-logo { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); border: 1px solid var(--line); box-shadow: 0 2px 5px rgba(0,0,0,0.04); overflow: hidden; padding: 4px; }
     .coin-logo img { width: 100%; height: 100%; object-fit: contain; }
     .coin-info { flex: 1; }
-    .coin-info b { display: block; font-size: 14px; font-weight: 700; color: #fff; }
+    .coin-info b { display: block; font-size: 14px; font-weight: 700; color: var(--text); }
     .coin-info span { font-size: 11px; color: var(--muted); font-weight: 600; }
-    .coin-value b { font-size: 13px; font-weight: 800; color: #fff; }
+    .coin-value b { font-size: 13px; font-weight: 800; color: var(--text); }
 
     .activity { display: grid; gap: 0; }
     .activity-item { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid var(--line); transition: background 0.2s; }
-    .activity-item:hover { background: rgba(255,255,255,0.02); }
+    .activity-item:hover { background: rgba(0,0,0,0.02); }
     .activity-item:last-child { border: 0; }
-    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.05); color: var(--text); }
+    .activity-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--soft); color: var(--text); }
     .activity-info { flex: 1; }
-    .activity-info b { font-size: 13px; display: block; font-weight: 700; color: #fff; }
+    .activity-info b { font-size: 13px; display: block; font-weight: 700; color: var(--text); }
     .activity-info span { font-size: 11px; color: var(--muted); font-weight: 500; }
     .activity-amount { font-size: 13px; font-weight: 800; text-align: right; }
 
     .investor { display: flex; align-items: center; gap: 14px; }
-    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: #1e293b; color: #fff; font-weight: 800; font-size: 18px; border: 1px solid var(--line); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .investor-info b { font-size: 16px; display: block; font-weight: 800; color: #fff; }
+    .investor-face { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 800; font-size: 18px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 4px 10px rgba(16,185,129,0.25); }
+    .investor-info b { font-size: 16px; display: block; font-weight: 800; color: var(--text); }
     .investor-info span { font-size: 12px; color: var(--muted); font-weight: 500; }
 
     /* REFERIDOS */
-    .ref-box { background: #0f172a; color: #fff; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 15px; border: 1px solid var(--line); box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 10px 30px rgba(0,0,0,0.3); }
+    .ref-box { background: var(--panel); color: var(--text); padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 15px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
     .ref-box h3 { margin: 0 0 10px; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .ref-code { font-size: 40px; font-weight: 900; color: var(--mint); letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3); }
-    .ref-link-wrap { display: flex; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); }
-    .ref-link-wrap input { background: transparent; border: none; color: #fff; flex: 1; font-size: 13px; outline: none; padding-left: 10px; font-weight: 600; width: 100%; text-overflow: ellipsis; }
-    .ref-link-wrap button { background: var(--mint); color: #0f172a; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.2s; flex-shrink: 0; }
-    .ref-link-wrap button:hover { background: #059669; color: #fff; transform: scale(1.05); }
+    .ref-code { font-size: 40px; font-weight: 900; color: var(--mint); letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(16, 185, 129, 0.2); }
+    .ref-link-wrap { display: flex; gap: 8px; background: var(--soft); padding: 8px; border-radius: 14px; border: 1px solid var(--line); }
+    .ref-link-wrap input { background: transparent; border: none; color: var(--text); flex: 1; font-size: 13px; outline: none; padding-left: 10px; font-weight: 600; width: 100%; text-overflow: ellipsis; }
+    .ref-link-wrap button { background: var(--mint); color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; transition: 0.2s; flex-shrink: 0; }
+    .ref-link-wrap button:hover { background: #059669; transform: scale(1.05); }
     .ref-link-wrap button:active { transform: scale(0.95); }
 
     /* CALENDARIO ADMIN */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-top: 10px; }
-    .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); transition: 0.2s; }
-    .calendar-day:hover { background: rgba(255,255,255,0.1); }
+    .calendar-day { padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); background: var(--soft); border: 1px solid var(--line); transition: 0.2s; }
+    .calendar-day:hover { background: #e2e8f0; }
     .calendar-day.has-users { background: var(--mint); color: #fff; font-weight: 800; border-color: var(--mint); box-shadow: 0 0 10px rgba(16,185,129,0.3); }
     .calendar-header { font-size: 11px; font-weight: 800; color: var(--muted); padding: 4px; }
-    .user-card { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); transition: background 0.2s; }
-    .user-card:hover { background: rgba(255,255,255,0.04); }
+    .user-card { background: var(--soft); border-radius: 16px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); transition: background 0.2s; }
+    .user-card:hover { background: #e2e8f0; }
     .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
-    .user-header b { font-size: 14px; color: #fff; }
+    .user-header b { font-size: 14px; color: var(--text); }
     .user-header span { font-size: 11px; color: var(--muted); }
     .user-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px; color: var(--muted); }
-    .user-balances span { font-weight: 700; color: #fff; }
+    .user-balances span { font-weight: 700; color: var(--text); }
     .user-status { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
     .status-pending { color: var(--fire); font-weight: 800; }
 
-    /* MENÚ LATERAL ESTILO TARJETA (PC) */
-    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); }
+    /* MENÚ */
+    .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
     .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; position: relative; z-index: 2; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
     .nav button span { font-size: 20px; }
-    .nav button.active { color: #fff; background: rgba(255,255,255,0.05); }
+    .nav button.active { color: var(--mint); background: rgba(16, 185, 129, 0.1); }
     .nav button.active span { transform: translateY(-2px); }
 
     #sidebar-bg { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
-    .falling-logo { position: absolute; top: -50px; width: 30px; height: 30px; background-size: contain; background-repeat: no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); opacity: 0.15; animation: fall linear infinite; }
+    .falling-logo { position: absolute; top: -50px; width: 30px; height: 30px; background-size: contain; background-repeat: no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%2310b981' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); opacity: 0.1; animation: fall linear infinite; }
 
-    /* ESTILOS DE MODALES Y TOAST */
-    .toast { position: fixed; z-index: 999; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #fff; color: #0f172a; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
+    /* TOAST Y MODALES */
+    .toast { position: fixed; z-index: 999; bottom: 100px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 998; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 998; display: none; align-items: flex-end; justify-content: center; padding: 15px; backdrop-filter: blur(8px); }
     .modal-backdrop.open { display: flex; animation: fadeIn 0.2s; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: #fff; }
+    .modal { width: 100%; max-width: 490px; background: var(--panel); border-radius: 28px; padding: 24px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,1); max-height: 85vh; overflow-y: auto; animation: modalSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--text); }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     .modal h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
     .modal p { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; font-weight: 500; }
-    .close { float: right; background: rgba(255,255,255,0.1); border: 0; color: #fff; border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; transition: background 0.2s; }
-    .close:hover { background: rgba(255,255,255,0.2); }
+    .close { float: right; background: var(--soft); border: 0; color: var(--text); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+    .close:hover { background: #e2e8f0; }
     
     .modal-actions { display: flex; gap: 10px; }
-    .modal-btn-cancel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--line); color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; }
-    .modal-btn-cancel:hover { background: rgba(255,255,255,0.1); }
+    .modal-btn-cancel { flex: 1; background: var(--soft); border: 1px solid var(--line); color: var(--text); padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; }
+    .modal-btn-cancel:hover { background: #e2e8f0; }
     .modal-btn-confirm { flex: 1; background: var(--mint); border: none; color: #fff; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; }
     .modal-btn-confirm:hover { background: #059669; }
 
-    /* ARREGLO DE INVERSIONES (MODAL) */
+    /* INVERSIONES MODAL */
     .invest-coin-section { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 15px; }
     .invest-coin-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .invest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .invest-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: 0.2s; }
-    .invest-btn:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.05); transform: scale(1.02); }
-    .invest-btn-price { font-weight: 800; font-size: 15px; color: #fff; }
+    .invest-btn { background: var(--soft); border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: var(--text); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: 0.2s; }
+    .invest-btn:hover { border-color: var(--mint); background: rgba(16, 185, 129, 0.08); transform: scale(1.02); }
+    .invest-btn-price { font-weight: 800; font-size: 15px; color: var(--text); }
     .invest-btn-price span { font-size: 10px; color: var(--muted); font-weight: 700; }
     .invest-btn-yield { font-size: 11px; font-weight: 700; }
 
     /* FOOTER */
     .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
 
-    /* DISEÑO DE ESCRITORIO (PC) */
+    /* ESCRITORIO */
     @media(min-width: 600px) { 
-      body { padding-bottom: 0; padding-top: 0; background-color: #0f172a; } 
+      body { padding-bottom: 0; padding-top: 0; background-color: var(--bg); } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
-      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 30px 15px; display: flex; flex-direction: column; background: #0f172a; z-index: 10; }
+      .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 30px 15px; display: flex; flex-direction: column; background: #fff; z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.02); }
       #sidebar-bg { display: block; }
       .nav-inner { display: flex; flex-direction: column; gap: 8px; width: 100%; position: relative; z-index: 2; }
-      .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); color: #94a3b8; transition: all 0.2s ease; }
-      .nav button:hover { background: rgba(255, 255, 255, 0.05); color: #fff; border-color: rgba(255, 255, 255, 0.1); transform: translateX(4px); }
+      .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: transparent; border: 1px solid transparent; color: var(--muted); transition: all 0.2s ease; }
+      .nav button:hover { background: var(--soft); color: var(--text); border-color: var(--line); transform: translateX(4px); }
       .nav button span { font-size: 20px; }
       .nav button.active { background: rgba(16, 185, 129, 0.1); color: var(--mint); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05); }
       .nav button.hidden { display: none !important; }
@@ -316,13 +317,13 @@
 
   <div id="coin-bg"></div>
   
-  <section id="authScreen" class="auth-wrap" style="position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center;">
-    <div class="auth-card" style="width:100%; max-width:430px; background:var(--panel); border:1px solid var(--line); border-radius:28px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-      <div class="auth-logo" style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; margin-bottom:27px; color:#fff;">
-        <div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <section id="authScreen" class="auth-wrap" style="position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding: 20px;">
+    <div class="auth-card" style="width:100%; max-width:430px; background:var(--panel); border:1px solid var(--line); border-radius:28px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.1);">
+      <div class="auth-logo" style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:21px; margin-bottom:27px; color:var(--text);">
+        <div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#10b981"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         NovaVest
       </div>
-      <h1 id="authTitle" style="font-size:26px; margin:0 0 7px; font-weight:800; color:#fff;">Bienvenido de nuevo</h1>
+      <h1 id="authTitle" style="font-size:26px; margin:0 0 7px; font-weight:800; color:var(--text);">Bienvenido de nuevo</h1>
       <p class="auth-sub" id="authSubtitle" style="font-size:14px; color:var(--muted); line-height:1.5; margin:0 0 24px; font-weight:500;">Inicia sesión para acceder a tu panel financiero.</p>
       <div id="authMessage" class="auth-message hidden" role="status"></div>
       <form id="loginForm" class="auth-form" style="display:grid; gap:10px;">
@@ -362,7 +363,6 @@
     </div>
   </section>
 
-  <!-- El menú ahora está oculto por defecto en el body y se muestra al hacer login -->
   <div class="app-layout hidden" id="appLayout">
     <nav class="nav">
       <div id="sidebar-bg"></div>
@@ -380,7 +380,7 @@
     <main id="dashboard" class="hidden">
       <div class="app">
         <header class="top animate-in">
-          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#1e293b"/><path d="M12 28V12L28 28V12" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
+          <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#10b981"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
           <div style="display:flex; align-items:center;">
             <select id="langSelector" class="lang-selector" onchange="changeLanguage(this.value)">
               <option value="es">🇪🇸 ES</option>
@@ -408,7 +408,7 @@
           <section class="balance animate-in delay-2">
             <div class="graffiti-bg" id="graffiti-container"></div>
             
-            <div class="balance-head"><span class="eyebrow" style="color: #94a3b8;" data-i18n="total_balance">Balance total estimado</span><span class="pill" data-i18n="main_account">● Cuenta Principal</span></div>
+            <div class="balance-head"><span class="eyebrow" data-i18n="total_balance">Balance total estimado</span><span class="pill" data-i18n="main_account">● Cuenta Principal</span></div>
             <div class="amount" id="totalBalance">$0.00</div>
             <div class="change" data-i18n="current_yield">↗ Rendimiento actual</div>
             <div class="balance-actions">
@@ -417,25 +417,25 @@
             </div>
           </section>
 
-          <div class="panel animate-in delay-3" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
-            <div style="display:flex; justify-content:space-between; align-items:center; color:white;">
-              <div><h2 style="margin:0; font-size:16px; color:white;" data-i18n="invite_earn">Invita y Gana 10%</h2><p style="color:rgba(255,255,255,0.8); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="invite_desc">Comparte tu enlace y gana comisiones.</p></div>
+          <div class="panel animate-in delay-3" style="margin-top:15px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08)); border: 1px solid rgba(16, 185, 129, 0.2); cursor: pointer;" onclick="navigate('referrals', document.querySelectorAll('.nav button')[3])">
+            <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text);">
+              <div><h2 style="margin:0; font-size:16px; color:var(--text);" data-i18n="invite_earn">Invita y Gana 10%</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="invite_desc">Comparte tu enlace y gana comisiones.</p></div>
               <span style="font-size:24px;">👥</span>
             </div>
           </div>
           <div id="activeInvestmentsSection" class="hidden"><div class="section"><h2 data-i18n="active_inv">Inversiones Activas</h2></div><div id="activeInvestmentsList"></div></div>
           <div class="section"><h2 data-i18n="your_summary">Tu resumen</h2></div>
           <div class="stats">
-            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="active_inv_stat">Inversión activa <span class="stat-icon" style="background:rgba(59,130,246,0.2); color:#60a5fa; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small data-i18n="asset_value">Valor de tus activos</small></div>
-            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="accumulated_earnings">Ganancia acumulada <span class="stat-icon" style="background:rgba(217,70,239,0.2); color:#e879f9; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small data-i18n="plan_yield">Rendimiento de planes</small></div>
+            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="active_inv_stat">Inversión activa <span class="stat-icon" style="background:rgba(59,130,246,0.15); color:#3b82f6; border-radius:6px; padding:4px;">↗</span></div><strong id="activeInvestment">$0.00</strong><small data-i18n="asset_value">Valor de tus activos</small></div>
+            <div class="stat animate-in delay-3"><div class="stat-top" data-i18n="accumulated_earnings">Ganancia acumulada <span class="stat-icon" style="background:rgba(217,70,239,0.15); color:#d946ef; border-radius:6px; padding:4px;">✦</span></div><strong id="demoPerformance">$0.00</strong><small data-i18n="plan_yield">Rendimiento de planes</small></div>
           </div>
           <div class="section"><h2 data-i18n="investment_plans">Planes de Inversión</h2></div>
           <div class="plans">
             <div class="plan-card cold-theme animate-in delay-3" onclick="openPlanModal('starter')">
-              <div class="plan-title" data-i18n="starter_plan">❄️ Plan Starter</div><div class="plan-yield">9% ROI</div><div class="plan-freq" data-i18n="starter_freq">Retiros cada 24 horas (7 días)</div><div class="plan-desc" data-i18n="starter_desc">Ganancias diarias. Reactiva tu plan al finalizar.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
+              <div class="plan-title" data-i18n="starter_plan">❄️ Plan Starter</div><div class="plan-yield">6% ROI</div><div class="plan-freq" data-i18n="starter_freq">Retiros cada 24 horas (7 días)</div><div class="plan-desc" data-i18n="starter_desc">Ganancias diarias. Reactiva tu plan al finalizar.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
             </div>
             <div class="plan-card fire-theme animate-in delay-3" onclick="openPlanModal('pro')">
-              <div class="plan-badge" data-i18n="most_popular">🔥 MÁS POPULAR</div><div class="plan-title" data-i18n="pro_plan">🔥 Plan Pro</div><div class="plan-yield">12% ROI</div><div class="plan-freq" data-i18n="pro_freq">Retiros cada 48 horas (15 días)</div><div class="plan-desc" data-i18n="pro_desc">Maximiza tus ganancias a mediano plazo.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
+              <div class="plan-badge" data-i18n="most_popular">🔥 MÁS POPULAR</div><div class="plan-title" data-i18n="pro_plan">🔥 Plan Pro</div><div class="plan-yield">9% ROI</div><div class="plan-freq" data-i18n="pro_freq">Retiros cada 48 horas (15 días)</div><div class="plan-desc" data-i18n="pro_desc">Maximiza tus ganancias a mediano plazo.</div><button class="plan-btn press-effect" data-i18n="see_amounts">Ver montos de inversión</button>
             </div>
           </div>
         </div>
@@ -461,19 +461,19 @@
             <label class="field-label" for="amount" data-i18n="amount_min">Cantidad a depositar (Mínimo $10)</label>
             <div class="amount-wrap"><input class="number" id="amount" type="number" min="0.000001" step="any" value="100" oninput="updateEstimate()" required><span class="unit" id="unit">TRX</span></div>
             <div class="hint" id="estimate">≈ $28.41 USD · Valor de mercado</div>
-            <div style="margin-top:15px; padding:15px; border-radius:16px; background:rgba(255,255,255,0.02); border:1px dashed var(--line);">
+            <div style="margin-top:15px; padding:15px; border-radius:16px; background:var(--soft); border:1px dashed var(--line);">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800;">
                 <span data-i18n="deposit_address">Dirección de depósito</span>
-                <button class="press-effect" style="background:rgba(255,255,255,0.1); border:none; color:#fff; border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()" data-i18n="copy">Copiar</button>
+                <button class="press-effect" style="background:#e2e8f0; border:none; color:var(--text); border-radius:8px; padding:6px 12px; font-weight:700; font-size:11px;" onclick="copyWallet()" data-i18n="copy">Copiar</button>
               </div>
               <div id="wallet" style="font-size:11px; color:var(--muted); word-break:break-all; margin-top:10px; font-weight: 600;">TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg</div>
               <div style="display:flex; align-items:center; gap:12px; margin-top:15px;">
                 <img id="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg" alt="QR" style="width:90px; height:90px; background:white; border-radius:10px; padding:4px; object-fit:contain; border:1px solid var(--line);">
-                <div style="font-size:11px; color:var(--muted); line-height:1.4; font-weight: 500;"><b style="color:#fff;" data-i18n="scan_qr">Escanear QR</b><br><span data-i18n="send_only">Envía solo</span> <span id="qr-asset-name" style="color:var(--mint); font-weight:800;">TRX</span> <span data-i18n="to_this_address">a esta dirección.</span><br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div>
+                <div style="font-size:11px; color:var(--muted); line-height:1.4; font-weight: 500;"><b style="color:var(--text);" data-i18n="scan_qr">Escanear QR</b><br><span data-i18n="send_only">Envía solo</span> <span id="qr-asset-name" style="color:var(--mint); font-weight:800;">TRX</span> <span data-i18n="to_this_address">a esta dirección.</span><br><span id="qr-network" style="font-size:10px; display:none; color:#ef4444; font-weight: 700;">(Red: TRC20)</span></div>
               </div>
             </div>
-            <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); font-size: 11px; color: #fca5a5; text-align: center; line-height: 1.5; font-weight: 700;">
-              <span data-i18n="warning">⚠️ IMPORTANTE: Envía solo</span> <span id="warning-asset" style="font-weight: 900; color:#fff;">TRX</span> <span data-i18n="by_network">por la red</span> <span id="warning-network" style="font-weight: 900; color:#fff;">TRON (TRC20)</span>. <br><span data-i18n="warning2">Si envías otra moneda o usas otra red, perderás tus fondos.</span>
+            <div id="networkWarning" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); font-size: 11px; color: #b91c1c; text-align: center; line-height: 1.5; font-weight: 700;">
+              <span data-i18n="warning">⚠️ IMPORTANTE: Envía solo</span> <span id="warning-asset" style="font-weight: 900;">TRX</span> <span data-i18n="by_network">por la red</span> <span id="warning-network" style="font-weight: 900;">TRON (TRC20)</span>. <br><span data-i18n="warning2">Si envías otra moneda o usas otra red, perderás tus fondos.</span>
             </div>
             <div class="eyebrow" style="margin-top:20px;" data-i18n="step3_receipt">Paso 3: Sube tu comprobante</div>
             <label class="field-label" for="receiptFile" data-i18n="receipt_img">Imagen o captura de pantalla de la transacción</label>
@@ -485,9 +485,9 @@
         <div id="view-withdraw" class="view">
           <div class="section" style="margin-top:0;"><h2 data-i18n="withdraw_earnings">Retirar Ganancias</h2></div>
           <div class="panel animate-in">
-            <div class="info-box" style="background: rgba(255,255,255,0.02); border-color: var(--line);">
-              <div class="info-row"><span data-i18n="min_withdraw">Mínimo de retiro:</span> <b style="color: #fff;">$1.00 USD</b></div>
-              <div class="info-row"><span data-i18n="max_withdraw">Máximo por día:</span> <b style="color: #fff;">$550.00 USD</b></div>
+            <div class="info-box">
+              <div class="info-row"><span data-i18n="min_withdraw">Mínimo de retiro:</span> <b style="color: var(--text);">$1.00 USD</b></div>
+              <div class="info-row"><span data-i18n="max_withdraw">Máximo por día:</span> <b style="color: var(--text);">$550.00 USD</b></div>
               <div class="info-row" style="border-top:1px solid var(--line); padding-top:8px; margin-top:8px;">
                 <span data-i18n="withdrawable_balance">Saldo Retirable:</span> 
                 <b style="text-align:right;"><span id="withdrawableBalanceUI" style="color:var(--mint); font-size:16px;">$0.00 USD</span><br><span id="withdrawableCryptoUI" style="color:var(--muted); font-size:12px;">(0.00 TRX)</span></b>
@@ -509,7 +509,7 @@
             <input class="field" id="withdrawAddress" type="text" placeholder="Tu dirección de criptomonedas" required>
             <label class="field-label" for="withdrawPassword" data-i18n="login_password">Contraseña de inicio de sesión</label>
             <input class="field" id="withdrawPassword" type="password" placeholder="Tu contraseña actual" required>
-            <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: transparent; border: 1px solid #fff; color: #fff; margin-top: 20px;" data-i18n="confirm_withdraw">Confirmar retiro →</button>
+            <button class="wide press-effect" id="withdrawBtn" onclick="simulateWithdraw()" style="background: transparent; border: 1px solid var(--text); color: var(--text); margin-top: 20px;" data-i18n="confirm_withdraw">Confirmar retiro →</button>
           </div>
         </div>
 
@@ -526,9 +526,9 @@
             </div>
           </div>
 
-          <div class="panel animate-in delay-1" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
-            <h3 style="margin: 0 0 10px; font-size: 15px; color: #93c5fd;" data-i18n="how_it_works">¿Cómo funciona?</h3>
-            <p style="font-size: 12px; color: #bfdbfe; line-height: 1.5; margin: 0; font-weight: 500;" data-i18n="referral_desc">
+          <div class="panel animate-in delay-1" style="background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.2);">
+            <h3 style="margin: 0 0 10px; font-size: 15px; color: #2563eb;" data-i18n="how_it_works">¿Cómo funciona?</h3>
+            <p style="font-size: 12px; color: #1e40af; line-height: 1.5; margin: 0; font-weight: 500;" data-i18n="referral_desc">
               Comparte tu enlace. Cuando un amigo se registre y realice un depósito igual o mayor a $20 USD, recibirás un 10% de ese depósito directamente en tu balance de USDT. ¡Es un beneficio único por cada amigo invitado!
             </p>
           </div>
@@ -555,8 +555,7 @@
               <b id="investorName">Usuario NovaVest</b>
               <span id="investorEmail">Cuenta registrada</span>
               
-              <!-- INSIGNIA DE GRADO AQUI -->
-              <span id="vipBadge" style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; font-weight:900; font-size:13px; padding:7px 16px; border-radius:20px; margin-top:10px; width:fit-content; box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3); border: 1px solid rgba(0,0,0,0.1); text-transform:uppercase; letter-spacing:0.5px;">
+              <span id="vipBadge" style="display:none; align-items:center; gap:6px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#000; font-weight:900; font-size:13px; padding:7px 16px; border-radius:20px; margin-top:10px; width:fit-content; box-shadow: 0 4px 15px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.3); border: 1px solid rgba(0,0,0,0.1); text-transform:uppercase; letter-spacing:0.5px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> <span data-i18n="grade">Grado</span> 0
               </span>
               
@@ -575,8 +574,8 @@
           <div class="panel activity animate-in delay-3" id="activityPanel">
             <div class="activity-item" style="justify-content: center; padding: 20px 0;" id="emptyActivity"><span style="color: var(--muted); font-size: 13px; font-weight: 500;" data-i18n="no_movements">No hay movimientos registrados</span></div>
           </div>
-          <button class="wide press-effect" style="background: transparent; border: 1px solid #fff; color: #fff; margin-bottom: 10px;" onclick="openTerms()" data-i18n="terms_btn">Términos y Condiciones</button>
-          <button class="wide press-effect" style="background: rgba(255,255,255,0.05); color: #fff; box-shadow:none; border: 1px solid var(--line);" onclick="signOut()" data-i18n="logout_btn">Cerrar sesión</button>
+          <button class="wide press-effect" style="background: transparent; border: 1px solid var(--text); color: var(--text); margin-bottom: 10px;" onclick="openTerms()" data-i18n="terms_btn">Términos y Condiciones</button>
+          <button class="wide press-effect" style="background: var(--soft); color: var(--text); box-shadow:none; border: 1px solid var(--line);" onclick="signOut()" data-i18n="logout_btn">Cerrar sesión</button>
           <div class="footer-legal" data-i18n="footer">© 2026 NovaVest. Todos los derechos reservados. Plataforma de gestión de activos digitales.</div>
         </div>
 
@@ -588,16 +587,16 @@
           </div>
           <div class="panel animate-in delay-2" style="margin-top:0; border-left: 4px solid #3b82f6; cursor: pointer;" onclick="navigate('admin-users', document.querySelectorAll('.nav button')[5])">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div><h2 style="color:#60a5fa; margin:0; font-size:16px;" data-i18n="user_panel">Panel de Usuarios</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="user_panel_desc">Ver estadísticas, balances y actividad.</p></div>
-              <span style="font-size:24px; color:#60a5fa;">→</span>
+              <div><h2 style="color:#2563eb; margin:0; font-size:16px;" data-i18n="user_panel">Panel de Usuarios</h2><p style="color:var(--muted); font-size:12px; margin:4px 0 0 0; font-weight:500;" data-i18n="user_panel_desc">Ver estadísticas, balances y actividad.</p></div>
+              <span style="font-size:24px; color:#2563eb;">→</span>
             </div>
           </div>
           <div class="panel animate-in delay-3" style="margin-top:15px; border-left: 4px solid #10b981;">
-            <div class="section" style="margin-top:0;"><h2 style="color:#34d399;" data-i18n="pending_deposits">Depósitos Pendientes</h2></div>
+            <div class="section" style="margin-top:0;"><h2 style="color:#059669;" data-i18n="pending_deposits">Depósitos Pendientes</h2></div>
             <div id="adminPendingDeposits" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="no_pending_deposits">No hay depósitos pendientes.</p></div>
           </div>
           <div class="panel animate-in delay-3" style="margin-top:15px; border-left: 4px solid #ef4444;">
-            <div class="section" style="margin-top:0;"><h2 style="color:#f87171;" data-i18n="pending_withdrawals">Retiros Pendientes</h2></div>
+            <div class="section" style="margin-top:0;"><h2 style="color:#dc2626;" data-i18n="pending_withdrawals">Retiros Pendientes</h2></div>
             <div id="adminPendingWithdraws" class="activity"><p style="color:var(--muted); font-size:13px; text-align:center; font-weight: 500;" data-i18n="no_pending_withdrawals">No hay retiros pendientes.</p></div>
           </div>
           <div class="panel animate-in delay-3" style="margin-top:15px;">
@@ -627,9 +626,9 @@
   <div class="modal-backdrop" id="modal"><div class="modal" id="mainModal"><button class="close press-effect" onclick="closeModal()">✕</button><h3 id="modalTitle" data-i18n="modal_alert">Aviso</h3><p id="modalText"></p><button class="wide press-effect" onclick="closeModal()" data-i18n="got_it">Entendido</button></div></div>
   <div class="modal-backdrop" id="planModal"><div class="modal"><button class="close press-effect" onclick="closePlanModal()">✕</button><h3 id="planModalTitle" data-i18n="modal_plan">Plan</h3><p id="planModalDesc"></p><div id="planModalContent"></div></div></div>
   <div class="modal-backdrop" id="confirmInvModal"><div class="modal"><h3 id="confirmInvTitle" style="margin-bottom: 10px;" data-i18n="confirm_invest">Confirmar Inversión</h3><p id="confirmInvText"></p><div class="modal-actions"><button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()" data-i18n="cancel">Cancelar</button><button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()" data-i18n="confirm">Confirmar</button></div></div></div>
-  <div class="modal-backdrop" id="termsModal"><div class="modal"><button class="close press-effect" onclick="closeTerms()">✕</button><h3 style="margin-bottom: 10px;" data-i18n="terms_title">Términos y Condiciones</h3><div style="font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;"><p data-i18n="terms_p1"><b>1. Riesgo de Inversión:</b> Las criptomonedas son activos volátiles. Los rendimientos mostrados (9% y 12%) son estimados según el mercado. No garantizamos ganancias futuras.</p><p data-i18n="terms_p2"><b>2. Naturaleza de la Plataforma:</b> NovaVest es una plataforma de gestión de activos digitales. Los depósitos y retiros están sujetos a verificación manual por parte del equipo de administración para prevenir fraudes.</p><p data-i18n="terms_p3"><b>3. Privacidad de Datos:</b> Tu correo electrónico será utilizado únicamente para autenticar tu cuenta y enviarte notificaciones relevantes. No compartimos tus datos con terceros.</p><p data-i18n="terms_p4"><b>4. Responsabilidad del Usuario:</b> Es responsabilidad del usuario mantener segura su contraseña y sus llaves de retiro. NovaVest no se hace responsable por pérdidas derivadas de negligencia del usuario.</p><p data-i18n="terms_p5"><b>5. Modificaciones:</b> Nos reservamos el derecho de modificar los términos de los planes y las tasas de rendimiento en cualquier momento para adaptarnos al mercado.</p></div><button class="wide press-effect" onclick="closeTerms()" data-i18n="accept_close">Aceptar y Cerrar</button></div></div>
+  <div class="modal-backdrop" id="termsModal"><div class="modal"><button class="close press-effect" onclick="closeTerms()">✕</button><h3 style="margin-bottom: 10px;" data-i18n="terms_title">Términos y Condiciones</h3><div style="font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;"><p data-i18n="terms_p1"><b>1. Riesgo de Inversión:</b> Las criptomonedas son activos volátiles. Los rendimientos mostrados (6% y 9%) son estimados según el mercado. No garantizamos ganancias futuras.</p><p data-i18n="terms_p2"><b>2. Naturaleza de la Plataforma:</b> NovaVest es una plataforma de gestión de activos digitales. Los depósitos y retiros están sujetos a verificación manual por parte del equipo de administración para prevenir fraudes.</p><p data-i18n="terms_p3"><b>3. Privacidad de Datos:</b> Tu correo electrónico será utilizado únicamente para autenticar tu cuenta y enviarte notificaciones relevantes. No compartimos tus datos con terceros.</p><p data-i18n="terms_p4"><b>4. Responsabilidad del Usuario:</b> Es responsabilidad del usuario mantener segura su contraseña y sus llaves de retiro. NovaVest no se hace responsable por pérdidas derivadas de negligencia del usuario.</p><p data-i18n="terms_p5"><b>5. Modificaciones:</b> Nos reservamos el derecho de modificar los términos de los planes y las tasas de rendimiento en cualquier momento para adaptarnos al mercado.</p></div><button class="wide press-effect" onclick="closeTerms()" data-i18n="accept_close">Aceptar y Cerrar</button></div></div>
 
-  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#0f172a; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(0,0,0,0.5); z-index: 100; text-decoration: none; border:1px solid var(--line);"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Soporte por Telegram" style="position:fixed; bottom:100px; right:20px; background:#10b981; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(16,185,129,0.4); z-index: 100; text-decoration: none;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
     // --- SISTEMA DE TRADUCCIÓN ---
@@ -662,7 +661,7 @@
         monthly_registrations: "Registros del Mes", all_users: "Todos los Usuarios", loading_users: "Cargando usuarios...",
         modal_alert: "Aviso", got_it: "Entendido", modal_plan: "Plan", confirm_invest: "Confirmar Inversión", cancel: "Cancelar", confirm: "Confirmar",
         terms_title: "Términos y Condiciones", accept_close: "Aceptar y Cerrar",
-        terms_p1: "<b>1. Riesgo de Inversión:</b> Las criptomonedas son activos volátiles. Los rendimientos mostrados (9% y 12%) son estimados según el mercado. No garantizamos ganancias futuras.",
+        terms_p1: "<b>1. Riesgo de Inversión:</b> Las criptomonedas son activos volátiles. Los rendimientos mostrados (6% y 9%) son estimados según el mercado. No garantizamos ganancias futuras.",
         terms_p2: "<b>2. Naturaleza de la Plataforma:</b> NovaVest es una plataforma de gestión de activos digitales. Los depósitos y retiros están sujetos a verificación manual por parte del equipo de administración para prevenir fraudes.",
         terms_p3: "<b>3. Privacidad de Datos:</b> Tu correo electrónico será utilizado únicamente para autenticar tu cuenta y enviarte notificaciones relevantes. No compartimos tus datos con terceros.",
         terms_p4: "<b>4. Responsabilidad del Usuario:</b> Es responsabilidad del usuario mantener segura su contraseña y sus llaves de retiro. NovaVest no se hace responsable por pérdidas derivadas de negligencia del usuario.",
@@ -696,7 +695,7 @@
         monthly_registrations: "Monthly Registrations", all_users: "All Users", loading_users: "Loading users...",
         modal_alert: "Alert", got_it: "Got it", modal_plan: "Plan", confirm_invest: "Confirm Investment", cancel: "Cancel", confirm: "Confirm",
         terms_title: "Terms and Conditions", accept_close: "Accept and Close",
-        terms_p1: "<b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (9% and 12%) are estimated based on the market. We do not guarantee future profits.",
+        terms_p1: "<b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (6% and 9%) are estimated based on the market. We do not guarantee future profits.",
         terms_p2: "<b>2. Platform Nature:</b> NovaVest is a digital asset management platform. Deposits and withdrawals are subject to manual verification by the administration team to prevent fraud.",
         terms_p3: "<b>3. Data Privacy:</b> Your email will be used solely to authenticate your account and send you relevant notifications. We do not share your data with third parties.",
         terms_p4: "<b>4. User Responsibility:</b> It is the user's responsibility to keep their password and withdrawal keys secure. NovaVest is not responsible for losses derived from user negligence.",
@@ -730,7 +729,7 @@
         monthly_registrations: "Inscriptions du Mois", all_users: "Tous les Utilisateurs", loading_users: "Chargement des utilisateurs...",
         modal_alert: "Alerte", got_it: "Compris", modal_plan: "Plan", confirm_invest: "Confirmer l'Investissement", cancel: "Annuler", confirm: "Confirmer",
         terms_title: "Termes et Conditions", accept_close: "Accepter et Fermer",
-        terms_p1: "<b>1. Risque d'Investissement :</b> Les crypto-monnaies sont des actifs volatils. Les rendements affichés (9% et 12%) sont estimés selon le marché. Nous ne garantissons pas de profits futurs.",
+        terms_p1: "<b>1. Risque d'Investissement :</b> Les crypto-monnaies sont des actifs volatils. Les rendements affichés (6% et 9%) sont estimés selon le marché. Nous ne garantissons pas de profits futurs.",
         terms_p2: "<b>2. Nature de la Plateforme :</b> NovaVest est une plateforme de gestion d'actifs numériques. Les dépôts et les retraits sont soumis à une vérification manuelle par l'équipe d'administration pour prévenir la fraude.",
         terms_p3: "<b>3. Confidentialité des Données :</b> Votre e-mail sera utilisé uniquement pour authentifier votre compte et vous envoyer des notifications pertinentes. Nous ne partageons pas vos données avec des tiers.",
         terms_p4: "<b>4. Responsabilité de l'Utilisateur :</b> Il est de la responsabilité de l'utilisateur de garder son mot de passe et ses clés de retrait en sécurité. NovaVest n'est pas responsable des pertes résultant de la négligence de l'utilisateur.",
@@ -764,7 +763,7 @@
         monthly_registrations: "每月注册", all_users: "所有用户", loading_users: "正在加载用户...",
         modal_alert: "提示", got_it: "明白了", modal_plan: "计划", confirm_invest: "确认投资", cancel: "取消", confirm: "确认",
         terms_title: "条款和条件", accept_close: "接受并关闭",
-        terms_p1: "<b>1. 投资风险：</b> 加密货币是波动性资产。显示的回报（9% 和 12%）是根据市场估算的。我们不保证未来的利润。",
+        terms_p1: "<b>1. 投资风险：</b> 加密货币是波动性资产。显示的回报（6% 和 9%）是根据市场估算的。我们不保证未来的利润。",
         terms_p2: "<b>2. 平台性质：</b> NovaVest 是一个数字资产管理平台。存款和提款需经管理团队手动验证以防止欺诈。",
         terms_p3: "<b>3. 数据隐私：</b> 您的电子邮件仅用于验证您的账户并向您发送相关通知。我们不会与第三方共享您的数据。",
         terms_p4: "<b>4. 用户责任：</b> 用户有责任保护其密码和提款密钥的安全。NovaVest 不对因用户疏忽造成的损失负责。",
@@ -798,7 +797,7 @@
         monthly_registrations: "Monthly Registrations", all_users: "All Users", loading_users: "Loading users...",
         modal_alert: "Alert", got_it: "Got it", modal_plan: "Plan", confirm_invest: "Confirm Investment", cancel: "Cancel", confirm: "Confirm",
         terms_title: "Terms and Conditions", accept_close: "Accept and Close",
-        terms_p1: "<b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (9% and 12%) are estimated based on the market. We do not guarantee future profits.",
+        terms_p1: "<b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (6% and 9%) are estimated based on the market. We do not guarantee future profits.",
         terms_p2: "<b>2. Platform Nature:</b> NovaVest is a digital asset management platform. Deposits and withdrawals are subject to manual verification by the administration team to prevent fraud.",
         terms_p3: "<b>3. Data Privacy:</b> Your email will be used solely to authenticate your account and send you relevant notifications. We do not share your data with third parties.",
         terms_p4: "<b>4. User Responsibility:</b> It is the user's responsibility to keep their password and withdrawal keys secure. NovaVest is not responsible for losses derived from user negligence.",
@@ -957,8 +956,8 @@
     let timerInterval = null, activeInvestmentsData = [];
 
     const PLAN_CONFIG = {
-      starter: { name: '❄️ Plan Starter (9%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.09, totalPayouts: 7, intervalHours: 24, amounts: [20, 50, 100, 200, 400] },
-      pro: { name: '🔥 Plan Pro (12%)', desc: 'Ganancias cada 48 horas. Elige tu criptomoneda y el monto:', roi: 0.12, totalPayouts: 7, intervalHours: 48, amounts: [500, 1000, 2000, 5000] }
+      starter: { name: '❄️ Plan Starter (6%)', desc: 'Ganancias diarias. Elige tu criptomoneda y el monto:', roi: 0.06, totalPayouts: 7, intervalHours: 24, amounts: [20, 50, 100, 200, 400] },
+      pro: { name: '🔥 Plan Pro (9%)', desc: 'Ganancias cada 48 horas. Elige tu criptomoneda y el monto:', roi: 0.09, totalPayouts: 7, intervalHours: 48, amounts: [500, 1000, 2000, 5000] }
     };
 
     const $ = (id) => document.getElementById(id);
@@ -992,49 +991,14 @@
         
         changeLanguage(localStorage.getItem('novavest_lang') || 'es');
 
-        // --- LECTURA Y CREACIÓN AUTOMÁTICA DEL ID ---
-        let refCodeFinal = null;
-        
-        // 1. Intentamos buscar el perfil
-        const { data: profileData } = await supabaseClient
-            .from('novavest_profiles')
-            .select('display_id')
-            .eq('id', user.id)
-            .maybeSingle();
-
-        if (profileData && profileData.display_id) {
-            refCodeFinal = profileData.display_id;
-        } else {
-            // 2. Si el usuario es nuevo y no tiene perfil, SE LO CREAMOS DESDE AQUÍ
-            const nuevoId = Math.floor(Math.random() * 9000 + 1000).toString();
-            
-            const { error: insertError } = await supabaseClient
-                .from('novavest_profiles')
-                .insert({ 
-                    id: user.id, 
-                    user_id: user.id, 
-                    email: user.email, 
-                    full_name: user.user_metadata?.full_name || 'Nuevo Usuario',
-                    display_id: nuevoId 
-                });
-                
-            if (!insertError) {
-                refCodeFinal = nuevoId;
-            } else {
-                console.error("Error creando perfil:", insertError);
-            }
-        }
-
-        // 3. Mostramos el resultado en pantalla
-        if (refCodeFinal) {
-          currentUserDisplayId = refCodeFinal;
-          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${refCodeFinal}`;
-          $('myRefCode').textContent = refCodeFinal;
-          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + refCodeFinal;
+        const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        if (profile && profile.display_id) {
+          currentUserDisplayId = profile.display_id;
+          $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #${profile.display_id}`;
+          $('myRefCode').textContent = profile.display_id;
+          $('myRefLink').value = window.location.origin + window.location.pathname + '?ref=' + profile.display_id;
         } else {
           $('investorId').innerHTML = `<span data-i18n="investor_id">ID de inversor:</span> #N/A`;
-          $('myRefCode').textContent = '---';
-          $('myRefLink').value = 'Recarga la página';
         }
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
@@ -1067,7 +1031,7 @@
           vipBadge.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:2px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> <span data-i18n="grade">Grado</span> ${vipLevel}`;
           
           if (vipLevel === 0) {
-            vipBadge.style.background = 'rgba(255,255,255,0.1)';
+            vipBadge.style.background = 'rgba(0,0,0,0.05)';
             vipBadge.style.color = 'var(--muted)';
             vipBadge.style.border = '1px solid var(--line)';
           } else if (vipLevel === 1) {
@@ -1149,8 +1113,8 @@
             <div class="activity-icon" style="background:#10b981; color:#fff;">$</div>
             <div class="activity-info">
               <b>Depósito de ${dep.amount} ${dep.asset}</b>
-              <span style="font-size:10px; color:#fff; font-weight:700;">${emailMostrar}</span><br>
-              ${dep.receipt_url ? `<a href="${dep.receipt_url}" target="_blank" style="font-size:10px; color:#60a5fa; font-weight:bold; text-decoration:underline;">Ver Comprobante</a>` : '<span style="font-size:10px; color:#ef4444;">Sin comprobante</span>'}
+              <span style="font-size:10px; color:var(--text); font-weight:700;">${emailMostrar}</span><br>
+              ${dep.receipt_url ? `<a href="${dep.receipt_url}" target="_blank" style="font-size:10px; color:#2563eb; font-weight:bold; text-decoration:underline;">Ver Comprobante</a>` : '<span style="font-size:10px; color:#ef4444;">Sin comprobante</span>'}
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${dep.id}', 'deposit', '${dep.user_id}', '${dep.asset}', ${dep.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
@@ -1173,8 +1137,8 @@
             <div class="activity-icon" style="background:#ef4444; color:#fff;">↗</div>
             <div class="activity-info">
               <b>Retiro de $${wd.amount} USD (${wd.asset})</b>
-              <span style="font-size:10px; color:#fff; font-weight:700;">${emailMostrar}</span><br>
-              <span style="font-size:9px; word-break:break-all; color:#94a3b8;">Dir: ${wd.address}</span>
+              <span style="font-size:10px; color:var(--text); font-weight:700;">${emailMostrar}</span><br>
+              <span style="font-size:9px; word-break:break-all; color:var(--muted);">Dir: ${wd.address}</span>
             </div>
             <div style="display:flex; gap:5px;">
               <button onclick="approveAction('${wd.id}', 'withdraw', '${wd.user_id}', '${wd.asset}', ${wd.amount})" style="background:#10b981; border:none; color:white; border-radius:6px; padding:5px 10px; font-weight:bold; cursor:pointer;">✓</button>
@@ -1240,7 +1204,7 @@
         item.innerHTML = `
           <div class="user-header"><div><b>${u.email || 'Sin correo'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div></div>
           <div class="user-balances">${balancesHtml}</div>
-          <div class="user-status"><div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div><div style="text-align:right;">${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}<span style="font-size:10px; color:#94a3b8;">Visto: ${lastSeenStr}</span></div></div>
+          <div class="user-status"><div>Retirable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div><div style="text-align:right;">${depPendingCount > 0 ? `<span class="status-pending">Depósitos: ${depPendingCount}</span><br>` : ''}${withPendingCount > 0 ? `<span class="status-pending">Retiros: ${withPendingCount}</span><br>` : ''}<span style="font-size:10px; color:var(--muted);">Visto: ${lastSeenStr}</span></div></div>
         `;
         list.appendChild(item);
       });
@@ -1389,7 +1353,6 @@
       try {
         const result = await callEdgeFunction('claim-reward', { investmentId: invId });
         
-        // Animación de confeti al reclamar
         if (typeof confetti === 'function') {
           confetti({
             particleCount: 100,
@@ -1408,14 +1371,14 @@
 
     window.openPlanModal = function(planType) {
       const config = PLAN_CONFIG[planType];
-      $('planModalTitle').innerHTML = config.name; $('planModalDesc').textContent = config.desc; $('planModalTitle').style.color = planType === 'starter' ? '#60a5fa' : '#f87171';
+      $('planModalTitle').innerHTML = config.name; $('planModalDesc').textContent = config.desc; $('planModalTitle').style.color = planType === 'starter' ? '#2563eb' : '#dc2626';
       let htmlContent = '';
       Object.keys(ASSET_INFO).forEach(asset => {
         const assetData = ASSET_INFO[asset];
         htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
         config.amounts.forEach(amt => {
           const profit = (amt * config.roi).toFixed(2);
-          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#60a5fa' : '#f87171'};">+$${profit} / pago</div></button>`;
+          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#2563eb' : '#dc2626'};">+$${profit} / pago</div></button>`;
         });
         htmlContent += `</div></div>`;
       });
@@ -1565,7 +1528,7 @@
       const {error}=await supabaseClient.auth.signOut(); if(error){toast(error.message);return;}
       currentUserId=null; currentUserEmail=null; withdrawableBalance=0; dailyWithdrawn=0;
       $('dashboard').classList.add('hidden');
-      $('appLayout').classList.add('hidden'); // <--- ESTO OCULTA EL MENÚ AL SALIR
+      $('appLayout').classList.add('hidden');
       $('authScreen').classList.remove('hidden'); 
       setAuthView('login'); 
       toast('Sesión cerrada');
