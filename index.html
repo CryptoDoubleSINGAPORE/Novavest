@@ -70,13 +70,13 @@
       background: #fff;
       border: 1px solid var(--line);
       color: var(--text);
-      padding: 6px 10px;
+      padding: 6px 8px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: 700;
       outline: none;
       cursor: pointer;
-      margin-right: 15px;
+      margin-right: 10px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
     .lang-selector option { background: #fff; color: var(--text); }
@@ -238,11 +238,12 @@
     .status-pending { color: var(--fire); font-weight: 800; }
 
     .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
-    .nav-inner { max-width: 520px; margin: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; position: relative; z-index: 2; }
-    .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 10px; font-weight: 700; display: grid; justify-items: center; gap: 4px; transition: 0.2s; }
-    .nav button span { font-size: 20px; }
+    
+    /* ARREGLO DEL MENÚ INFERIOR PARA MÓVIL */
+    .nav-inner { max-width: 520px; margin: auto; display: flex; justify-content: space-between; gap: 2px; position: relative; z-index: 2; }
+    .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; flex: 1; }
+    .nav button span:first-child { font-size: 18px; }
     .nav button.active { color: var(--mint); background: rgba(16, 185, 129, 0.1); }
-    .nav button.active span { transform: translateY(-2px); }
 
     #sidebar-bg { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
     .falling-logo { position: absolute; top: -50px; width: 30px; height: 30px; background-size: contain; background-repeat: no-repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='none'/%3E%3Cpath d='M12 28V12L28 28V12' stroke='%2310b981' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); opacity: 0.1; animation: fall linear infinite; }
@@ -277,152 +278,57 @@
 
     .footer-legal { text-align: center; font-size: 10px; color: var(--muted); padding: 20px; line-height: 1.6; }
 
-    /* ===== PANEL DE MERCADO EN VIVO ===== */
-    .market-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 24px 2px 10px;
+    /* PRUEBAS SOCIALES */
+    .social-proof-container {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 10px 15px; border-radius: 14px; margin-top: 15px; margin-bottom: 5px;
+      animation: fadeIn 0.4s ease-out forwards;
     }
-    .market-section h2 {
-      font-size: 17px;
-      margin: 0;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .live-badge {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--mint);
-      background: rgba(16,185,129,0.1);
-      padding: 4px 10px;
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+    .social-proof-badge {
+      background: var(--mint); color: white; font-size: 9px; font-weight: 800;
+      padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px;
       animation: pulse-live 2s infinite;
     }
-    .live-badge::before {
-      content: "";
-      width: 6px; height: 6px;
-      background: var(--mint);
-      border-radius: 50%;
+    #socialProofText {
+      font-size: 12px; font-weight: 600; color: var(--text);
+      transition: opacity 0.3s ease;
     }
+    #socialProofText b { color: var(--mint); font-weight: 800; }
+
+    /* PANEL DE MERCADO EN VIVO */
+    .market-section { display: flex; justify-content: space-between; align-items: center; margin: 24px 2px 10px; }
+    .market-section h2 { font-size: 17px; margin: 0; font-weight: 800; color: var(--text); }
+    .live-badge { font-size: 10px; font-weight: 800; color: var(--mint); background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; animation: pulse-live 2s infinite; }
+    .live-badge::before { content: ""; width: 6px; height: 6px; background: var(--mint); border-radius: 50%; }
     @keyframes pulse-live { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
 
-    .market-strip {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 2px 2px 10px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x proximity;
-    }
+    .market-strip { display: flex; gap: 10px; overflow-x: auto; padding: 2px 2px 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
     .market-strip::-webkit-scrollbar { display: none; }
 
-    .market-card {
-      min-width: 158px;
-      flex-shrink: 0;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      scroll-snap-align: start;
-    }
-    .market-card:hover {
-      transform: translateY(-2px);
-      border-color: #cbd5e1;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    }
-    .market-card-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .market-coin-logo {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--soft);
-      padding: 3px;
-      display: grid; place-items: center;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      flex-shrink: 0;
-    }
-    .market-coin-logo img,
-    .market-coin-logo svg { width: 100%; height: 100%; object-fit: contain; }
+    .market-card { min-width: 158px; flex-shrink: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 4px; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; scroll-snap-align: start; }
+    .market-card:hover { transform: translateY(-2px); border-color: #cbd5e1; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .market-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .market-coin-logo { width: 30px; height: 30px; border-radius: 50%; background: var(--soft); padding: 3px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--line); flex-shrink: 0; }
+    .market-coin-logo img, .market-coin-logo svg { width: 100%; height: 100%; object-fit: contain; }
     .market-coin-name { font-size: 12px; font-weight: 800; color: var(--text); line-height: 1.1; }
     .market-coin-symbol { font-size: 10px; color: var(--muted); font-weight: 600; }
 
-    .market-price {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.3px;
-      margin-top: 2px;
-    }
-    .market-change {
-      font-size: 10px;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-    .market-change.up   { color: var(--mint); }
+    .market-price { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; margin-top: 2px; }
+    .market-change { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
+    .market-change.up { color: var(--mint); }
     .market-change.down { color: var(--fire); }
 
-    .market-sparkline {
-      width: 100%;
-      height: 32px;
-      margin: 4px 0 2px;
-    }
+    .market-sparkline { width: 100%; height: 32px; margin: 4px 0 2px; }
     .market-sparkline svg { width: 100%; height: 100%; display: block; }
 
-    .market-holding {
-      font-size: 10px;
-      color: var(--muted);
-      border-top: 1px dashed var(--line);
-      padding-top: 6px;
-      margin-top: 2px;
-      font-weight: 600;
-    }
+    .market-holding { font-size: 10px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 2px; font-weight: 600; }
     .market-holding b { color: var(--text); font-weight: 800; }
 
-    .market-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
-      margin-top: 6px;
-    }
-    .market-btn {
-      padding: 6px 4px;
-      font-size: 10px;
-      font-weight: 800;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      font-family: inherit;
-    }
-    .market-btn.deposit {
-      background: rgba(16,185,129,0.12);
-      color: var(--mint);
-      border: 1px solid rgba(16,185,129,0.25);
-    }
-    .market-btn.withdraw {
-      background: rgba(239,68,68,0.1);
-      color: var(--fire);
-      border: 1px solid rgba(239,68,68,0.25);
-    }
+    .market-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 6px; }
+    .market-btn { padding: 6px 4px; font-size: 10px; font-weight: 800; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 2px; font-family: inherit; }
+    .market-btn.deposit { background: rgba(16,185,129,0.12); color: var(--mint); border: 1px solid rgba(16,185,129,0.25); }
+    .market-btn.withdraw { background: rgba(239,68,68,0.1); color: var(--fire); border: 1px solid rgba(239,68,68,0.25); }
     .market-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
     .market-btn:active { transform: scale(0.95); }
 
@@ -432,9 +338,9 @@
       .nav { position: sticky; top: 0; left: 0; width: 260px; height: 100vh; border-top: none; border-right: 1px solid var(--line); padding: 30px 15px; display: flex; flex-direction: column; background: #fff; z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.02); }
       #sidebar-bg { display: block; }
       .nav-inner { display: flex; flex-direction: column; gap: 8px; width: 100%; position: relative; z-index: 2; }
-      .nav button { display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: transparent; border: 1px solid transparent; color: var(--muted); transition: all 0.2s ease; }
+      .nav button { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; padding: 14px 18px; font-size: 14px; border-radius: 12px; width: 100%; background: transparent; border: 1px solid transparent; color: var(--muted); transition: all 0.2s ease; flex: unset; }
       .nav button:hover { background: var(--soft); color: var(--text); border-color: var(--line); transform: translateX(4px); }
-      .nav button span { font-size: 20px; }
+      .nav button span:first-child { font-size: 20px; }
       .nav button.active { background: rgba(16, 185, 129, 0.1); color: var(--mint); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05); }
       .nav button.hidden { display: none !important; }
       #dashboard { flex: 1; display: flex; justify-content: center; }
@@ -453,13 +359,12 @@
 
   <div id="coin-bg"></div>
   
-  <!-- SELECTOR DE IDIOMA EN LOGIN -->
   <select id="authLangSelector" class="lang-selector" onchange="changeLanguage(this.value)" style="position:absolute; top:20px; right:20px; z-index:100;">
-    <option value="es">🇪🇸 ES</option>
-    <option value="en" selected>🇺🇸 EN</option>
-    <option value="fr">🇫🇷 FR</option>
-    <option value="zh">🇨🇳 ZH</option>
-    <option value="sg">🇸🇬 SG</option>
+    <option value="es">ES</option>
+    <option value="en" selected>EN</option>
+    <option value="fr">FR</option>
+    <option value="zh">ZH</option>
+    <option value="sg">SG</option>
   </select>
 
   <section id="authScreen" class="auth-wrap" style="position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding: 20px;">
@@ -528,15 +433,22 @@
           <div class="brand"><div class="brandmark"><svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="12" fill="#10b981"/><path d="M12 28V12L28 28V12" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NovaVest</div>
           <div style="display:flex; align-items:center;">
             <select id="langSelector" class="lang-selector" onchange="changeLanguage(this.value)">
-              <option value="es">🇪🇸 ES</option>
-              <option value="en" selected>🇺🇸 EN</option>
-              <option value="fr">🇫🇷 FR</option>
-              <option value="zh">🇨🇳 ZH</option>
-              <option value="sg">🇸🇬 SG</option>
+              <option value="es">ES</option>
+              <option value="en" selected>EN</option>
+              <option value="fr">FR</option>
+              <option value="zh">ZH</option>
+              <option value="sg">SG</option>
             </select>
             <div class="avatar" id="avatar">NV</div>
           </div>
         </header>
+
+        <!-- ===== PRUEBAS SOCIALES (FALSAS) ===== -->
+        <div id="socialProofContainer" class="social-proof-container hidden">
+          <div class="social-proof-badge">LIVE</div>
+          <span id="socialProofText">Loading...</span>
+        </div>
+        <!-- ===== FIN PRUEBAS SOCIALES ===== -->
 
         <div id="view-home" class="view active">
           
@@ -586,10 +498,10 @@
           <div class="section"><h2 data-i18n="investment_plans">Investment Plans</h2></div>
           <div class="plans">
             <div class="plan-card cold-theme animate-in delay-3" onclick="openPlanModal('starter')">
-              <div class="plan-title" data-i18n="starter_plan">❄️ Starter Plan</div><div class="plan-yield">6% ROI</div><div class="plan-freq" data-i18n="starter_freq">Withdrawals every 24 hours (7 days)</div><div class="plan-desc" data-i18n="starter_desc">Daily earnings. Reactivate your plan when it ends.</div><button class="plan-btn press-effect" data-i18n="see_amounts">See investment amounts</button>
+              <div class="plan-title" data-i18n="starter_plan">❄️ Starter Plan</div><div class="plan-yield">6% ROI</div><div class="plan-freq" data-i18n="starter_freq">Withdrawals every 24 hours (7 days)</div><div class="plan-desc" data-i18n="starter_desc">Daily earnings. Min $30. Reactivate when it ends.</div><button class="plan-btn press-effect" data-i18n="see_amounts">See investment amounts</button>
             </div>
             <div class="plan-card fire-theme animate-in delay-3" onclick="openPlanModal('pro')">
-              <div class="plan-badge" data-i18n="most_popular">🔥 MOST POPULAR</div><div class="plan-title" data-i18n="pro_plan">🔥 Pro Plan</div><div class="plan-yield">9% ROI</div><div class="plan-freq" data-i18n="pro_freq">Withdrawals every 24 hours (7 days)</div><div class="plan-desc" data-i18n="pro_desc">Maximize your earnings in the medium term.</div><button class="plan-btn press-effect" data-i18n="see_amounts">See investment amounts</button>
+              <div class="plan-badge" data-i18n="most_popular">🔥 MOST POPULAR</div><div class="plan-title" data-i18n="pro_plan">🔥 Pro Plan</div><div class="plan-yield">9% ROI</div><div class="plan-freq" data-i18n="pro_freq">Withdrawals every 24 hours (7 days)</div><div class="plan-desc" data-i18n="pro_desc">Maximize your earnings. Min $30.</div><button class="plan-btn press-effect" data-i18n="see_amounts">See investment amounts</button>
             </div>
           </div>
         </div>
@@ -788,13 +700,12 @@
   <div class="modal-backdrop" id="confirmInvModal"><div class="modal"><h3 id="confirmInvTitle" style="margin-bottom: 10px;" data-i18n="confirm_invest">Confirm Investment</h3><p id="confirmInvText"></p><div class="modal-actions"><button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()" data-i18n="cancel">Cancel</button><button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()" data-i18n="confirm">Confirm</button></div></div></div>
   <div class="modal-backdrop" id="termsModal"><div class="modal"><button class="close press-effect" onclick="closeTerms()">✕</button><h3 style="margin-bottom: 10px;" data-i18n="terms_title">Terms and Conditions</h3><div style="font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;"><p data-i18n="terms_p1"><b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (6% and 9%) are estimated based on the market. We do not guarantee future profits.</p><p data-i18n="terms_p2"><b>2. Platform Nature:</b> NovaVest is a digital asset management platform. Deposits and withdrawals are subject to manual verification by the administration team to prevent fraud.</p><p data-i18n="terms_p3"><b>3. Data Privacy:</b> Your email will be used solely to authenticate your account and send you relevant notifications. We do not share your data with third parties.</p><p data-i18n="terms_p4"><b>4. User Responsibility:</b> It is the user's responsibility to keep their password and withdrawal keys secure. NovaVest is not responsible for losses derived from user negligence.</p><p data-i18n="terms_p5"><b>5. Modifications:</b> We reserve the right to modify the terms of the plans and return rates at any time to adapt to the market.</p></div><button class="wide press-effect" onclick="closeTerms()" data-i18n="accept_close">Accept and Close</button></div></div>
 
-  <!-- BOTÓN EMAIL (al lado del de Telegram) -->
-  <a href="mailto:support@novavest.lat" title="Email Support" style="position:fixed; bottom:100px; right:85px; background:#3b82f6; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(59,130,246,0.4); z-index: 100; text-decoration: none; transition: transform 0.2s;">
+  <!-- BOTONES FLOTANTES MOVIDOS HACIA ARRIBA PARA NO TAPAR EL MENÚ -->
+  <a href="mailto:support@novavest.lat" title="Email Support" style="position:fixed; bottom:130px; right:20px; background:#3b82f6; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(59,130,246,0.4); z-index: 100; text-decoration: none; transition: transform 0.2s;">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
   </a>
 
-  <!-- BOTÓN TELEGRAM -->
-  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Telegram Support" style="position:fixed; bottom:100px; right:20px; background:#10b981; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(16,185,129,0.4); z-index: 100; text-decoration: none; transition: transform 0.2s;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+  <a href="https://t.me/InvestNovaSingapore" target="_blank" title="Telegram Support" style="position:fixed; bottom:130px; right:85px; background:#10b981; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(16,185,129,0.4); z-index: 100; text-decoration: none; transition: transform 0.2s;"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
 
   <script>
     // ==================== TRADUCCIONES ====================
@@ -807,8 +718,8 @@
         btn_deposit: "＋ Depositar", btn_withdraw: "↗ Retirar", invite_earn: "Invita y Gana 10%", invite_desc: "Comparte tu enlace y gana comisiones.",
         active_inv: "Inversiones Activas", your_summary: "Tu resumen", active_inv_stat: "Inversión activa", asset_value: "Valor de tus activos",
         accumulated_earnings: "Ganancia acumulada", plan_yield: "Rendimiento de planes", investment_plans: "Planes de Inversión",
-        starter_plan: "❄️ Plan Starter", starter_freq: "Retiros cada 24 horas (7 días)", starter_desc: "Ganancias diarias. Reactiva tu plan al finalizar.",
-        see_amounts: "Ver montos de inversión", pro_plan: "🔥 Plan Pro", pro_freq: "Retiros cada 24 horas (7 días)", pro_desc: "Maximiza tus ganancias a mediano plazo.", most_popular: "🔥 MÁS POPULAR",
+        starter_plan: "❄️ Plan Starter", starter_freq: "Retiros cada 24 horas (7 días)", starter_desc: "Ganancias diarias. Mínimo $30. Reactiva al finalizar.",
+        see_amounts: "Ver montos de inversión", pro_plan: "🔥 Plan Pro", pro_freq: "Retiros cada 24 horas (7 días)", pro_desc: "Maximiza tus ganancias. Mínimo $30.", most_popular: "🔥 MÁS POPULAR",
         deposit_funds: "Depositar Fondos", recent_deposits: "Tus Depósitos Recientes", step1_coin: "Paso 1: Selecciona tu moneda",
         step2_transfer: "Paso 2: Transfiere el monto", amount_min: "Cantidad a depositar (Mínimo $10)", deposit_address: "Dirección de depósito",
         copy: "Copiar", scan_qr: "Escanear QR", send_only: "Envía solo", to_this_address: "a esta dirección.", warning: "⚠️ IMPORTANTE: Envía solo", by_network: "por la red", warning2: "Si envías otra moneda o usas otra red, perderás tus fondos.",
@@ -840,7 +751,9 @@
         auth_ssl: "Conexión SSL", auth_funds: "Fondos Protegidos", auth_support: "Soporte 24/7",
         auth_welcome_back: "Bienvenido de nuevo", auth_create_account: "Crea tu cuenta", auth_reset_password: "Recuperar contraseña",
         auth_subtitle_login: "Inicia sesión para acceder a tu panel financiero.", auth_subtitle_register: "Regístrate para comenzar a invertir.", auth_subtitle_reset: "Te enviaremos un enlace a tu correo.",
-        auth_have_account: "¿Ya tienes cuenta?", auth_no_account: "¿No tienes cuenta?", auth_signin: "Iniciar sesión", auth_signup: "Crear cuenta"
+        auth_have_account: "¿Ya tienes cuenta?", auth_no_account: "¿No tienes cuenta?", auth_signin: "Iniciar sesión", auth_signup: "Crear cuenta",
+        bonus_title: "¡Bono de Bienvenida! 🎁",
+        bonus_text: "Te hemos regalado <b>$15.00 USD</b>.<br><br>Deposita <b>$15</b> más para alcanzar el mínimo de <b>$30</b> y desbloquear el Plan Starter."
       },
       en: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -850,8 +763,8 @@
         btn_deposit: "＋ Deposit", btn_withdraw: "↗ Withdraw", invite_earn: "Invite & Earn 10%", invite_desc: "Share your link and earn commissions.",
         active_inv: "Active Investments", your_summary: "Your summary", active_inv_stat: "Active investment", asset_value: "Value of your assets",
         accumulated_earnings: "Accumulated earnings", plan_yield: "Plan yield", investment_plans: "Investment Plans",
-        starter_plan: "❄️ Starter Plan", starter_freq: "Withdrawals every 24 hours (7 days)", starter_desc: "Daily earnings. Reactivate your plan when it ends.",
-        see_amounts: "See investment amounts", pro_plan: "🔥 Pro Plan", pro_freq: "Withdrawals every 24 hours (7 days)", pro_desc: "Maximize your earnings in the medium term.", most_popular: "🔥 MOST POPULAR",
+        starter_plan: "❄️ Starter Plan", starter_freq: "Withdrawals every 24 hours (7 days)", starter_desc: "Daily earnings. Min $30. Reactivate when it ends.",
+        see_amounts: "See investment amounts", pro_plan: "🔥 Pro Plan", pro_freq: "Withdrawals every 24 hours (7 days)", pro_desc: "Maximize your earnings. Min $30.", most_popular: "🔥 MOST POPULAR",
         deposit_funds: "Deposit Funds", recent_deposits: "Your Recent Deposits", step1_coin: "Step 1: Select your currency",
         step2_transfer: "Step 2: Transfer the amount", amount_min: "Amount to deposit (Minimum $10)", deposit_address: "Deposit address",
         copy: "Copy", scan_qr: "Scan QR", send_only: "Send only", to_this_address: "to this address.", warning: "⚠️ IMPORTANT: Send only", by_network: "via the network", warning2: "If you send another currency or use another network, you will lose your funds.",
@@ -883,7 +796,9 @@
         auth_ssl: "SSL Connection", auth_funds: "Protected Funds", auth_support: "24/7 Support",
         auth_welcome_back: "Welcome back", auth_create_account: "Create your account", auth_reset_password: "Reset password",
         auth_subtitle_login: "Sign in to access your financial dashboard.", auth_subtitle_register: "Sign up to start investing.", auth_subtitle_reset: "We'll send a link to your email.",
-        auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account"
+        auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account",
+        bonus_title: "Welcome Bonus! 🎁",
+        bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan."
       },
       fr: {
         nav_home: "Accueil", nav_deposit: "Dépôt", nav_withdraw: "Retrait", nav_referrals: "Parrainages", nav_profile: "Profil", nav_admin: "Admin",
@@ -893,8 +808,8 @@
         btn_deposit: "＋ Déposer", btn_withdraw: "↗ Retirer", invite_earn: "Invitez et Gagnez 10%", invite_desc: "Partagez votre lien et gagnez des commissions.",
         active_inv: "Investissements Actifs", your_summary: "Votre résumé", active_inv_stat: "Investissement actif", asset_value: "Valeur de vos actifs",
         accumulated_earnings: "Gains accumulés", plan_yield: "Rendement des plans", investment_plans: "Plans d'Investissement",
-        starter_plan: "❄️ Plan Starter", starter_freq: "Retraits toutes les 24 heures (7 jours)", starter_desc: "Gains quotidiens. Réactivez votre plan à la fin.",
-        see_amounts: "Voir les montants d'investissement", pro_plan: "🔥 Plan Pro", pro_freq: "Retraits toutes les 24 heures (7 jours)", pro_desc: "Maximisez vos gains à moyen terme.", most_popular: "🔥 LE PLUS POPULAIRE",
+        starter_plan: "❄️ Plan Starter", starter_freq: "Retraits toutes les 24 heures (7 jours)", starter_desc: "Gains quotidiens. Min 30$. Réactivez à la fin.",
+        see_amounts: "Voir les montants d'investissement", pro_plan: "🔥 Plan Pro", pro_freq: "Retraits toutes les 24 heures (7 jours)", pro_desc: "Maximisez vos gains. Min 30$.", most_popular: "🔥 LE PLUS POPULAIRE",
         deposit_funds: "Déposer des Fonds", recent_deposits: "Vos Dépôts Récents", step1_coin: "Étape 1 : Sélectionnez votre devise",
         step2_transfer: "Étape 2 : Transférez le montant", amount_min: "Montant à déposer (Minimum 10$)", deposit_address: "Adresse de dépôt",
         copy: "Copier", scan_qr: "Scanner le QR", send_only: "Envoyez uniquement", to_this_address: "à cette adresse.", warning: "⚠️ IMPORTANT : Envoyez uniquement", by_network: "via le réseau", warning2: "Si vous envoyez une autre devise ou utilisez un autre réseau, vous perdrez vos fonds.",
@@ -926,7 +841,9 @@
         auth_ssl: "Connexion SSL", auth_funds: "Fonds Protégés", auth_support: "Support 24/7",
         auth_welcome_back: "Bon retour", auth_create_account: "Créez votre compte", auth_reset_password: "Réinitialiser",
         auth_subtitle_login: "Connectez-vous pour accéder à votre tableau de bord.", auth_subtitle_register: "Inscrivez-vous pour commencer à investir.", auth_subtitle_reset: "Nous vous enverrons un lien par e-mail.",
-        auth_have_account: "Vous avez déjà un compte ?", auth_no_account: "Vous n'avez pas de compte ?", auth_signin: "Se connecter", auth_signup: "Créer un compte"
+        auth_have_account: "Vous avez déjà un compte ?", auth_no_account: "Vous n'avez pas de compte ?", auth_signin: "Se connecter", auth_signup: "Créer un compte",
+        bonus_title: "Bonus de Bienvenue ! 🎁",
+        bonus_text: "Nous avons crédité <b>15.00 USD</b> sur votre compte.<br><br>Déposez <b>15 $</b> de plus pour atteindre le minimum de <b>30 $</b> et débloquer le plan Starter."
       },
       zh: {
         nav_home: "首页", nav_deposit: "存款", nav_withdraw: "提款", nav_referrals: "推荐", nav_profile: "个人资料", nav_admin: "管理员",
@@ -936,8 +853,8 @@
         btn_deposit: "＋ 存款", btn_withdraw: "↗ 提款", invite_earn: "邀请赚取 10%", invite_desc: "分享您的链接并赚取佣金。",
         active_inv: "活跃投资", your_summary: "您的摘要", active_inv_stat: "活跃投资", asset_value: "您的资产价值",
         accumulated_earnings: "累计收益", plan_yield: "计划收益", investment_plans: "投资计划",
-        starter_plan: "❄️ 入门计划", starter_freq: "每 24 小时提款（7 天）", starter_desc: "每日收益。结束时重新激活您的计划。",
-        see_amounts: "查看投资金额", pro_plan: "🔥 专业计划", pro_freq: "每 24 小时提款（7 天）", pro_desc: "在中长期内最大化您的收益。", most_popular: "🔥 最受欢迎",
+        starter_plan: "❄️ 入门计划", starter_freq: "每 24 小时提款（7 天）", starter_desc: "每日收益。最低 $30。结束时重新激活。",
+        see_amounts: "查看投资金额", pro_plan: "🔥 专业计划", pro_freq: "每 24 小时提款（7 天）", pro_desc: "最大化您的收益。最低 $30。", most_popular: "🔥 最受欢迎",
         deposit_funds: "存入资金", recent_deposits: "您最近的存款", step1_coin: "步骤 1：选择您的货币",
         step2_transfer: "步骤 2：转账金额", amount_min: "存款金额（最低 $10）", deposit_address: "存款地址",
         copy: "复制", scan_qr: "扫描二维码", send_only: "仅发送", to_this_address: "到此地址。", warning: "⚠️ 重要提示：仅发送", by_network: "通过网络", warning2: "如果您发送其他货币或使用其他网络，您将损失资金。",
@@ -969,7 +886,9 @@
         auth_ssl: "SSL 连接", auth_funds: "资金保障", auth_support: "24/7 支持",
         auth_welcome_back: "欢迎回来", auth_create_account: "创建您的账户", auth_reset_password: "重置密码",
         auth_subtitle_login: "登录以访问您的财务仪表板。", auth_subtitle_register: "注册开始投资。", auth_subtitle_reset: "我们将向您的邮箱发送链接。",
-        auth_have_account: "已有账户？", auth_no_account: "没有账户？", auth_signin: "登录", auth_signup: "创建账户"
+        auth_have_account: "已有账户？", auth_no_account: "没有账户？", auth_signin: "登录", auth_signup: "创建账户",
+        bonus_title: "欢迎奖励！🎁",
+        bonus_text: "我们已向您的账户存入 <b>15.00 USD</b>。<br><br>再存入 <b>15 美元</b> 即可达到 <b>30 美元</b> 的最低要求并解锁入门计划。"
       },
       sg: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -979,8 +898,8 @@
         btn_deposit: "＋ Deposit", btn_withdraw: "↗ Withdraw", invite_earn: "Invite & Earn 10%", invite_desc: "Share your link and earn commissions.",
         active_inv: "Active Investments", your_summary: "Your summary", active_inv_stat: "Active investment", asset_value: "Value of your assets",
         accumulated_earnings: "Accumulated earnings", plan_yield: "Plan yield", investment_plans: "Investment Plans",
-        starter_plan: "❄️ Starter Plan", starter_freq: "Withdrawals every 24 hours (7 days)", starter_desc: "Daily earnings. Reactivate your plan when it ends.",
-        see_amounts: "See investment amounts", pro_plan: "🔥 Pro Plan", pro_freq: "Withdrawals every 24 hours (7 days)", pro_desc: "Maximize your earnings in the medium term.", most_popular: "🔥 MOST POPULAR",
+        starter_plan: "❄️ Starter Plan", starter_freq: "Withdrawals every 24 hours (7 days)", starter_desc: "Daily earnings. Min $30. Reactivate when it ends.",
+        see_amounts: "See investment amounts", pro_plan: "🔥 Pro Plan", pro_freq: "Withdrawals every 24 hours (7 days)", pro_desc: "Maximize your earnings. Min $30.", most_popular: "🔥 MOST POPULAR",
         deposit_funds: "Deposit Funds", recent_deposits: "Your Recent Deposits", step1_coin: "Step 1: Select your currency",
         step2_transfer: "Step 2: Transfer the amount", amount_min: "Amount to deposit (Minimum $10)", deposit_address: "Deposit address",
         copy: "Copy", scan_qr: "Scan QR", send_only: "Send only", to_this_address: "to this address.", warning: "⚠️ IMPORTANT: Send only", by_network: "via the network", warning2: "If you send another currency or use another network, you will lose your funds.",
@@ -1012,7 +931,9 @@
         auth_ssl: "SSL Connection", auth_funds: "Protected Funds", auth_support: "24/7 Support",
         auth_welcome_back: "Welcome back", auth_create_account: "Create your account", auth_reset_password: "Reset password",
         auth_subtitle_login: "Sign in to access your financial dashboard.", auth_subtitle_register: "Sign up to start investing.", auth_subtitle_reset: "We'll send a link to your email.",
-        auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account"
+        auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account",
+        bonus_title: "Welcome Bonus! 🎁",
+        bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan."
       }
     };
 
@@ -1034,7 +955,6 @@
         }
       });
       
-      // Sincronizar ambos selectores
       const s1 = document.getElementById('langSelector');
       const s2 = document.getElementById('authLangSelector');
       if (s1) s1.value = lang;
@@ -1047,7 +967,6 @@
       else if (lang === 'fr') document.title = "NovaVest | Gestion d'Actifs";
       else if (lang === 'zh') document.title = "NovaVest | 资产管理";
 
-      // Re-render market strip si existe
       if (typeof renderMarketStrip === 'function' && document.getElementById('marketStrip')) {
         renderMarketStrip();
       }
@@ -1144,8 +1063,8 @@
       BTC:  { price: 67420.8, name: 'Bitcoin',  address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">',  network: 'Bitcoin (Native)' },
       SOL:  { price: 145.50,  name: 'Solana',   address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">',  network: 'Solana (SPL)' },
       USDT: { price: 1,       name: 'Tether',   address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">', network: 'TRON (TRC20)' },
-      ARB:  { price: 0.16,    name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
-      XRP:  { price: 1.11,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
+      ARB:  { price: 0.85,    name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
+      XRP:  { price: 2.20,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
     };
 
     let currentUserId = null, currentUserEmail = null, currentUserDisplayId = null;
@@ -1156,17 +1075,66 @@
     const PLAN_CONFIG = {
       starter: {
         name: '❄️ Starter Plan (6%)',
-        desc: 'Daily earnings. Choose your crypto and amount (min $15):',
+        desc: 'Daily earnings. Minimum $30:',
         roi: 0.06, totalPayouts: 7, intervalHours: 24,
-        amounts: [15, 50, 100, 200, 400]
+        amounts: [30, 50, 100, 200, 400]
       },
       pro: {
         name: '🔥 Pro Plan (9%)',
-        desc: 'Daily earnings. Choose your crypto and amount (min $15):',
+        desc: 'Daily earnings. Minimum $30:',
         roi: 0.09, totalPayouts: 7, intervalHours: 24,
-        amounts: [15, 500, 1000, 2000, 5000]
+        amounts: [30, 500, 1000, 2000, 5000]
       }
     };
+
+    // ==================== PRUEBAS SOCIALES (FALSAS) ====================
+    function initSocialProof() {
+      const container = document.getElementById('socialProofContainer');
+      const textEl = document.getElementById('socialProofText');
+      if (!container || !textEl) return;
+
+      let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs'));
+      const now = Date.now();
+
+      // Si no hay pruebas o ha pasado más de 24 horas (86400000 ms), generar nuevas
+      if (!proofs || !proofs.timestamp || (now - proofs.timestamp > 86400000)) {
+        const names = ['a***z', 'j***n', 'm***r', 'c***s', 'd***l', 's***a', 'p***o', 'r***a', 'f***o', 'g***a', 'luis**', 'carlos**'];
+        const newProofs = [];
+        
+        // Generar 5 pruebas aleatorias entre $50 y $200
+        for (let i = 0; i < 5; i++) {
+          const amount = (Math.floor(Math.random() * 150) + 50).toFixed(2);
+          const name = names[Math.floor(Math.random() * names.length)];
+          newProofs.push({ amount, name });
+        }
+        
+        proofs = { timestamp: now, data: newProofs };
+        localStorage.setItem('novavest_social_proofs', JSON.stringify(proofs));
+      }
+
+      container.classList.remove('hidden');
+      let currentIndex = 0;
+
+      function showNextProof() {
+        const proof = proofs.data[currentIndex];
+        const lang = localStorage.getItem('novavest_lang') || 'en';
+        
+        const withdrewTxt = lang === 'es' ? 'retiró' : lang === 'fr' ? 'a retiré' : lang === 'zh' ? '提现了' : 'just withdrew';
+        const userTxt = lang === 'es' ? 'Usuario' : lang === 'fr' ? 'Utilisateur' : lang === 'zh' ? '用户' : 'User';
+
+        textEl.style.opacity = '0';
+        
+        setTimeout(() => {
+          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${proof.amount}</b>`;
+          textEl.style.opacity = '1';
+        }, 300);
+
+        currentIndex = (currentIndex + 1) % proofs.data.length;
+      }
+
+      setTimeout(showNextProof, 500);
+      setInterval(showNextProof, 8000); // Rota cada 8 segundos
+    }
 
     // ==================== MERCADO ====================
     const MARKET_META = {
@@ -1269,7 +1237,6 @@
       });
     }
 
-    // ==================== NAVEGACIÓN CON MONEDA PRESELECCIONADA ====================
     window.goToDepositWithAsset = function(asset) {
       window.navigate('deposit', document.querySelectorAll('.nav button')[1]);
       const sel = document.getElementById('asset');
@@ -1282,7 +1249,6 @@
       if (sel) { sel.value = asset; window.updateWithdrawInfo(); }
     };
 
-    // ==================== UTILIDADES ====================
     const $ = (id) => document.getElementById(id);
     function money(value) { return '$' + Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function quantity(value, asset) {
@@ -1290,7 +1256,6 @@
       return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + ' ' + asset;
     }
 
-    // ==================== CARGA DE DATOS ====================
     async function loadUserData(user) {
       try {
         currentUserId = user.id; currentUserEmail = user.email; 
@@ -1298,10 +1263,8 @@
 
         if (user.email === ADMIN_EMAIL) {
           $('adminNavBtn').classList.remove('hidden');
-          $('navInner').style.gridTemplateColumns = 'repeat(6, 1fr)';
         } else {
           $('adminNavBtn').classList.add('hidden');
-          $('navInner').style.gridTemplateColumns = 'repeat(5, 1fr)';
         }
 
         const createdDate = new Date(user.created_at);
@@ -1328,8 +1291,19 @@
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
         if (!existing || existing.length === 0) {
-          const initialRows = Object.keys(ASSET_INFO).map(asset => ({ user_id: user.id, asset, amount: 0 }));
+          // BONO DE BIENVENIDA: $15 en USDT
+          const initialRows = Object.keys(ASSET_INFO).map(asset => ({ 
+            user_id: user.id, 
+            asset, 
+            amount: asset === 'USDT' ? 15 : 0 
+          }));
           await supabaseClient.from('novavest_balances').upsert(initialRows, { onConflict: 'user_id,asset', ignoreDuplicates: true });
+          
+          setTimeout(() => {
+            const lang = localStorage.getItem('novavest_lang') || 'en';
+            const t = translations[lang] || translations.en;
+            openModal(t.bonus_title || 'Welcome Bonus! 🎁', t.bonus_text || 'We have credited <b>$15.00 USD</b> to your account.<br><br>Deposit an extra <b>$15</b> to reach the <b>$30</b> minimum and unlock the Starter Plan!');
+          }, 1500);
         }
         
         const { data: rows } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
@@ -1909,8 +1883,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search); const refParam = urlParams.get('ref');
       if (refParam) { $('referralCode').value = refParam; setAuthView('register'); }
-      // Render inicial del market strip (con saldos en cero)
       renderMarketStrip();
+      initSocialProof();
     });
   </script>
 </body>
