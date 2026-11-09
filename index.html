@@ -472,6 +472,12 @@
             <div class="balance-head"><span class="eyebrow" data-i18n="total_balance">Estimated total balance</span><span class="pill" data-i18n="main_account">● Main Account</span></div>
             <div class="amount" id="totalBalance">$0.00</div>
             <div class="change" data-i18n="current_yield">↗ Current yield</div>
+            
+            <!-- CONTADOR DE URGENCIA -->
+            <div id="bonusCountdown" style="display:none; margin-top: 10px; font-size: 11px; font-weight: 700; color: #fff; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 10px; width: fit-content;">
+              ⏳ <span data-i18n="bonus_expires">Tu bono expira en:</span> <span id="countdownTimer">23:59:59</span>
+            </div>
+
             <div class="balance-actions">
               <button class="action primary press-effect" onclick="navigate('deposit', document.querySelectorAll('.nav button')[1])"><span data-i18n="btn_deposit">＋ Deposit</span></button>
               <button class="action ghost press-effect" onclick="navigate('withdraw', document.querySelectorAll('.nav button')[2])"><span data-i18n="btn_withdraw">↗ Withdraw</span></button>
@@ -708,8 +714,12 @@
         Tienes <b>$15 de bono</b> en tu cuenta. Recarga $15 más para alcanzar el mínimo de $30 y empezar a generar ganancias.
       </p>
       
+      <button class="wide press-effect" onclick="investBonus()" style="background: var(--blue); color: white; padding: 16px; font-size: 15px; margin-bottom: 10px;" data-i18n="notif_invest_btn">
+        🎁 Invertir mis $15 ahora
+      </button>
+      
       <button class="wide press-effect" onclick="goToDepositFromNotification()" style="background: var(--mint); color: white; padding: 16px; font-size: 15px;" data-i18n="notif_btn">
-        Ir a Depositar ahora →
+        Ir a Depositar (Mín. $30) →
       </button>
       
       <button class="wide press-effect" onclick="closeBonusModal()" style="background: transparent; color: var(--muted); box-shadow: none; border: none; margin-top: 10px; font-size: 12px;" data-i18n="notif_skip">
@@ -781,8 +791,10 @@
         bonus_text: "Te hemos regalado <b>$15.00 USD</b>.<br><br>Deposita <b>$15</b> más para alcanzar el mínimo de <b>$30</b> y desbloquear el Plan Starter.",
         notif_title: "¡Activa tu Plan!",
         notif_body: "Tienes <b>$15 de bono</b> en tu cuenta. Recarga $15 más para alcanzar el mínimo de $30 y empezar a generar ganancias.",
-        notif_btn: "Ir a Depositar ahora →",
-        notif_skip: "Lo haré más tarde"
+        notif_invest_btn: "🎁 Invertir mis $15 ahora",
+        notif_btn: "Ir a Depositar (Mín. $30) →",
+        notif_skip: "Lo haré más tarde",
+        bonus_expires: "Tu bono expira en:"
       },
       en: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -831,8 +843,10 @@
         bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan.",
         notif_title: "Activate Your Plan!",
         notif_body: "You have a <b>$15 bonus</b> in your account. Deposit $15 more to reach the $30 minimum and start earning.",
-        notif_btn: "Go to Deposit now →",
-        notif_skip: "I'll do it later"
+        notif_invest_btn: "🎁 Invest my $15 now",
+        notif_btn: "Go to Deposit (Min. $30) →",
+        notif_skip: "I'll do it later",
+        bonus_expires: "Your bonus expires in:"
       },
       fr: {
         nav_home: "Accueil", nav_deposit: "Dépôt", nav_withdraw: "Retrait", nav_referrals: "Parrainages", nav_profile: "Profil", nav_admin: "Admin",
@@ -881,8 +895,10 @@
         bonus_text: "Nous avons crédité <b>15.00 USD</b> sur votre compte.<br><br>Déposez <b>15 $</b> de plus pour atteindre le minimum de <b>30 $</b> et débloquer le plan Starter.",
         notif_title: "Activez votre plan !",
         notif_body: "Vous avez un <b>bonus de 15 $</b>. Déposez 15 $ de plus pour atteindre le minimum de 30 $ et commencer à gagner.",
-        notif_btn: "Aller à Dépôt maintenant →",
-        notif_skip: "Je le ferai plus tard"
+        notif_invest_btn: "🎁 Investir mes 15 $ maintenant",
+        notif_btn: "Aller à Dépôt (Min. 30 $) →",
+        notif_skip: "Je le ferai plus tard",
+        bonus_expires: "Votre bonus expire dans :"
       },
       zh: {
         nav_home: "首页", nav_deposit: "存款", nav_withdraw: "提款", nav_referrals: "推荐", nav_profile: "个人资料", nav_admin: "管理员",
@@ -931,8 +947,10 @@
         bonus_text: "我们已向您的账户存入 <b>15.00 USD</b>。<br><br>再存入 <b>15 美元</b> 即可达到 <b>30 美元</b> 的最低要求并解锁入门计划。",
         notif_title: "激活您的计划！",
         notif_body: "您的账户中有 <b>15 美元奖励</b>。再存入 15 美元以达到 30 美元的最低要求并开始赚钱。",
-        notif_btn: "立即前往存款 →",
-        notif_skip: "稍后再说"
+        notif_invest_btn: "🎁 立即投资我的 15 美元",
+        notif_btn: "前往存款（最低 $30）→",
+        notif_skip: "稍后再说",
+        bonus_expires: "您的奖励到期时间："
       },
       sg: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -981,8 +999,10 @@
         bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan.",
         notif_title: "Activate Your Plan!",
         notif_body: "You have a <b>$15 bonus</b> in your account. Deposit $15 more to reach the $30 minimum and start earning.",
-        notif_btn: "Go to Deposit now →",
-        notif_skip: "I'll do it later"
+        notif_invest_btn: "🎁 Invest my $15 now",
+        notif_btn: "Go to Deposit (Min. $30) →",
+        notif_skip: "I'll do it later",
+        bonus_expires: "Your bonus expires in:"
       }
     };
 
@@ -1108,12 +1128,12 @@
     const ADMIN_EMAIL = 'investnova149@gmail.com'; 
 
     const ASSET_INFO = {
-      TRX:  { price: 0.2841,  name: 'TRON',     address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">',  network: 'TRON (TRC20)' },
-      BTC:  { price: 67420.8, name: 'Bitcoin',  address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">',  network: 'Bitcoin (Native)' },
-      SOL:  { price: 145.50,  name: 'Solana',   address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">',  network: 'Solana (SPL)' },
+      TRX:  { price: 0.25,    name: 'TRON',     address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">',  network: 'TRON (TRC20)' },
+      BTC:  { price: 95000,   name: 'Bitcoin',  address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">',  network: 'Bitcoin (Native)' },
+      SOL:  { price: 240,     name: 'Solana',   address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">',  network: 'Solana (SPL)' },
       USDT: { price: 1,       name: 'Tether',   address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">', network: 'TRON (TRC20)' },
-      ARB:  { price: 0.85,    name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
-      XRP:  { price: 2.20,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
+      ARB:  { price: 0.75,    name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
+      XRP:  { price: 2.30,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
     };
 
     let currentUserId = null, currentUserEmail = null, currentUserDisplayId = null;
@@ -1122,6 +1142,12 @@
     let timerInterval = null, activeInvestmentsData = [];
 
     const PLAN_CONFIG = {
+      trial: {
+        name: '🎁 Plan Bono (6%)',
+        desc: 'Plan especial de bienvenida. Usa tus $15 de regalo.',
+        roi: 0.06, totalPayouts: 3, intervalHours: 24,
+        amounts: [15]
+      },
       starter: {
         name: '❄️ Starter Plan (6%)',
         desc: 'Daily earnings. Minimum $30:',
@@ -1142,40 +1168,38 @@
       const textEl = document.getElementById('socialProofText');
       if (!container || !textEl) return;
 
-      let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs_v2'));
+      let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs_v3'));
       const now = Date.now();
 
       if (!proofs || !proofs.timestamp || (now - proofs.timestamp > 86400000)) {
         const names = ['a***z', 'j***n', 'm***r', 'c***s', 'd***l', 's***a', 'p***o', 'r***a', 'f***o', 'g***a', 'luis**', 'carlos**', 'and**s', 'kev**n', 'vic**r'];
         
         const scenarios = [
-          { plan: 'Starter', amount: '1.80' },
-          { plan: 'Starter', amount: '3.00' },
-          { plan: 'Starter', amount: '6.00' },
-          { plan: 'Starter', amount: '12.00' },
-          { plan: 'Starter', amount: '9.00' },
-          { plan: 'Starter', amount: '18.00' },
-          { plan: 'Pro', amount: '2.70' },
-          { plan: 'Pro', amount: '45.00' },
-          { plan: 'Pro', amount: '4.50' },
-          { plan: 'Pro', amount: '13.50' }
+          { action: 'withdrew', plan: 'Starter', amount: '3.00' },
+          { action: 'withdrew', plan: 'Starter', amount: '6.00' },
+          { action: 'withdrew', plan: 'Pro', amount: '13.50' },
+          { action: 'invested', plan: 'Starter', amount: '50.00' },
+          { action: 'invested', plan: 'Starter', amount: '100.00' },
+          { action: 'invested', plan: 'Pro', amount: '500.00' },
+          { action: 'invested', plan: 'Pro', amount: '1000.00' }
         ];
 
         const newProofs = [];
         const shuffled = scenarios.sort(() => 0.5 - Math.random());
         
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
           const scenario = shuffled[i % shuffled.length];
           const name = names[Math.floor(Math.random() * names.length)];
           newProofs.push({ 
             name: name, 
             amount: scenario.amount, 
-            plan: scenario.plan 
+            plan: scenario.plan,
+            action: scenario.action
           });
         }
         
         proofs = { timestamp: now, data: newProofs };
-        localStorage.setItem('novavest_social_proofs_v2', JSON.stringify(proofs));
+        localStorage.setItem('novavest_social_proofs_v3', JSON.stringify(proofs));
       }
 
       container.classList.remove('hidden');
@@ -1187,16 +1211,27 @@
         
         const plan = proof.plan || 'Starter';
         const amount = proof.amount || '3.00';
+        const action = proof.action || 'withdrew';
 
-        const withdrewTxt = lang === 'es' ? 'retiró' : lang === 'fr' ? 'a retiré' : lang === 'zh' ? '提现了' : 'just withdrew';
+        let actionTxt = '';
+        if (action === 'withdrew') {
+          actionTxt = lang === 'es' ? 'retiró' : lang === 'fr' ? 'a retiré' : lang === 'zh' ? '提现了' : 'just withdrew';
+        } else {
+          actionTxt = lang === 'es' ? 'invirtió' : lang === 'fr' ? 'a investi' : lang === 'zh' ? '投资了' : 'just invested';
+        }
+
         const userTxt = lang === 'es' ? 'Usuario' : lang === 'fr' ? 'Utilisateur' : lang === 'zh' ? '用户' : 'User';
-        const fromTxt = lang === 'es' ? 'del Plan' : lang === 'fr' ? 'du Plan' : lang === 'zh' ? '来自' : 'from';
+        const inTxt = lang === 'es' ? 'en el' : lang === 'fr' ? 'dans le' : lang === 'zh' ? '在' : 'in the';
         const planName = `${plan} (${plan === 'Starter' ? '6%' : '9%'})`;
 
         textEl.style.opacity = '0';
         
         setTimeout(() => {
-          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${amount}</b> ${fromTxt} <b>${planName}</b>`;
+          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${actionTxt} <b>$${amount}</b> ${inTxt} <b>${planName}</b>`;
+          if (action === 'invested') {
+             textEl.style.color = 'var(--mint)';
+             setTimeout(() => textEl.style.color = 'var(--text)', 1500);
+          }
           textEl.style.opacity = '1';
         }, 300);
 
@@ -1204,7 +1239,7 @@
       }
 
       setTimeout(showNextProof, 500);
-      setInterval(showNextProof, 7000);
+      setInterval(showNextProof, 5000);
     }
 
     // ==================== MODAL DE BONO ====================
@@ -1236,6 +1271,11 @@
       if (modal) modal.classList.remove('open');
       localStorage.setItem('novavest_bonus_dismissed', 'true');
       window.navigate('deposit', document.querySelectorAll('.nav button')[1]);
+    };
+
+    window.investBonus = function() {
+      closeBonusModal();
+      window.openPlanModal('trial');
     };
 
     // ==================== MERCADO ====================
@@ -1438,6 +1478,29 @@
           else if (vipLevel === 4) { vipBadge.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)'; vipBadge.style.color = '#000'; vipBadge.style.border = 'none'; }
         }
 
+        // CONTADOR DE URGENCIA
+        if (userBalances.USDT >= 15) {
+          const countdownEl = $('bonusCountdown');
+          const timerEl = $('countdownTimer');
+          if (countdownEl) {
+            countdownEl.style.display = 'flex';
+            let hours = 23, minutes = 59, seconds = 59;
+            
+            if (window.bonusInterval) clearInterval(window.bonusInterval);
+            window.bonusInterval = setInterval(() => {
+              seconds--;
+              if (seconds < 0) { seconds = 59; minutes--; }
+              if (minutes < 0) { minutes = 59; hours--; }
+              if (hours < 0) { 
+                clearInterval(window.bonusInterval); 
+                timerEl.textContent = "00:00:00"; 
+                return; 
+              }
+              timerEl.textContent = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            }, 1000);
+          }
+        }
+
         renderUserBalances(); loadHistory(); loadActiveInvestments(); loadReferralStats(); loadUserPendingDeposits();
       } catch (err) {
         console.error('Fallo en loadUserData:', err);
@@ -1570,7 +1633,6 @@
         const withPendingCount = userPending.filter(p => p.type === 'withdraw').length;
         const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('en-US', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Never';
         
-        // Lógica para mostrar el Telegram del usuario
         const tgUser = u.telegram_username || 'No Telegram';
         const tgLink = tgUser !== 'No Telegram' 
           ? `<a href="https://t.me/${tgUser.replace('@','')}" target="_blank" style="color:#3b82f6; font-weight:800; font-size:11px; text-decoration:none;">✈️ ${tgUser}</a>` 
@@ -1749,14 +1811,14 @@
       const config = PLAN_CONFIG[planType];
       $('planModalTitle').innerHTML = config.name;
       $('planModalDesc').textContent = config.desc;
-      $('planModalTitle').style.color = planType === 'starter' ? '#2563eb' : '#dc2626';
+      $('planModalTitle').style.color = planType === 'starter' ? '#2563eb' : planType === 'pro' ? '#dc2626' : '#10b981';
       let htmlContent = '';
       Object.keys(ASSET_INFO).forEach(asset => {
         const assetData = ASSET_INFO[asset];
         htmlContent += `<div class="invest-coin-section"><div class="invest-coin-header"><div class="coin-logo" style="width:24px; height:24px; padding:2px;">${assetData.icon}</div><b>${assetData.name} (${asset})</b></div><div class="invest-grid">`;
         config.amounts.forEach(amt => {
           const profit = (amt * config.roi).toFixed(2);
-          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#2563eb' : '#dc2626'};">+$${profit} / payout</div></button>`;
+          htmlContent += `<button class="invest-btn" onclick="checkBalanceForInvestment('${planType}', '${asset}', ${amt}, ${profit})"><div class="invest-btn-price">$${amt} <span>USD</span></div><div class="invest-btn-yield" style="color: ${planType === 'starter' ? '#2563eb' : planType === 'pro' ? '#dc2626' : '#10b981'};">+$${profit} / payout</div></button>`;
         });
         htmlContent += `</div></div>`;
       });
