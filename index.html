@@ -1128,12 +1128,12 @@
     const ADMIN_EMAIL = 'investnova149@gmail.com'; 
 
     const ASSET_INFO = {
-      TRX:  { price: 0.25,    name: 'TRON',     address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">',  network: 'TRON (TRC20)' },
-      BTC:  { price: 95000,   name: 'Bitcoin',  address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">',  network: 'Bitcoin (Native)' },
-      SOL:  { price: 240,     name: 'Solana',   address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">',  network: 'Solana (SPL)' },
+      TRX:  { price: 0.318,   name: 'TRON',     address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/trx.png" alt="TRX">',  network: 'TRON (TRC20)' },
+      BTC:  { price: 74800,   name: 'Bitcoin',  address: 'bc1qv24ndm2dqw4ycwvjd9tvvjt5lslv3ukdmwqsq4', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png" alt="BTC">',  network: 'Bitcoin (Native)' },
+      SOL:  { price: 86.89,   name: 'Solana',   address: 'HNzFU5E36dcRhAMfCoTNrZ27QvB9j39PiudTchg9G4H7', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png" alt="SOL">',  network: 'Solana (SPL)' },
       USDT: { price: 1,       name: 'Tether',   address: 'TPZVpWKbv97NYb7Gni8cnneMCL3AbTnJGg',  icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" alt="USDT">', network: 'TRON (TRC20)' },
-      ARB:  { price: 0.75,    name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
-      XRP:  { price: 2.30,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
+      ARB:  { price: 0.183,   name: 'Arbitrum', address: '0x83FdC6DD10F32163ee34B088f9F6Fb5392c5748a', icon: '<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="20" fill="#213147"/><path d="M20 8 L29 24 L24 24 L28 33 L13 33 L17 24 L11 24 Z" fill="#28A0F0"/></svg>', network: 'Arbitrum One (L2)' },
+      XRP:  { price: 1.10,    name: 'XRP',      address: 'rHVWCYG6C2UQs2NJPaKXx8UovVvbSGF3g2', icon: '<img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/xrp.png" alt="XRP">',  network: 'XRP Ledger' }
     };
 
     let currentUserId = null, currentUserEmail = null, currentUserDisplayId = null;
@@ -1401,7 +1401,13 @@
     async function loadUserData(user) {
       try {
         currentUserId = user.id; currentUserEmail = user.email; 
-        await supabaseClient.from('novavest_profiles').update({ last_seen: new Date().toISOString() }).eq('user_id', user.id);
+        
+        // Guardar Telegram en el perfil si viene en los metadatos
+        const telegramFromMeta = user.user_metadata?.telegram_username || null;
+        const updateData = { last_seen: new Date().toISOString() };
+        if (telegramFromMeta) updateData.telegram_username = telegramFromMeta;
+        
+        await supabaseClient.from('novavest_profiles').update(updateData).eq('user_id', user.id);
 
         if (user.email === ADMIN_EMAIL) {
           $('adminNavBtn').classList.remove('hidden');
@@ -1421,7 +1427,7 @@
         }
         changeLanguage(localStorage.getItem('novavest_lang') || 'en');
 
-        const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id').eq('user_id', user.id).maybeSingle();
+        const { data: profile } = await supabaseClient.from('novavest_profiles').select('display_id, telegram_username').eq('user_id', user.id).maybeSingle();
         if (profile && profile.display_id) {
           currentUserDisplayId = profile.display_id;
           $('investorId').innerHTML = `<span data-i18n="investor_id">Investor ID:</span> #${profile.display_id}`;
@@ -1986,10 +1992,19 @@
         }
       });
       
+      if(error){ showMessage(error.message,true); btn.disabled=false; btn.textContent = (translations[localStorage.getItem('novavest_lang')||'en']).auth_register_btn; return;}
+
+      // Guardar el Telegram directo en el perfil
+      if(data.user) {
+        await supabaseClient.from('novavest_profiles').update({
+          telegram_username: telegramUser
+        }).eq('user_id', data.user.id);
+      }
+      
       btn.disabled=false;
       const lang = localStorage.getItem('novavest_lang') || 'en';
       btn.textContent = (translations[lang]||translations.en).auth_register_btn;
-      if(error){showMessage(error.message,true);return;}
+      
       if(data.session) showDashboard(data.user);
       else showMessage('Account created. Check your email to confirm.');
     });
