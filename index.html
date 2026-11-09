@@ -331,67 +331,6 @@
     .market-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
     .market-btn:active { transform: scale(0.95); }
 
-    /* NOTIFICACIÓN FLOTANTE */
-    .push-notification {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(150%);
-      width: 90%;
-      max-width: 450px;
-      background: #fff;
-      border-radius: 18px;
-      padding: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 0 0 1px rgba(16, 185, 129, 0.2);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-      cursor: pointer;
-    }
-    .push-notification.show {
-      transform: translateX(-50%) translateY(0);
-    }
-    .push-notification:hover {
-      background: #f8fafc;
-    }
-    .pn-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--mint);
-      display: grid;
-      place-items: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .pn-content {
-      flex: 1;
-    }
-    .pn-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 2px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .pn-title span:last-child {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 600;
-    }
-    .pn-body {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-    .pn-body b {
-      color: var(--mint);
-    }
-
     @media(min-width: 600px) { 
       body { padding-bottom: 0; padding-top: 0; background-color: var(--bg); } 
       .app-layout { display: flex; min-height: 100vh; position: relative; z-index: 2; }
@@ -412,7 +351,6 @@
       a[href*="t.me"] { right: 40px; bottom: 40px; }
       a[href*="mailto"] { right: 105px; bottom: 40px; }
       .modal-backdrop { align-items: center; }
-      .push-notification { bottom: 30px; }
     }
   </style>
 </head>
@@ -757,17 +695,26 @@
     </main>
   </div>
 
-  <!-- NOTIFICACIÓN FLOTANTE DE DEPÓSITO -->
-  <div id="depositNotification" class="push-notification" onclick="goToDepositFromNotification()">
-    <div class="pn-icon">💰</div>
-    <div class="pn-content">
-      <div class="pn-title">
-        <span data-i18n="notif_title">Activa tu Plan</span>
-        <span>Ahora</span>
-      </div>
-      <div class="pn-body" data-i18n="notif_body">
-        Tienes <b>$15 de bono</b>. Recarga $15 más para activar tu plan de $30.
-      </div>
+  <!-- MODAL DE BONO DE BIENVENIDA -->
+  <div class="modal-backdrop" id="bonusModal" style="z-index: 1001;">
+    <div class="modal" style="text-align: center; padding: 30px 24px;">
+      <button class="close press-effect" onclick="closeBonusModal()" style="position: absolute; right: 20px; top: 20px;">✕</button>
+      
+      <div style="font-size: 50px; margin-bottom: 15px; animation: floatIcon 3s ease-in-out infinite;">🎁</div>
+      
+      <h3 style="font-size: 24px; color: var(--text); margin-bottom: 10px;" data-i18n="notif_title">¡Activa tu Plan!</h3>
+      
+      <p style="font-size: 14px; color: var(--muted); margin-bottom: 25px; line-height: 1.5;" data-i18n="notif_body">
+        Tienes <b>$15 de bono</b> en tu cuenta. Recarga $15 más para alcanzar el mínimo de $30 y empezar a generar ganancias.
+      </p>
+      
+      <button class="wide press-effect" onclick="goToDepositFromNotification()" style="background: var(--mint); color: white; padding: 16px; font-size: 15px;" data-i18n="notif_btn">
+        Ir a Depositar ahora →
+      </button>
+      
+      <button class="wide press-effect" onclick="closeBonusModal()" style="background: transparent; color: var(--muted); box-shadow: none; border: none; margin-top: 10px; font-size: 12px;" data-i18n="notif_skip">
+        Lo haré más tarde
+      </button>
     </div>
   </div>
 
@@ -832,8 +779,10 @@
         auth_have_account: "¿Ya tienes cuenta?", auth_no_account: "¿No tienes cuenta?", auth_signin: "Iniciar sesión", auth_signup: "Crear cuenta",
         bonus_title: "¡Bono de Bienvenida! 🎁",
         bonus_text: "Te hemos regalado <b>$15.00 USD</b>.<br><br>Deposita <b>$15</b> más para alcanzar el mínimo de <b>$30</b> y desbloquear el Plan Starter.",
-        notif_title: "Activa tu Plan",
-        notif_body: "Tienes <b>$15 de bono</b>. Recarga $15 más para activar tu plan de $30."
+        notif_title: "¡Activa tu Plan!",
+        notif_body: "Tienes <b>$15 de bono</b> en tu cuenta. Recarga $15 más para alcanzar el mínimo de $30 y empezar a generar ganancias.",
+        notif_btn: "Ir a Depositar ahora →",
+        notif_skip: "Lo haré más tarde"
       },
       en: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -880,8 +829,10 @@
         auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account",
         bonus_title: "Welcome Bonus! 🎁",
         bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan.",
-        notif_title: "Activate Your Plan",
-        notif_body: "You have a <b>$15 bonus</b>. Deposit $15 more to activate your $30 plan."
+        notif_title: "Activate Your Plan!",
+        notif_body: "You have a <b>$15 bonus</b> in your account. Deposit $15 more to reach the $30 minimum and start earning.",
+        notif_btn: "Go to Deposit now →",
+        notif_skip: "I'll do it later"
       },
       fr: {
         nav_home: "Accueil", nav_deposit: "Dépôt", nav_withdraw: "Retrait", nav_referrals: "Parrainages", nav_profile: "Profil", nav_admin: "Admin",
@@ -928,8 +879,10 @@
         auth_have_account: "Vous avez déjà un compte ?", auth_no_account: "Vous n'avez pas de compte ?", auth_signin: "Se connecter", auth_signup: "Créer un compte",
         bonus_title: "Bonus de Bienvenue ! 🎁",
         bonus_text: "Nous avons crédité <b>15.00 USD</b> sur votre compte.<br><br>Déposez <b>15 $</b> de plus pour atteindre le minimum de <b>30 $</b> et débloquer le plan Starter.",
-        notif_title: "Activez votre plan",
-        notif_body: "Vous avez un <b>bonus de 15 $</b>. Déposez 15 $ de plus pour activer votre plan de 30 $."
+        notif_title: "Activez votre plan !",
+        notif_body: "Vous avez un <b>bonus de 15 $</b>. Déposez 15 $ de plus pour atteindre le minimum de 30 $ et commencer à gagner.",
+        notif_btn: "Aller à Dépôt maintenant →",
+        notif_skip: "Je le ferai plus tard"
       },
       zh: {
         nav_home: "首页", nav_deposit: "存款", nav_withdraw: "提款", nav_referrals: "推荐", nav_profile: "个人资料", nav_admin: "管理员",
@@ -976,8 +929,10 @@
         auth_have_account: "已有账户？", auth_no_account: "没有账户？", auth_signin: "登录", auth_signup: "创建账户",
         bonus_title: "欢迎奖励！🎁",
         bonus_text: "我们已向您的账户存入 <b>15.00 USD</b>。<br><br>再存入 <b>15 美元</b> 即可达到 <b>30 美元</b> 的最低要求并解锁入门计划。",
-        notif_title: "激活您的计划",
-        notif_body: "您有 <b>15 美元奖励</b>。再存入 15 美元以激活您的 30 美元计划。"
+        notif_title: "激活您的计划！",
+        notif_body: "您的账户中有 <b>15 美元奖励</b>。再存入 15 美元以达到 30 美元的最低要求并开始赚钱。",
+        notif_btn: "立即前往存款 →",
+        notif_skip: "稍后再说"
       },
       sg: {
         nav_home: "Home", nav_deposit: "Deposit", nav_withdraw: "Withdraw", nav_referrals: "Referrals", nav_profile: "Profile", nav_admin: "Admin",
@@ -1024,8 +979,10 @@
         auth_have_account: "Already have an account?", auth_no_account: "Don't have an account?", auth_signin: "Sign in", auth_signup: "Create account",
         bonus_title: "Welcome Bonus! 🎁",
         bonus_text: "We credited <b>$15.00 USD</b> to your account.<br><br>Deposit <b>$15</b> more to reach the <b>$30</b> minimum and unlock the Starter Plan.",
-        notif_title: "Activate Your Plan",
-        notif_body: "You have a <b>$15 bonus</b>. Deposit $15 more to activate your $30 plan."
+        notif_title: "Activate Your Plan!",
+        notif_body: "You have a <b>$15 bonus</b> in your account. Deposit $15 more to reach the $30 minimum and start earning.",
+        notif_btn: "Go to Deposit now →",
+        notif_skip: "I'll do it later"
       }
     };
 
@@ -1250,12 +1207,12 @@
       setInterval(showNextProof, 7000);
     }
 
-    // ==================== NOTIFICACIÓN FLOTANTE ====================
+    // ==================== MODAL DE BONO ====================
     function initDepositNotification() {
-      const notif = document.getElementById('depositNotification');
-      if (!notif) return;
+      const modal = document.getElementById('bonusModal');
+      if (!modal) return;
 
-      const hasDismissed = localStorage.getItem('novavest_notif_dismissed');
+      const hasDismissed = localStorage.getItem('novavest_bonus_dismissed');
       if (hasDismissed === 'true') return;
 
       const usdtBalance = userBalances.USDT || 0;
@@ -1263,19 +1220,21 @@
       
       if (usdtBalance >= 15 && totalBalance <= 15) {
         setTimeout(() => {
-          notif.classList.add('show');
-        }, 3000);
+          modal.classList.add('open');
+        }, 2000);
       }
-
-      setTimeout(() => {
-        notif.classList.remove('show');
-      }, 18000);
     }
 
+    window.closeBonusModal = function() {
+      const modal = document.getElementById('bonusModal');
+      if (modal) modal.classList.remove('open');
+      localStorage.setItem('novavest_bonus_dismissed', 'true');
+    };
+
     window.goToDepositFromNotification = function() {
-      const notif = document.getElementById('depositNotification');
-      if (notif) notif.classList.remove('show');
-      localStorage.setItem('novavest_notif_dismissed', 'true');
+      const modal = document.getElementById('bonusModal');
+      if (modal) modal.classList.remove('open');
+      localStorage.setItem('novavest_bonus_dismissed', 'true');
       window.navigate('deposit', document.querySelectorAll('.nav button')[1]);
     };
 
