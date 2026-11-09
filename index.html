@@ -1087,8 +1087,7 @@
       }
     };
 
-    // ==================== PRUEBAS SOCIALES (FALSAS) ====================
-    function initSocialProof() {
+       function initSocialProof() {
       const container = document.getElementById('socialProofContainer');
       const textEl = document.getElementById('socialProofText');
       if (!container || !textEl) return;
@@ -1096,16 +1095,36 @@
       let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs'));
       const now = Date.now();
 
-      // Si no hay pruebas o ha pasado más de 24 horas (86400000 ms), generar nuevas
+      // Si no hay pruebas o ha pasado más de 24 horas, generar nuevas
       if (!proofs || !proofs.timestamp || (now - proofs.timestamp > 86400000)) {
-        const names = ['a***z', 'j***n', 'm***r', 'c***s', 'd***l', 's***a', 'p***o', 'r***a', 'f***o', 'g***a', 'luis**', 'carlos**'];
-        const newProofs = [];
+        const names = ['a***z', 'j***n', 'm***r', 'c***s', 'd***l', 's***a', 'p***o', 'r***a', 'f***o', 'g***a', 'luis**', 'carlos**', 'and**s', 'kev**n', 'vic**r'];
         
-        // Generar 5 pruebas aleatorias entre $50 y $200
-        for (let i = 0; i < 5; i++) {
-          const amount = (Math.floor(Math.random() * 150) + 50).toFixed(2);
+        // Combinaciones 100% realistas basadas en tus planes
+        const scenarios = [
+          { plan: 'Starter', amount: '1.80' },  // Inversión de $30
+          { plan: 'Starter', amount: '3.00' },  // Inversión de $50
+          { plan: 'Starter', amount: '6.00' },  // Inversión de $100
+          { plan: 'Starter', amount: '12.00' }, // Inversión de $200
+          { plan: 'Starter', amount: '9.00' },  // Acumulado (3 días de $50)
+          { plan: 'Starter', amount: '18.00' }, // Acumulado (3 días de $100)
+          { plan: 'Pro', amount: '2.70' },      // Inversión de $30
+          { plan: 'Pro', amount: '45.00' },     // Inversión de $500
+          { plan: 'Pro', amount: '4.50' },      // Inversión de $50 (prorrateado)
+          { plan: 'Pro', amount: '13.50' }      // Acumulado (3 días de $50)
+        ];
+
+        const newProofs = [];
+        // Mezclar escenarios para que no salgan siempre en el mismo orden
+        const shuffled = scenarios.sort(() => 0.5 - Math.random());
+        
+        for (let i = 0; i < 6; i++) {
+          const scenario = shuffled[i % shuffled.length];
           const name = names[Math.floor(Math.random() * names.length)];
-          newProofs.push({ amount, name });
+          newProofs.push({ 
+            name: name, 
+            amount: scenario.amount, 
+            plan: scenario.plan 
+          });
         }
         
         proofs = { timestamp: now, data: newProofs };
@@ -1121,11 +1140,14 @@
         
         const withdrewTxt = lang === 'es' ? 'retiró' : lang === 'fr' ? 'a retiré' : lang === 'zh' ? '提现了' : 'just withdrew';
         const userTxt = lang === 'es' ? 'Usuario' : lang === 'fr' ? 'Utilisateur' : lang === 'zh' ? '用户' : 'User';
+        const fromTxt = lang === 'es' ? 'del Plan' : lang === 'fr' ? 'du Plan' : lang === 'zh' ? '来自' : 'from';
+        const planName = lang === 'es' ? `${proof.plan} (${proof.plan === 'Starter' ? '6%' : '9%'})` : `${proof.plan} (${proof.plan === 'Starter' ? '6%' : '9%'})`;
 
         textEl.style.opacity = '0';
         
         setTimeout(() => {
-          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${proof.amount}</b>`;
+          // Formato: "Usuario j***n retiró $6.00 del Plan Starter (6%)"
+          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${proof.amount}</b> ${fromTxt} <b>${planName}</b>`;
           textEl.style.opacity = '1';
         }, 300);
 
@@ -1133,9 +1155,8 @@
       }
 
       setTimeout(showNextProof, 500);
-      setInterval(showNextProof, 8000); // Rota cada 8 segundos
+      setInterval(showNextProof, 7000); // Rota cada 7 segundos
     }
-
     // ==================== MERCADO ====================
     const MARKET_META = {
       TRX:  { change24h: +1.24, trend: 'up'   },
