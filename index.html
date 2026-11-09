@@ -239,7 +239,6 @@
 
     .nav { position: fixed; z-index: 10; bottom: 0; left: 0; right: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--line); box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
     
-    /* ARREGLO DEL MENÚ INFERIOR PARA MÓVIL */
     .nav-inner { max-width: 520px; margin: auto; display: flex; justify-content: space-between; gap: 2px; position: relative; z-index: 2; }
     .nav button { background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 14px; font-size: 9px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.2s; flex: 1; }
     .nav button span:first-child { font-size: 18px; }
@@ -390,6 +389,13 @@
         <input class="field" id="registerEmail" type="email" autocomplete="email" placeholder="your@email.com" required>
         <label class="field-label" for="registerPassword" data-i18n="auth_new_password_label">Create password (Min. 8 chars, 1 uppercase, 1 number)</label>
         <input class="field" id="registerPassword" type="password" autocomplete="new-password" placeholder="e.g. Nova2024*" required>
+        
+        <label class="field-label" for="registerTelegram" data-i18n="auth_telegram_label">Telegram Username (Required)</label>
+        <div style="position:relative;">
+          <span style="position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:16px;">✈️</span>
+          <input class="field" id="registerTelegram" type="text" placeholder="@yourusername" required style="padding-left: 42px;">
+        </div>
+
         <label class="field-label" for="referralCode" data-i18n="auth_referral_label">Referral code (Optional)</label>
         <input class="field" id="referralCode" type="number" placeholder="e.g. 1450">
         <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
@@ -443,12 +449,10 @@
           </div>
         </header>
 
-        <!-- ===== PRUEBAS SOCIALES (FALSAS) ===== -->
         <div id="socialProofContainer" class="social-proof-container hidden">
           <div class="social-proof-badge">LIVE</div>
           <span id="socialProofText">Loading...</span>
         </div>
-        <!-- ===== FIN PRUEBAS SOCIALES ===== -->
 
         <div id="view-home" class="view active">
           
@@ -481,13 +485,11 @@
             </div>
           </div>
 
-          <!-- ===== PANEL DE MERCADO EN VIVO ===== -->
           <div class="market-section animate-in delay-2">
             <h2 data-i18n="market_overview">Live Market</h2>
             <span class="live-badge" data-i18n="live">Live</span>
           </div>
           <div class="market-strip" id="marketStrip"></div>
-          <!-- ===== FIN PANEL DE MERCADO ===== -->
 
           <div id="activeInvestmentsSection" class="hidden"><div class="section"><h2 data-i18n="active_inv">Active Investments</h2></div><div id="activeInvestmentsList"></div></div>
           <div class="section"><h2 data-i18n="your_summary">Your summary</h2></div>
@@ -700,7 +702,6 @@
   <div class="modal-backdrop" id="confirmInvModal"><div class="modal"><h3 id="confirmInvTitle" style="margin-bottom: 10px;" data-i18n="confirm_invest">Confirm Investment</h3><p id="confirmInvText"></p><div class="modal-actions"><button class="modal-btn-cancel press-effect" onclick="closeConfirmInvModal()" data-i18n="cancel">Cancel</button><button class="modal-btn-confirm press-effect" id="confirmInvBtn" onclick="executeInvestment()" data-i18n="confirm">Confirm</button></div></div></div>
   <div class="modal-backdrop" id="termsModal"><div class="modal"><button class="close press-effect" onclick="closeTerms()">✕</button><h3 style="margin-bottom: 10px;" data-i18n="terms_title">Terms and Conditions</h3><div style="font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;"><p data-i18n="terms_p1"><b>1. Investment Risk:</b> Cryptocurrencies are volatile assets. The returns shown (6% and 9%) are estimated based on the market. We do not guarantee future profits.</p><p data-i18n="terms_p2"><b>2. Platform Nature:</b> NovaVest is a digital asset management platform. Deposits and withdrawals are subject to manual verification by the administration team to prevent fraud.</p><p data-i18n="terms_p3"><b>3. Data Privacy:</b> Your email will be used solely to authenticate your account and send you relevant notifications. We do not share your data with third parties.</p><p data-i18n="terms_p4"><b>4. User Responsibility:</b> It is the user's responsibility to keep their password and withdrawal keys secure. NovaVest is not responsible for losses derived from user negligence.</p><p data-i18n="terms_p5"><b>5. Modifications:</b> We reserve the right to modify the terms of the plans and return rates at any time to adapt to the market.</p></div><button class="wide press-effect" onclick="closeTerms()" data-i18n="accept_close">Accept and Close</button></div></div>
 
-  <!-- BOTONES FLOTANTES MOVIDOS HACIA ARRIBA PARA NO TAPAR EL MENÚ -->
   <a href="mailto:support@novavest.lat" title="Email Support" style="position:fixed; bottom:130px; right:20px; background:#3b82f6; color:white; width:55px; height:55px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 25px rgba(59,130,246,0.4); z-index: 100; text-decoration: none; transition: transform 0.2s;">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
   </a>
@@ -746,6 +747,7 @@
         market_overview: "Mercado en vivo", live: "En vivo", your_holding: "Tu saldo:", last_24h: "24h",
         auth_email_label: "Correo electrónico", auth_password_label: "Contraseña", auth_fullname_label: "Nombre completo",
         auth_new_password_label: "Crear contraseña (Mín. 8 caracteres, 1 mayúscula, 1 número)", auth_referral_label: "Código de Referido (Opcional)",
+        auth_telegram_label: "Usuario de Telegram (Obligatorio)",
         auth_login_btn: "Iniciar sesión", auth_register_btn: "Crear cuenta", auth_send_link_btn: "Enviar enlace",
         auth_terms_agree: "Acepto los", auth_terms_link: "Términos y Condiciones", auth_forgot_password: "¿Olvidaste tu contraseña?",
         auth_ssl: "Conexión SSL", auth_funds: "Fondos Protegidos", auth_support: "Soporte 24/7",
@@ -791,6 +793,7 @@
         market_overview: "Live Market", live: "Live", your_holding: "Your balance:", last_24h: "24h",
         auth_email_label: "Email", auth_password_label: "Password", auth_fullname_label: "Full name",
         auth_new_password_label: "Create password (Min. 8 chars, 1 uppercase, 1 number)", auth_referral_label: "Referral code (Optional)",
+        auth_telegram_label: "Telegram Username (Required)",
         auth_login_btn: "Sign in", auth_register_btn: "Create account", auth_send_link_btn: "Send link",
         auth_terms_agree: "I agree to the", auth_terms_link: "Terms and Conditions", auth_forgot_password: "Forgot your password?",
         auth_ssl: "SSL Connection", auth_funds: "Protected Funds", auth_support: "24/7 Support",
@@ -836,6 +839,7 @@
         market_overview: "Marché en direct", live: "En direct", your_holding: "Votre solde :", last_24h: "24h",
         auth_email_label: "E-mail", auth_password_label: "Mot de passe", auth_fullname_label: "Nom complet",
         auth_new_password_label: "Créer un mot de passe (Min. 8 car., 1 maj., 1 chiffre)", auth_referral_label: "Code de parrainage (Optionnel)",
+        auth_telegram_label: "Nom d'utilisateur Telegram (Obligatoire)",
         auth_login_btn: "Se connecter", auth_register_btn: "Créer un compte", auth_send_link_btn: "Envoyer le lien",
         auth_terms_agree: "J'accepte les", auth_terms_link: "Termes et Conditions", auth_forgot_password: "Mot de passe oublié ?",
         auth_ssl: "Connexion SSL", auth_funds: "Fonds Protégés", auth_support: "Support 24/7",
@@ -881,6 +885,7 @@
         market_overview: "实时市场", live: "实时", your_holding: "您的余额：", last_24h: "24小时",
         auth_email_label: "电子邮件", auth_password_label: "密码", auth_fullname_label: "全名",
         auth_new_password_label: "创建密码（最少 8 字符，1 大写，1 数字）", auth_referral_label: "推荐码（可选）",
+        auth_telegram_label: "Telegram 用户名（必填）",
         auth_login_btn: "登录", auth_register_btn: "创建账户", auth_send_link_btn: "发送链接",
         auth_terms_agree: "我同意", auth_terms_link: "条款和条件", auth_forgot_password: "忘记密码？",
         auth_ssl: "SSL 连接", auth_funds: "资金保障", auth_support: "24/7 支持",
@@ -926,6 +931,7 @@
         market_overview: "Live Market", live: "Live", your_holding: "Your balance:", last_24h: "24h",
         auth_email_label: "Email", auth_password_label: "Password", auth_fullname_label: "Full name",
         auth_new_password_label: "Create password (Min. 8 chars, 1 uppercase, 1 number)", auth_referral_label: "Referral code (Optional)",
+        auth_telegram_label: "Telegram Username (Required)",
         auth_login_btn: "Sign in", auth_register_btn: "Create account", auth_send_link_btn: "Send link",
         auth_terms_agree: "I agree to the", auth_terms_link: "Terms and Conditions", auth_forgot_password: "Forgot your password?",
         auth_ssl: "SSL Connection", auth_funds: "Protected Funds", auth_support: "24/7 Support",
@@ -1087,34 +1093,32 @@
       }
     };
 
-       function initSocialProof() {
+    // ==================== PRUEBAS SOCIALES (FALSAS) ====================
+    function initSocialProof() {
       const container = document.getElementById('socialProofContainer');
       const textEl = document.getElementById('socialProofText');
       if (!container || !textEl) return;
 
-      let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs'));
+      let proofs = JSON.parse(localStorage.getItem('novavest_social_proofs_v2'));
       const now = Date.now();
 
-      // Si no hay pruebas o ha pasado más de 24 horas, generar nuevas
       if (!proofs || !proofs.timestamp || (now - proofs.timestamp > 86400000)) {
         const names = ['a***z', 'j***n', 'm***r', 'c***s', 'd***l', 's***a', 'p***o', 'r***a', 'f***o', 'g***a', 'luis**', 'carlos**', 'and**s', 'kev**n', 'vic**r'];
         
-        // Combinaciones 100% realistas basadas en tus planes
         const scenarios = [
-          { plan: 'Starter', amount: '1.80' },  // Inversión de $30
-          { plan: 'Starter', amount: '3.00' },  // Inversión de $50
-          { plan: 'Starter', amount: '6.00' },  // Inversión de $100
-          { plan: 'Starter', amount: '12.00' }, // Inversión de $200
-          { plan: 'Starter', amount: '9.00' },  // Acumulado (3 días de $50)
-          { plan: 'Starter', amount: '18.00' }, // Acumulado (3 días de $100)
-          { plan: 'Pro', amount: '2.70' },      // Inversión de $30
-          { plan: 'Pro', amount: '45.00' },     // Inversión de $500
-          { plan: 'Pro', amount: '4.50' },      // Inversión de $50 (prorrateado)
-          { plan: 'Pro', amount: '13.50' }      // Acumulado (3 días de $50)
+          { plan: 'Starter', amount: '1.80' },
+          { plan: 'Starter', amount: '3.00' },
+          { plan: 'Starter', amount: '6.00' },
+          { plan: 'Starter', amount: '12.00' },
+          { plan: 'Starter', amount: '9.00' },
+          { plan: 'Starter', amount: '18.00' },
+          { plan: 'Pro', amount: '2.70' },
+          { plan: 'Pro', amount: '45.00' },
+          { plan: 'Pro', amount: '4.50' },
+          { plan: 'Pro', amount: '13.50' }
         ];
 
         const newProofs = [];
-        // Mezclar escenarios para que no salgan siempre en el mismo orden
         const shuffled = scenarios.sort(() => 0.5 - Math.random());
         
         for (let i = 0; i < 6; i++) {
@@ -1128,7 +1132,7 @@
         }
         
         proofs = { timestamp: now, data: newProofs };
-        localStorage.setItem('novavest_social_proofs', JSON.stringify(proofs));
+        localStorage.setItem('novavest_social_proofs_v2', JSON.stringify(proofs));
       }
 
       container.classList.remove('hidden');
@@ -1138,16 +1142,18 @@
         const proof = proofs.data[currentIndex];
         const lang = localStorage.getItem('novavest_lang') || 'en';
         
+        const plan = proof.plan || 'Starter';
+        const amount = proof.amount || '3.00';
+
         const withdrewTxt = lang === 'es' ? 'retiró' : lang === 'fr' ? 'a retiré' : lang === 'zh' ? '提现了' : 'just withdrew';
         const userTxt = lang === 'es' ? 'Usuario' : lang === 'fr' ? 'Utilisateur' : lang === 'zh' ? '用户' : 'User';
         const fromTxt = lang === 'es' ? 'del Plan' : lang === 'fr' ? 'du Plan' : lang === 'zh' ? '来自' : 'from';
-        const planName = lang === 'es' ? `${proof.plan} (${proof.plan === 'Starter' ? '6%' : '9%'})` : `${proof.plan} (${proof.plan === 'Starter' ? '6%' : '9%'})`;
+        const planName = `${plan} (${plan === 'Starter' ? '6%' : '9%'})`;
 
         textEl.style.opacity = '0';
         
         setTimeout(() => {
-          // Formato: "Usuario j***n retiró $6.00 del Plan Starter (6%)"
-          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${proof.amount}</b> ${fromTxt} <b>${planName}</b>`;
+          textEl.innerHTML = `${userTxt} <b>${proof.name}</b> ${withdrewTxt} <b>$${amount}</b> ${fromTxt} <b>${planName}</b>`;
           textEl.style.opacity = '1';
         }, 300);
 
@@ -1155,8 +1161,9 @@
       }
 
       setTimeout(showNextProof, 500);
-      setInterval(showNextProof, 7000); // Rota cada 7 segundos
+      setInterval(showNextProof, 7000);
     }
+
     // ==================== MERCADO ====================
     const MARKET_META = {
       TRX:  { change24h: +1.24, trend: 'up'   },
@@ -1312,7 +1319,6 @@
 
         const { data: existing } = await supabaseClient.from('novavest_balances').select('asset, amount').eq('user_id', user.id);
         if (!existing || existing.length === 0) {
-          // BONO DE BIENVENIDA: $15 en USDT
           const initialRows = Object.keys(ASSET_INFO).map(asset => ({ 
             user_id: user.id, 
             asset, 
@@ -1489,15 +1495,29 @@
         const depPendingCount = userPending.filter(p => p.type === 'deposit').length;
         const withPendingCount = userPending.filter(p => p.type === 'withdraw').length;
         const lastSeenStr = u.last_seen ? new Date(u.last_seen).toLocaleString('en-US', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Never';
+        
+        // Lógica para mostrar el Telegram del usuario
+        const tgUser = u.telegram_username || 'No Telegram';
+        const tgLink = tgUser !== 'No Telegram' 
+          ? `<a href="https://t.me/${tgUser.replace('@','')}" target="_blank" style="color:#3b82f6; font-weight:800; font-size:11px; text-decoration:none;">✈️ ${tgUser}</a>` 
+          : '<span style="color:#ef4444; font-size:11px;">Sin Telegram</span>';
+
         let balancesHtml = '';
         ['TRX', 'BTC', 'SOL', 'USDT', 'ARB', 'XRP'].forEach(asset => {
           const bal = userBalances.find(b => b.asset === asset); const amount = bal ? Number(bal.amount) : 0;
           if (amount > 0) balancesHtml += `<div><span>${asset}:</span> ${quantity(amount, asset)}</div>`;
         });
         if (!balancesHtml) balancesHtml = '<div style="grid-column: span 2; color: var(--muted);">No coin balance</div>';
+        
         const item = document.createElement('div'); item.className = 'user-card';
         item.innerHTML = `
-          <div class="user-header"><div><b>${u.email || 'No email'}</b><br><span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span></div></div>
+          <div class="user-header">
+            <div>
+              <b>${u.email || 'No email'}</b><br>
+              <span>ID: #${u.display_id} | Reg: ${new Date(u.created_at).toLocaleDateString()}</span><br>
+              ${tgLink}
+            </div>
+          </div>
           <div class="user-balances">${balancesHtml}</div>
           <div class="user-status"><div>Withdrawable: <span style="color:var(--mint); font-weight:800;">$${withdrawable.toFixed(2)}</span></div><div style="text-align:right;">${depPendingCount > 0 ? `<span class="status-pending">Deposits: ${depPendingCount}</span><br>` : ''}${withPendingCount > 0 ? `<span class="status-pending">Withdrawals: ${withPendingCount}</span><br>` : ''}<span style="font-size:10px; color:var(--muted);">Seen: ${lastSeenStr}</span></div></div>
         `;
@@ -1804,14 +1824,31 @@
       e.preventDefault(); clearMessage(); 
       const password = $('registerPassword').value; const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
       if (!passwordRegex.test(password)) { showMessage('Password must be at least 8 characters, 1 uppercase letter and 1 number.', true); return; }
+      
+      const telegramUser = $('registerTelegram').value.trim();
+      if (!telegramUser || telegramUser.length < 3) { 
+        showMessage('Please enter a valid Telegram username.', true); 
+        return; 
+      }
+
       if(!$('termsCheck').checked) { showMessage('You must accept the terms and conditions to continue.', true); return; }
+      
       const btn=$('registerSubmit'); btn.disabled=true; btn.textContent='Creating account…';
       const refCode = $('referralCode').value.trim();
+      
       const {data,error}=await supabaseClient.auth.signUp({
         email:$('registerEmail').value.trim(),
         password:password,
-        options:{ data:{ full_name:$('fullName').value.trim(), referral_code: refCode || null }, emailRedirectTo:window.location.origin+window.location.pathname }
+        options:{ 
+          data:{ 
+            full_name:$('fullName').value.trim(), 
+            referral_code: refCode || null,
+            telegram_username: telegramUser
+          }, 
+          emailRedirectTo:window.location.origin+window.location.pathname 
+        }
       });
+      
       btn.disabled=false;
       const lang = localStorage.getItem('novavest_lang') || 'en';
       btn.textContent = (translations[lang]||translations.en).auth_register_btn;
